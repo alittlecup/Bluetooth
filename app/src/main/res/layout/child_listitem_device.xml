@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="2.0dip"
+    android:paddingStart="60.0dip"
+    android:paddingTop="2.0dip" >
+
+    <TextView
+        android:id="@+id/child_device_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6.0dip"
+        android:textAlignment="viewStart"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/child_device_name" >
+
+        <TextView
+            android:id="@+id/child_uuid_title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="UUID: "
+            android:textAlignment="viewStart"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/child_device_uuid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/child_uuid_title_text"
+            android:textAlignment="viewStart"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/child_device_properties"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/child_device_uuid"
+        android:textAlignment="viewStart"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/child_device_writetype"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/child_device_uuid"
+        android:textAlignment="viewStart"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/child_device_permission"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/child_device_uuid"
+        android:textAlignment="viewStart"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:textAlignment="viewStart" >
+
+        <Button
+            android:id="@+id/character_write_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="write"
+            android:textAlignment="viewStart"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/character_read_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="read"
+            android:textAlignment="viewStart"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/character_notify_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="notify"
+            android:textAlignment="viewStart"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/character_indicate_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="indicate"
+            android:textAlignment="viewStart"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/child_charactor_value"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/child_device_uuid"
+        android:textAlignment="viewStart"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/child_device_descripor_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/child_device_uuid"
+        android:layout_marginTop="5.0dip"
+        android:text="Descriptors"
+        android:textAlignment="viewStart"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/child_device_descripor_linear"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/child_device_uuid"
+        android:layout_marginLeft="10.0dip"
+        android:orientation="vertical" />
+
+</LinearLayout>

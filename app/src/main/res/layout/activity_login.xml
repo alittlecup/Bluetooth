@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/getcode"
+    android:paddingEnd="20dp"
+    android:paddingStart="20dp"
+    tools:context="com.example.hbl.bluetooth.LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/white_coner"
+        android:orientation="vertical"
+        android:paddingEnd="20dp"
+        android:paddingStart="20dp"
+        android:translationZ="10dp">
+
+        <EditText
+            android:id="@+id/editPhone"
+            style="@style/base_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="50dp"
+            android:drawableLeft="@drawable/ic_phone_black_24dp"
+            android:drawablePadding="8dp"
+            android:hint="请输入手机号"
+            android:inputType="phone" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/diliver" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editYz"
+                style="@style/base_edittext"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/ic_lock_black_24dp"
+                android:drawablePadding="8dp"
+                android:hint="请输入验证码"
+                android:inputType="phone" />
+
+            <Button
+                android:id="@+id/btnYz"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:text="获取验证码"
+                android:textColor="@drawable/white_coner_color"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/diliver" />
+
+        <Button
+            android:id="@+id/btnLogin"
+            style="@style/base_btn"
+            android:layout_marginTop="60dp"
+            android:text="登录" />
+    </LinearLayout>
+
+</FrameLayout>

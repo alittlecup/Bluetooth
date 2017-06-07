@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:layout_height="80dp">
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        tools:text="模式一： "
+        android:button="@drawable/cehckbox"
+        android:textSize="20dp"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tvModel"
+        style="@style/base_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@android:color/black"
+        tools:text="加热时间20分钟 \n强度80%"/>
+</LinearLayout>
