@@ -27,21 +27,26 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="50dp"
-            android:drawableLeft="@drawable/ic_phone_black_24dp"
+            android:drawableLeft="@drawable/selector_phone"
             android:drawablePadding="8dp"
             android:hint="请输入手机号"
-            android:inputType="phone" />
+            android:inputType="phone"
+             />
 
         <View
+            android:id="@+id/viewLine"
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/diliver" />
+            android:background="@color/diliver"
+             />
 
         <LinearLayout
+            android:id="@+id/llYz"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
             <EditText
                 android:id="@+id/editYz"
@@ -49,7 +54,7 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:drawableLeft="@drawable/ic_lock_black_24dp"
+                android:drawableLeft="@drawable/selector_locak"
                 android:drawablePadding="8dp"
                 android:hint="请输入验证码"
                 android:inputType="phone" />
@@ -65,15 +70,46 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/vieLine"
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/diliver" />
+            android:background="@color/diliver"
+            />
 
         <Button
             android:id="@+id/btnLogin"
             style="@style/base_btn"
             android:layout_marginTop="60dp"
-            android:text="登录" />
-    </LinearLayout>
+            android:text="登录"
+             />
 
+        <ImageView
+            android:id="@+id/ivBluetooth"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:padding="50dp"
+            app:srcCompat="@drawable/ic_bluetooth_searching_black_24dp" />
+        <Button
+            android:id="@+id/btnSerach"
+            style="@style/base_btn"
+            android:layout_marginTop="20dp"
+            android:text="搜索设备"
+            android:visibility="visible" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/tvDevice"
+        android:textColor="@color/app_bg_color"
+        tools:text="111111"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/enter"
+        style="@style/base_btn"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="20dp"
+        android:text="进入主页"/>
 </FrameLayout>

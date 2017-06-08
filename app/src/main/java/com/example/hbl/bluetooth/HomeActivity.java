@@ -3,6 +3,7 @@ package com.example.hbl.bluetooth;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -33,7 +34,9 @@ public class HomeActivity extends AppCompatActivity {
     private int[] tabTextResArr = {R.string.op,R.string.model,R.string.setting};
     private ArrayList<String> tabTagList;
     private int currentIndex;
-
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

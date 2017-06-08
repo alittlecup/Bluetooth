@@ -10,7 +10,7 @@ public class App extends Application{
 	public void onCreate() {
 		app=this;
 		super.onCreate();
-		
+		SharedPreferenceUtil.init(this,"Bluetooth");
 	}
 
 }
