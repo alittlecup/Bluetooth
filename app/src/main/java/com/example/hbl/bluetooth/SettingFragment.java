@@ -57,7 +57,7 @@ public class SettingFragment extends BaseFragment {
         editBing.setText(SharedPreferenceUtil.getValue(SPKey.DISEASE,""));
         tvAbut.setText(SharedPreferenceUtil.getValue(SPKey.ABOUT,""));
         radioMan.setChecked(SharedPreferenceUtil.getValue(SPKey.GENDER,false));
-        radioWomen.setChecked(!radioMan.isEnabled());
+        radioWomen.setChecked(!radioMan.isChecked());
     }
 
     @Override
