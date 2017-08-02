@@ -32,9 +32,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.UUID;
@@ -158,35 +155,22 @@ public class BluetoothLeService extends Service {
 			Log.i(TAG, String.format("Received heart rate: %d", heartRate));
 			intent.putExtra(EXTRA_DATA, String.valueOf(heartRate));
 		} else {
-			// For all other profiles, writes the data formatted in HEX.
-			final byte[] data = characteristic.getValue();
-			try {
-				FileOutputStream fileOs = new FileOutputStream(
-						"/mnt/sdcard/data_blue.dat");
-				fileOs.write(data);
-				fileOs.close();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			byte[] data = characteristic.getValue();
+			if (data != null && data.length > 0) {
+				StringBuilder stringBuilder = new StringBuilder(data.length);
+				int length = data.length;
+				for (int i = 0; i < length; i++) {
+					stringBuilder.append(String.format("%02X ", new Object[]{Byte.valueOf(data[i])}));
+				}
+				intent.putExtra(EXTRA_DATA, new StringBuilder(String.valueOf(new String(data))).append("\n").append(stringBuilder.toString()).toString());
 			}
 
-			if (data != null && data.length > 0) {
-				final StringBuilder stringBuilder = new StringBuilder(
-						data.length);
-				for (byte byteChar : data)
-					stringBuilder.append(String.format("%02X ", byteChar));
-				intent.putExtra(EXTRA_DATA, new String(data) + "\n"
-						+ stringBuilder.toString());
-			}
 		}
 		sendBroadcast(intent);
 	}
 
 	public class LocalBinder extends Binder {
-		BluetoothLeService getService() {
+		public BluetoothLeService getService() {
 			return BluetoothLeService.this;
 		}
 	}
@@ -248,17 +232,19 @@ public class BluetoothLeService extends Service {
 	 */
 	public boolean connect(final String address) {
 		if (mBluetoothAdapter == null || address == null) {
-			Log.i(TAG,
-					"BluetoothAdapter not initialized or unspecified address.");
+			Log.i(TAG, "BluetoothAdapter not initialized or unspecified address.");
 			return false;
 		}
 
 		// Previously connected device. Try to reconnect.
-		if (mBluetoothDeviceAddress != null
-				&& address.equals(mBluetoothDeviceAddress)
-				&& mBluetoothGatt != null) {
-			Log.i(TAG,
-					"Trying to use an existing mBluetoothGatt for connection.");
+		if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress) && mBluetoothGatt != null) {
+			Log.i(TAG, "Trying to use an existing mBluetoothGatt for connection.");
+			mBluetoothGatt.disconnect();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			if (mBluetoothGatt.connect()) {
 				mConnectionState = STATE_CONNECTING;
 				return true;
@@ -267,8 +253,7 @@ public class BluetoothLeService extends Service {
 			}
 		}
 
-		final BluetoothDevice device = mBluetoothAdapter
-				.getRemoteDevice(address);
+		final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
 		if (device == null) {
 			Log.i(TAG, "Device not found.  Unable to connect.");
 			return false;

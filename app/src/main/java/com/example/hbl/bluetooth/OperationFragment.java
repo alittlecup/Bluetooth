@@ -41,11 +41,11 @@ public class OperationFragment extends Fragment {
     BubbleSeekBar sbTime;
     @BindView(R.id.btnStart)
     Button btnStart;
-    @BindView(R.id.btnSave)
-    Button btnSave;
     @BindView(R.id.scrollView)
     ScrollView scrollView;
     Unbinder unbinder;
+    HomeActivity activity;
+    private int mGrade = 0;
 
     public OperationFragment() {
         // Required empty public constructor
@@ -60,6 +60,23 @@ public class OperationFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         rlPants.setEnabled(false);
         rlTee.setEnabled(false);
+        sbTee.setEnabled(false);
+        sbPans.setEnabled(false);
+        activity = (HomeActivity) getActivity();
+        sbTee.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListener() {
+            @Override
+            public void onProgressChanged(int progress, float progressFloat) {
+            }
+
+            @Override
+            public void getProgressOnActionUp(int progress, float progressFloat) {
+                mGrade = progress;
+            }
+
+            @Override
+            public void getProgressOnFinally(int progress, float progressFloat) {
+            }
+        });
         return view;
     }
 
@@ -69,7 +86,7 @@ public class OperationFragment extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.imTee, R.id.imPans, R.id.btnStart, R.id.btnSave})
+    @OnClick({R.id.imTee, R.id.imPans, R.id.btnStart})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imTee:
@@ -81,10 +98,13 @@ public class OperationFragment extends Fragment {
                 sbPans.setEnabled(rlPants.isEnabled());
                 break;
             case R.id.btnStart:
-                break;
-            case R.id.btnSave:
+                sendOrder();
                 break;
         }
+    }
+
+    private void sendOrder() {
+        activity.write(Order.WRITE_HEAT+Integer.toHexString(mGrade));
     }
 }
 

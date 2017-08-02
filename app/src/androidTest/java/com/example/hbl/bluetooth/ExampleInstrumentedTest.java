@@ -7,6 +7,8 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.UUID;
+
 import static org.junit.Assert.*;
 
 /**
@@ -22,5 +24,7 @@ public class ExampleInstrumentedTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         assertEquals("com.example.hbl.bluetooth", appContext.getPackageName());
+        String s = UUID.randomUUID().toString();
+        System.out.println(s);
     }
 }

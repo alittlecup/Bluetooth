@@ -116,8 +116,8 @@ public class MainActivity extends Activity {
 	 */
 	private void initService() {
 		//开始服务
-		intentService = new Intent(MainActivity.this,BLEService.class);
-		startService(intentService);
+//		intentService = new Intent(MainActivity.this,BLEService.class);
+//		startService(intentService);
 		// 初始化蓝牙
 		BluetoothController.getInstance().initBLE();
 	}

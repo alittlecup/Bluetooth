@@ -3,8 +3,12 @@
     package="com.example.hbl.bluetooth">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -24,12 +28,12 @@
         </activity>
         <activity android:name=".HomeActivity">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!--<intent-filter>-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
 
 
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
         <activity android:name=".newblue.MainActivity">
 
@@ -42,9 +46,9 @@
         </activity>
         <activity android:name=".bluetooth_old.DeviceScanActivity">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
         <activity android:name=".bluetooth_old.DeviceControlActivity" />
@@ -52,12 +56,15 @@
         <service
             android:name=".bluetooth_old.BluetoothLeService"
             android:enabled="true" />
+        <service
+            android:name=".newblue.BluetoothLeService"
+            android:enabled="true" />
 
         <activity android:name=".LoginActivity">
             <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>

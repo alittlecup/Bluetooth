@@ -8,9 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatDelegate;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +18,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.hbl.bluetooth.network.BLog;
+import com.example.hbl.bluetooth.network.DefaultCallback;
+import com.example.hbl.bluetooth.network.RetrofitUtil;
+import com.example.hbl.bluetooth.network.ToastUtil;
+import com.example.hbl.bluetooth.network.bean.CodeResponse;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,11 +51,21 @@ public class LoginActivity extends BaseActivity {
     Button btnSerach;
     @BindView(R.id.tvDevice)
     TextView tvDevice;
+    @BindView(R.id.lllogin)
+    LinearLayout lllogin;
+    @BindView(R.id.tvName1)
+    TextView tvName1;
+    @BindView(R.id.tvName2)
+    TextView tvName2;
+    @BindView(R.id.btnMatch)
+    Button btnMatch;
+    @BindView(R.id.llserach)
+    LinearLayout llserach;
     private BluetoothAdapter mBluetoothAdapter;
     private static final int REQUEST_ENABLE_BT = 1;
     private Handler mHandler = new Handler();
-    private boolean mScanning;
     private static final long SCAN_PERIOD = 10000;
+    private CountDownTimer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,34 +73,79 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         checkBluetooth();
-        changeUI(false);
-        findViewById(R.id.enter).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                enter();
-            }
-        });
+        btnSerach.setEnabled(false);
     }
 
-    @OnClick({R.id.btnYz, R.id.btnLogin, R.id.btnSerach})
+    @OnClick({R.id.btnYz, R.id.btnLogin, R.id.btnSerach,R.id.btnMatch})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnYz:
+                getCode();
+                sendYZM();
                 break;
             case R.id.btnSerach:
                 scanLeDevice(true);
                 break;
+            case R.id.btnMatch:
+                startActivity(new Intent(this,HomeActivity.class).putExtra("address",address));
+                break;
             case R.id.btnLogin:
-                showDialog("验证中");
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dismissDialog();
-                        changeUI(true);
+                if (editYz.getText().toString().trim().equals(code)) {
+                    changeUI(true);
+                    if (timer != null) {
+                        timer.cancel();
                     }
-                }, 1000);
+                    btnSerach.setEnabled(true);
+                } else {
+                    ToastUtil.show("验证码不正确");
+                }
                 break;
         }
+    }
+
+    private String code = "";
+
+    private void getCode() {
+        RetrofitUtil.getService()
+                .getCode(editPhone.getText().toString().trim())
+                .enqueue(new DefaultCallback<CodeResponse>() {
+                    @Override
+                    public void onFinish(int status, CodeResponse body) {
+                        if (status == DefaultCallback.SUCCESS) {
+                            code = body.code;
+                            editYz.setText(body.code);
+                        }
+                        timer.cancel();
+                    }
+                });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (timer != null) {
+            timer.cancel();
+        }
+        scanLeDevice(false);
+    }
+
+    private void sendYZM() {
+        timer = new CountDownTimer(60 * 1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                int last = (int) (millisUntilFinished / 1000);
+                if (btnYz.isEnabled()) {
+                    btnYz.setEnabled(false);
+                }
+                btnYz.setText("验证码(" + last + ")");
+            }
+
+            @Override
+            public void onFinish() {
+                btnYz.setText("获取验证码");
+                btnYz.setEnabled(true);
+            }
+        }.start();
     }
 
     @Override
@@ -102,8 +163,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // User chose not to enable Bluetooth.
-        if (requestCode == REQUEST_ENABLE_BT
-                && resultCode == Activity.RESULT_CANCELED) {
+        if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
             finish();
             return;
         }
@@ -111,27 +171,15 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void changeUI(boolean showSerach) {
-        btnSerach.setVisibility(showSerach ? View.VISIBLE : View.GONE);
-        ivBluetooth.setVisibility(showSerach ? View.VISIBLE : View.GONE);
-        editPhone.setVisibility(showSerach ? View.GONE : View.VISIBLE);
-        llYz.setVisibility(showSerach ? View.GONE : View.VISIBLE);
-        btnLogin.setVisibility(showSerach ? View.GONE : View.VISIBLE);
-        vieLine.setVisibility(showSerach ? View.GONE : View.VISIBLE);
-        viewLine.setVisibility(showSerach ? View.GONE : View.VISIBLE);
-
-    }
-
-    private void enter() {
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
+        lllogin.setVisibility(showSerach?View.GONE:View.VISIBLE);
+        llserach.setVisibility(showSerach?View.VISIBLE:View.GONE);
     }
 
     private void checkBluetooth() {
         // selectively disable BLE-related features.
         if (!getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -143,8 +191,7 @@ public class LoginActivity extends BaseActivity {
 
         // Checks if Bluetooth is supported on the device.
         if (mBluetoothAdapter == null) {
-            Toast.makeText(this, R.string.error_bluetooth_not_supported,
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -154,31 +201,22 @@ public class LoginActivity extends BaseActivity {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        scanLeDevice(false);
-    }
 
-    private void scanLeDevice(final boolean enable) {
+    private void scanLeDevice(boolean enable) {
         if (enable) {
-            // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     scanLeDevice(false);
                 }
             }, SCAN_PERIOD);
-
-            mScanning = true;
             mBluetoothAdapter.startLeScan(mLeScanCallback);
         } else {
-            mScanning = false;
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
         }
         btnSerach.setEnabled(!enable);
     }
-
+    private String address="";
     // Device scan callback.
     private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
 
@@ -188,8 +226,14 @@ public class LoginActivity extends BaseActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d("TAG", "run: " + device.getAddress() + '/' + device.getName());
-                    tvDevice.setText("蓝牙地址： "+device.getAddress()+" 蓝牙名称： "+device.getName());
+                    BLog.e(device.getAddress()+"/"+device.getName());
+                    if (("hotcloth").equals(device.getName())) {
+                        ivBluetooth.setVisibility(View.GONE);
+                        tvName1.setVisibility(View.VISIBLE);
+                        tvName1.setText(device.getName());
+                        btnMatch.setEnabled(true);
+                        address=device.getAddress();
+                    }
                 }
             });
         }
