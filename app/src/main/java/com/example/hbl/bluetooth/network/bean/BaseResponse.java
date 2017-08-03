@@ -6,5 +6,4 @@ package com.example.hbl.bluetooth.network.bean;
 
 public class BaseResponse {
     public int status = 0;
-    public long time = -1;
 }

@@ -64,7 +64,7 @@ public class LoginActivity extends BaseActivity {
     private BluetoothAdapter mBluetoothAdapter;
     private static final int REQUEST_ENABLE_BT = 1;
     private Handler mHandler = new Handler();
-    private static final long SCAN_PERIOD = 10000;
+    private static final long SCAN_PERIOD = 5000;
     private CountDownTimer timer;
 
     @Override
@@ -76,7 +76,7 @@ public class LoginActivity extends BaseActivity {
         btnSerach.setEnabled(false);
     }
 
-    @OnClick({R.id.btnYz, R.id.btnLogin, R.id.btnSerach,R.id.btnMatch})
+    @OnClick({R.id.btnYz, R.id.btnLogin, R.id.btnSerach, R.id.btnMatch})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnYz:
@@ -87,7 +87,7 @@ public class LoginActivity extends BaseActivity {
                 scanLeDevice(true);
                 break;
             case R.id.btnMatch:
-                startActivity(new Intent(this,HomeActivity.class).putExtra("address",address));
+                startActivity(new Intent(this, HomeActivity.class).putExtra("address", address));
                 break;
             case R.id.btnLogin:
                 if (editYz.getText().toString().trim().equals(code)) {
@@ -113,6 +113,7 @@ public class LoginActivity extends BaseActivity {
                     public void onFinish(int status, CodeResponse body) {
                         if (status == DefaultCallback.SUCCESS) {
                             code = body.code;
+                            App.tel=body.tel;
                             editYz.setText(body.code);
                         }
                         timer.cancel();
@@ -171,8 +172,8 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void changeUI(boolean showSerach) {
-        lllogin.setVisibility(showSerach?View.GONE:View.VISIBLE);
-        llserach.setVisibility(showSerach?View.VISIBLE:View.GONE);
+        lllogin.setVisibility(showSerach ? View.GONE : View.VISIBLE);
+        llserach.setVisibility(showSerach ? View.VISIBLE : View.GONE);
     }
 
     private void checkBluetooth() {
@@ -207,16 +208,19 @@ public class LoginActivity extends BaseActivity {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    scanLeDevice(false);
+                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    btnSerach.setEnabled(true);
                 }
             }, SCAN_PERIOD);
             mBluetoothAdapter.startLeScan(mLeScanCallback);
-        } else {
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            btnSerach.setEnabled(false);
+            return;
         }
-        btnSerach.setEnabled(!enable);
+        mBluetoothAdapter.stopLeScan(mLeScanCallback);
+        btnSerach.setEnabled(true);
     }
-    private String address="";
+
+    private String address = "";
     // Device scan callback.
     private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
 
@@ -226,13 +230,15 @@ public class LoginActivity extends BaseActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    BLog.e(device.getAddress()+"/"+device.getName());
+                    BLog.e(device.getAddress() + "/" + device.getName());
                     if (("hotcloth").equals(device.getName())) {
                         ivBluetooth.setVisibility(View.GONE);
                         tvName1.setVisibility(View.VISIBLE);
                         tvName1.setText(device.getName());
                         btnMatch.setEnabled(true);
-                        address=device.getAddress();
+                        address = device.getAddress();
+                        mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                        btnSerach.setEnabled(true);
                     }
                 }
             });

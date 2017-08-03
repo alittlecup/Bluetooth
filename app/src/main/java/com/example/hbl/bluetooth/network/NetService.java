@@ -1,5 +1,6 @@
 package com.example.hbl.bluetooth.network;
 
+import com.example.hbl.bluetooth.ModelData;
 import com.example.hbl.bluetooth.network.bean.BaseResponse;
 import com.example.hbl.bluetooth.network.bean.CodeResponse;
 import com.example.hbl.bluetooth.network.bean.UserInfo;
@@ -30,11 +31,11 @@ public interface NetService {
 
     @FormUrlEncoded
     @POST("setmode")
-    Call<BaseResponse> setMode(@Field("mobile") String mobile);
+    Call<BaseResponse> setMode(@Field("tel") String tel,@Field("up")String up,@Field("down")String down,@Field("time")String time);
 
     @FormUrlEncoded
     @POST("getMode")
-    Call<BaseResponse> getMode(@Field("tel")String tel);
+    Call<ModelData> getMode(@Field("tel")String tel);
 
     @FormUrlEncoded
     @GET("getnews")

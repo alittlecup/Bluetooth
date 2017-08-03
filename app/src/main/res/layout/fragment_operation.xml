@@ -44,7 +44,7 @@
                 android:layout_below="@+id/imTee"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="20dp"
-                app:bsb_max="10"
+                app:bsb_max="100"
                 app:bsb_bubble_color="@color/colorAccent"
                 app:bsb_thumb_color="@color/colorAccent"
                 />
@@ -81,6 +81,7 @@
                 android:layout_height="150dp"
                 android:layout_below="@+id/imPans"
                 android:layout_marginTop="20dp"
+                app:bsb_max="100"
                 app:bsb_bubble_color="@color/colorAccent"
                 app:bsb_thumb_color="@color/colorAccent"
                 />
@@ -129,8 +130,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginTop="20dp">
-
+            <EditText
+                android:id="@+id/edit"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
             <Button
                 android:id="@+id/btnStart"
                 style="@style/base_btn"

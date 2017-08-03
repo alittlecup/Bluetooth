@@ -18,6 +18,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.example.hbl.bluetooth.bluetooth_old.SampleGattAttributes;
+import com.example.hbl.bluetooth.network.BLog;
 
 import java.util.List;
 import java.util.Timer;
@@ -51,42 +52,42 @@ public class BluetoothLeService extends Service {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    BluetoothLeService.this.checkTimerEnable(false);
-                    BluetoothLeService.this.checkTimerEnable(true);
+                    checkTimerEnable(false);
+                    checkTimerEnable(true);
                     return;
                 case 2:
                     if (BluetoothLeService.mBluetoothGatt.getServices().size() > 0) {
-                        BluetoothLeService.this.checkTimercountre = -1;
-                        BluetoothLeService.this.broadcastUpdate(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
+                        checkTimercountre = -1;
+                        broadcastUpdate(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
                         BluetoothLeService.ServicesHaveFine = true;
-                        BluetoothLeService.this.checkTimerEnable(false);
+                        checkTimerEnable(false);
                         return;
                     }
                     Log.e("TAG", "Unable to find the Services");
-                    BluetoothLeService.this.close();
-                    BluetoothLeService.this.connectNewDevice(BluetoothLeService.mBluetoothDeviceAddress);
+                    close();
+                    connectNewDevice(BluetoothLeService.mBluetoothDeviceAddress);
                     return;
                 case 3:
-                    BluetoothLeService.this.mConnectionState = 0;
+                    mConnectionState = 0;
                     BluetoothLeService.ServicesHaveFine = false;
                     Log.i(BluetoothLeService.TAG, "Disconnected from GATT server.");
-                    BluetoothLeService.this.broadcastUpdate(BluetoothLeService.ACTION_GATT_DISCONNECTED);
-                    if (BluetoothLeService.this.checkTimer != null && BluetoothLeService.this.checkTimercount < 20) {
-                        BluetoothLeService.this.close();
-                        BluetoothLeService.this.connectNewDevice(BluetoothLeService.mBluetoothDeviceAddress);
+                    broadcastUpdate(BluetoothLeService.ACTION_GATT_DISCONNECTED);
+                    if (checkTimer != null && checkTimercount < 20) {
+                        close();
+                        connectNewDevice(BluetoothLeService.mBluetoothDeviceAddress);
                         return;
                     }
                     return;
                 case 4:
-                    if (BluetoothLeService.this.checkTimer != null) {
-                        BluetoothLeService.this.checkTimerEnable(false);
+                    if (checkTimer != null) {
+                        checkTimerEnable(false);
                         return;
                     }
                     return;
                 case 5:
-                    BluetoothLeService.this.broadcastUpdate(BluetoothLeService.ACTION_GATT_CONNECTED);
-                    BluetoothLeService.this.mConnectionState = 2;
-                    BluetoothLeService.this.checkTimercountre = BluetoothLeService.this.checkTimercount + 50;
+                    broadcastUpdate(BluetoothLeService.ACTION_GATT_CONNECTED);
+                    mConnectionState = 2;
+                    checkTimercountre = checkTimercount + 50;
                     Log.i(BluetoothLeService.TAG, "Connected to GATT server.");
                     if (BluetoothLeService.mBluetoothGatt.discoverServices()) {
                         Log.i(BluetoothLeService.TAG, "mBluetoothGatt discoverServices true");
@@ -114,12 +115,12 @@ public class BluetoothLeService extends Service {
 
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (newState == 2) {
-                if (BluetoothLeService.this.mConnectionState != 2) {
-                    Message.obtain(BluetoothLeService.this.mHandler, 5).sendToTarget();
+                if (mConnectionState != 2) {
+                    Message.obtain(mHandler, 5).sendToTarget();
                 }
                 Log.i(BluetoothLeService.TAG, "BluetoothLeService onConnectionStateChange STATE_CONNECTED");
             } else if (newState == 0) {
-                Message.obtain(BluetoothLeService.this.mHandler, 3).sendToTarget();
+                Message.obtain(mHandler, 3).sendToTarget();
                 Log.i(BluetoothLeService.TAG, "BluetoothLeService onConnectionStateChange STATE_DISCONNECTED");
             }
         }
@@ -127,31 +128,33 @@ public class BluetoothLeService extends Service {
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             Log.i(BluetoothLeService.TAG, "BluetoothLeService onServicesDiscovered status is " + status);
             if (status == 0) {
-                if (BluetoothLeService.this.mbGattCallback != null) {
-                    Message.obtain(BluetoothLeService.this.mHandler, 2).sendToTarget();
+                if (mbGattCallback != null) {
+                    Message.obtain(mHandler, 2).sendToTarget();
                     Log.i(BluetoothLeService.TAG, "BluetoothLeService onServicesDiscovered status is true");
                 }
             } else if (status == 129) {
-                BluetoothLeService.this.mBluetoothAdapter.disable();
+                mBluetoothAdapter.disable();
                 try {
                     Thread.sleep(2500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                BluetoothLeService.this.mBluetoothAdapter.enable();
+                mBluetoothAdapter.enable();
             } else {
                 Log.w(BluetoothLeService.TAG, "onServicesDiscovered received: " + status);
             }
         }
 
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            BLog.e("onCharacteristicRead" + characteristic.getValue().toString());
             if (status == 0) {
-                BluetoothLeService.this.broadcastUpdate(BluetoothLeService.ACTION_DATA_AVAILABLE, characteristic);
+                broadcastUpdate(BluetoothLeService.ACTION_DATA_AVAILABLE, characteristic);
             }
         }
 
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            BluetoothLeService.this.broadcastUpdate(BluetoothLeService.ACTION_DATA_AVAILABLE, characteristic);
+            BLog.e("onCharacteristicChanged" + characteristic.getValue().toString());
+            broadcastUpdate(BluetoothLeService.ACTION_DATA_AVAILABLE, characteristic);
         }
 
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
@@ -160,27 +163,26 @@ public class BluetoothLeService extends Service {
 
     private void checkTimerEnable(boolean en) {
         if (en) {
-            if (this.checkTimer == null) {
-                this.checkTimer = new Timer();
-                this.checkTimer.schedule(new TimerTask() {
+            if (checkTimer == null) {
+                checkTimer = new Timer();
+                checkTimer.schedule(new TimerTask() {
                     public void run() {
-                        BluetoothLeService bluetoothLeService = BluetoothLeService.this;
-                        bluetoothLeService.checkTimercount = bluetoothLeService.checkTimercount + 1;
-                        if (BluetoothLeService.this.checkTimercountre == BluetoothLeService.this.checkTimercount) {
-                            Message.obtain(BluetoothLeService.this.mHandler, 2).sendToTarget();
+                        checkTimercount = checkTimercount + 1;
+                        if (checkTimercountre == checkTimercount) {
+                            Message.obtain(mHandler, 2).sendToTarget();
                         }
-                        if (BluetoothLeService.this.checkTimercount == 200) {
-                            BluetoothLeService.this.checkTimercount = 0;
-                            Message.obtain(BluetoothLeService.this.mHandler, 4).sendToTarget();
+                        if (checkTimercount == 200) {
+                            checkTimercount = 0;
+                            Message.obtain(mHandler, 4).sendToTarget();
                         }
                     }
                 }, 10, 100);
             }
-        } else if (this.checkTimer != null) {
-            this.checkTimer.cancel();
-            this.checkTimer = null;
-            this.checkTimercountre = -1;
-            this.checkTimercount = 0;
+        } else if (checkTimer != null) {
+            checkTimer.cancel();
+            checkTimer = null;
+            checkTimercountre = -1;
+            checkTimercount = 0;
         }
     }
 
@@ -217,7 +219,7 @@ public class BluetoothLeService extends Service {
     }
 
     public IBinder onBind(Intent intent) {
-        return this.mBinder;
+        return mBinder;
     }
 
     public boolean onUnbind(Intent intent) {
@@ -226,15 +228,15 @@ public class BluetoothLeService extends Service {
     }
 
     public boolean initialize() {
-        if (this.mBluetoothManager == null) {
-            this.mBluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
-            if (this.mBluetoothManager == null) {
+        if (mBluetoothManager == null) {
+            mBluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
+            if (mBluetoothManager == null) {
                 Log.e(TAG, "Unable to initialize BluetoothManager.");
                 return false;
             }
         }
-        this.mBluetoothAdapter = this.mBluetoothManager.getAdapter();
-        if (this.mBluetoothAdapter != null) {
+        mBluetoothAdapter = mBluetoothManager.getAdapter();
+        if (mBluetoothAdapter != null) {
             return true;
         }
         Log.e(TAG, "Unable to obtain a BluetoothAdapter.");
@@ -242,7 +244,7 @@ public class BluetoothLeService extends Service {
     }
 
     public boolean connect(String address) {
-        if (this.mBluetoothAdapter == null || address == null) {
+        if (mBluetoothAdapter == null || address == null) {
             Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");
             return false;
         } else if (mBluetoothDeviceAddress == null || !address.equals(mBluetoothDeviceAddress) || mBluetoothGatt == null) {
@@ -261,20 +263,20 @@ public class BluetoothLeService extends Service {
             if (!mBluetoothGatt.connect()) {
                 return false;
             }
-            this.mConnectionState = 1;
-            Message.obtain(this.mHandler, 1).sendToTarget();
+            mConnectionState = 1;
+            Message.obtain(mHandler, 1).sendToTarget();
             broadcastUpdate(ACTION_GATT_CONNECTEING);
             return true;
         }
     }
 
     public void disconnect() {
-        if (this.mBluetoothAdapter == null || mBluetoothGatt == null) {
+        if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
         }
         mBluetoothGatt.disconnect();
-        this.mConnectionState = 0;
+        mConnectionState = 0;
         ServicesHaveFine = false;
         try {
             Thread.sleep(500);
@@ -284,36 +286,36 @@ public class BluetoothLeService extends Service {
     }
 
     public boolean connectNewDevice(String address) {
-        if (this.device == null) {
-            this.device = this.mBluetoothAdapter.getRemoteDevice(address);
+        if (device == null) {
+            device = mBluetoothAdapter.getRemoteDevice(address);
         }
-        if (this.device == null) {
+        if (device == null) {
             Log.w(TAG, "Device not found.  Unable to connect.");
             return false;
         }
-        if (this.mbGattCallback == null) {
-            this.mbGattCallback = new mGattCallback();
+        if (mbGattCallback == null) {
+            mbGattCallback = new mGattCallback();
         }
-        mBluetoothGatt = this.device.connectGatt(this, false, this.mbGattCallback);
+        mBluetoothGatt = device.connectGatt(this, false, mbGattCallback);
         Log.d(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = address;
         broadcastUpdate(ACTION_GATT_CONNECTEING);
-        Message.obtain(this.mHandler, 1).sendToTarget();
-        this.mConnectionState = 1;
+        Message.obtain(mHandler, 1).sendToTarget();
+        mConnectionState = 1;
         return true;
     }
 
     public void close() {
         if (mBluetoothGatt != null) {
             mBluetoothGatt.close();
-            this.mbGattCallback = null;
+            mbGattCallback = null;
             mBluetoothGatt = null;
-            this.device = null;
+            device = null;
         }
     }
 
     public void readCharacteristic(BluetoothGattCharacteristic characteristic) {
-        if (this.mBluetoothAdapter == null || mBluetoothGatt == null) {
+        if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
         } else {
             mBluetoothGatt.readCharacteristic(characteristic);
@@ -321,7 +323,7 @@ public class BluetoothLeService extends Service {
     }
 
     public void writeCharacteristic(BluetoothGattCharacteristic characteristic) {
-        if (this.mBluetoothAdapter == null || mBluetoothGatt == null) {
+        if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
         } else {
             mBluetoothGatt.writeCharacteristic(characteristic);
@@ -329,12 +331,12 @@ public class BluetoothLeService extends Service {
     }
 
     public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic, boolean enabled) {
-        if (this.mBluetoothAdapter == null || mBluetoothGatt == null) {
+        if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
         }
         int proper = characteristic.getProperties();
-        BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+        BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID.fromString(SampleGattAttributes.DESCRIPTOR_CHARACTERISTIC_CONFIG));
         if ((proper & 16) != 0) {
             mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
@@ -342,7 +344,6 @@ public class BluetoothLeService extends Service {
         }
         if ((proper & 32) != 0) {
             mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
-            descriptor = characteristic.getDescriptor(UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
             mBluetoothGatt.writeDescriptor(descriptor);
         }
@@ -356,12 +357,12 @@ public class BluetoothLeService extends Service {
     }
 
     public void restartdevice() {
-        this.mBluetoothAdapter.disable();
+        mBluetoothAdapter.disable();
         try {
             Thread.sleep(2500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        this.mBluetoothAdapter.enable();
+        mBluetoothAdapter.enable();
     }
 }

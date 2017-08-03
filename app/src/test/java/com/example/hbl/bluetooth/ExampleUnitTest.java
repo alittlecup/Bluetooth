@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -33,15 +33,5 @@ public class ExampleUnitTest {
         System.out.println(g);
         System.out.println(a+b+c+d+e+f+g);
     }
-    public static void main(String[] args) {
-        String s = "asad";
-        s = null;
-        try {
-            int length = s.length();
-            System.out.println(length);
-        } catch (Exception e) {
 
-            System.out.println("null");
-        }
-    }
 }

@@ -72,8 +72,9 @@ public class MyAdapter extends BaseAdapter {
                 notifyDataSetChanged();
             }
         });
+        ModelData data = list.get(position);
         holder.checkbox.setChecked(array.get(position, false));
-        holder.tvModel.setText(list.get(position).getString());
+        holder.tvModel.setText("上衣加热强度："+data.getUp()+",下衣加热强度："+data.getDown()+"\n加热时长"+data.getTime());
         holder.checkbox.setText("模式" + position + "  ");
 
         return convertView;
@@ -93,8 +94,4 @@ public class MyAdapter extends BaseAdapter {
    public int getCheckedPosition(){
         return curPosition;
    }
-    public void setChecked(int pos){
-        curPosition=pos;
-        array.put(pos, true);
-    }
 }

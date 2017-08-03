@@ -1,12 +1,26 @@
 package com.example.hbl.bluetooth;
 
+import com.example.hbl.bluetooth.network.bean.BaseResponse;
+
 /**
  * Created by hbl on 2017/6/4.
  */
 
-public class ModelData {
-    boolean isCheck;
-    String string;
+public class ModelData extends BaseResponse {
+    private boolean isCheck;
+    private String up;
+    private String down;
+    private String time;
+    private String date;
+
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public boolean isCheck() {
         return isCheck;
@@ -16,19 +30,27 @@ public class ModelData {
         isCheck = check;
     }
 
-    public String getString() {
-        return string;
+    public String getUp() {
+        return up;
     }
 
-    public void setString(String string) {
-        this.string = string;
+    public void setUp(String up) {
+        this.up = up;
     }
 
-    @Override
-    public String toString() {
-        return "ModelData{" +
-                "isCheck=" + isCheck +
-                ", string='" + string + '\'' +
-                '}';
+    public String getDown() {
+        return down;
+    }
+
+    public void setDown(String down) {
+        this.down = down;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

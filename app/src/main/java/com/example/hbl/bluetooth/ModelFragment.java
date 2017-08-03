@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -33,24 +31,26 @@ public class ModelFragment extends BaseFragment {
     }
 
     protected void initOnce() {
-        if(adapter!=null&&adapter.getCheckedPosition()!=-1){
+        if (adapter != null && adapter.getCheckedPosition() != -1) {
             return;
         }
-        ArrayList<ModelData> strings=new ArrayList<>();
-        for(int i=0;i<30;i++){
-            ModelData data=new ModelData();
-            data.setString("加热时长30分钟 \n强度80%");
-            strings.add(data);
-        }
-        adapter=new MyAdapter(getActivity(),strings);
+        adapter = new MyAdapter(getActivity(), App.getDatas());
         listview.setAdapter(adapter);
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) {
+            adapter.notifyDataSetChanged();
+        }
+    }
 
     @Override
     int getLayoutId() {
         return R.layout.fragment_model;
     }
+
     @OnClick(R.id.btnSure)
     public void onClick() {
 

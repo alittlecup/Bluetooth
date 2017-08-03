@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -24,11 +25,15 @@ import android.widget.TextView;
 
 import com.example.hbl.bluetooth.bluetooth_old.SampleGattAttributes;
 import com.example.hbl.bluetooth.network.BLog;
+import com.example.hbl.bluetooth.network.DefaultCallback;
+import com.example.hbl.bluetooth.network.RetrofitUtil;
 import com.example.hbl.bluetooth.network.ToastUtil;
 import com.example.hbl.bluetooth.newblue.BluetoothLeService;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,6 +64,7 @@ public class HomeActivity extends AppCompatActivity {
     private String address;
     private Button connect;
     private Handler handler = new Handler();
+    private boolean DONE = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,21 +130,16 @@ public class HomeActivity extends AppCompatActivity {
 
     private void displayData(String stringExtra) {
         String resString = ProcessData.StringToByte(stringExtra);
+        DONE = true;
         ToastUtil.show(resString);
-//        if (resString.contains("AC")) {
-//            return;
-//        }
-//        if (preOrder.equals(Order.WRITE_OPEN)) {
-//            write(Order.WRITE_LIGHT + "03");
-//        } else if (preOrder.equals(Order.WRITE_LIGHT + "03")) {
-//            handler.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    write(Order.WRITE_LIGHT + "00");
-//                }
-//            }, 3000);
-//        }
-
+        if (resString.contains("AC")) {
+            failOrderList.offer(preOrder);
+            write();
+        } else {
+            if (orderList.size() > 0) {
+                write();
+            }
+        }
     }
 
     private void displayGattServices(List<BluetoothGattService> supportedGattServices) {
@@ -154,7 +155,15 @@ public class HomeActivity extends AppCompatActivity {
         if (RWNCharacteristic == null) {
             ToastUtil.show("error");
         } else {
-            write(Order.WRITE_OPEN);
+            mBluetoothLeService.setCharacteristicNotification(RWNCharacteristic, true);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    addOrder(Order.WRITE_OPEN);
+                    addOrder(Order.WRITE_HEAT + "10");
+                    addOrder(Order.WRITE_LIGHT + "03");
+                }
+            }, 500);
         }
     }
 
@@ -188,6 +197,7 @@ public class HomeActivity extends AppCompatActivity {
                 mBluetoothLeService.connect(address);
             }
         });
+//        getModeData();
     }
 
     @Override
@@ -199,6 +209,7 @@ public class HomeActivity extends AppCompatActivity {
             final boolean result = mBluetoothLeService.connect(address);
             System.out.println("Connect request result=" + result);
         }
+        ToastUtil.show("OK");
     }
 
     @Override
@@ -235,15 +246,51 @@ public class HomeActivity extends AppCompatActivity {
 
     private String preOrder;
 
-    public void write(String order) {
+    private void write() {
         if (RWNCharacteristic == null) {
             ToastUtil.show("蓝牙连接异常");
             return;
         }
-        preOrder = order;
-        BLog.e(order);
-        BluetoothGattCharacteristic writeGattCharacteristic = RWNCharacteristic;
-        writeGattCharacteristic.setValue(ProcessData.StrToHexbyte(ProcessData.StringToNul(order)));
-        mBluetoothLeService.writeCharacteristic(writeGattCharacteristic);
+        if (DONE) {
+            if (failOrderList.size() > 0) {
+                preOrder = failOrderList.poll();
+            } else if (orderList.size() > 0) {
+                preOrder = orderList.poll();
+
+            }
+            if (TextUtils.isEmpty(preOrder)) {
+                return;
+            }
+            BLog.e(preOrder);
+            BluetoothGattCharacteristic writeGattCharacteristic = RWNCharacteristic;
+            writeGattCharacteristic.setValue(ProcessData.StrToHexbyte(ProcessData.StringToNul(preOrder)));
+            mBluetoothLeService.writeCharacteristic(writeGattCharacteristic);
+            DONE = false;
+        }
+
+    }
+
+    private void getModeData() {
+        RetrofitUtil.getService()
+                .getMode(App.tel)
+                .enqueue(new DefaultCallback<ModelData>() {
+                    @Override
+                    public void onFinish(int status, ModelData body) {
+                        if (status == DefaultCallback.SUCCESS) {
+                            App.addData(body);
+                        }
+                    }
+                });
+    }
+
+    private Queue<String> orderList = new LinkedList<>();
+    private Queue<String> failOrderList = new LinkedList<>();
+
+    public void addOrder(String order) {
+        orderList.offer(order);
+        BLog.e(orderList.toString());
+        if (orderList.size() == 1) {
+            write();
+        }
     }
 }
