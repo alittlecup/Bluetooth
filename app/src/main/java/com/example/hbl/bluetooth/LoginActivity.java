@@ -25,6 +25,8 @@ import com.example.hbl.bluetooth.network.RetrofitUtil;
 import com.example.hbl.bluetooth.network.ToastUtil;
 import com.example.hbl.bluetooth.network.bean.CodeResponse;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -87,7 +89,7 @@ public class LoginActivity extends BaseActivity {
                 scanLeDevice(true);
                 break;
             case R.id.btnMatch:
-                startActivity(new Intent(this, HomeActivity.class).putExtra("address", address));
+                startActivity(new Intent(this, HomeActivity.class).putStringArrayListExtra("address", list));
                 break;
             case R.id.btnLogin:
                 if (editYz.getText().toString().trim().equals(code)) {
@@ -113,7 +115,7 @@ public class LoginActivity extends BaseActivity {
                     public void onFinish(int status, CodeResponse body) {
                         if (status == DefaultCallback.SUCCESS) {
                             code = body.code;
-                            App.tel=body.tel;
+                            App.tel = body.tel;
                             editYz.setText(body.code);
                         }
                         timer.cancel();
@@ -210,6 +212,7 @@ public class LoginActivity extends BaseActivity {
                 public void run() {
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     btnSerach.setEnabled(true);
+                    btnMatch.setEnabled(true);
                 }
             }, SCAN_PERIOD);
             mBluetoothAdapter.startLeScan(mLeScanCallback);
@@ -218,9 +221,12 @@ public class LoginActivity extends BaseActivity {
         }
         mBluetoothAdapter.stopLeScan(mLeScanCallback);
         btnSerach.setEnabled(true);
+
+
+
     }
 
-    private String address = "";
+    private ArrayList<String> list = new ArrayList<>();
     // Device scan callback.
     private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
 
@@ -231,15 +237,22 @@ public class LoginActivity extends BaseActivity {
                 @Override
                 public void run() {
                     BLog.e(device.getAddress() + "/" + device.getName());
-                    if (("hotcloth").equals(device.getName())) {
-                        ivBluetooth.setVisibility(View.GONE);
-                        tvName1.setVisibility(View.VISIBLE);
-                        tvName1.setText(device.getName());
-                        btnMatch.setEnabled(true);
-                        address = device.getAddress();
-                        mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                        btnSerach.setEnabled(true);
+                    if ("hotcloth".equals(device.getName())) {
+                        if (!list.contains(device.getAddress())) {
+                            list.add(device.getAddress());
+                        }
                     }
+                    if(list.size()==1){
+                        tvName1.setVisibility(View.VISIBLE);
+                        tvName1.setText(list.get(0));
+                        ivBluetooth.setVisibility(View.GONE);
+                    }else if(list.size()==2){
+                        tvName2.setVisibility(View.VISIBLE);
+                        tvName2.setText(list.get(1));
+                        mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    }
+
+
                 }
             });
         }

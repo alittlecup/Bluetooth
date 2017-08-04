@@ -28,6 +28,7 @@ import com.example.hbl.bluetooth.network.BLog;
 import com.example.hbl.bluetooth.network.DefaultCallback;
 import com.example.hbl.bluetooth.network.RetrofitUtil;
 import com.example.hbl.bluetooth.network.ToastUtil;
+import com.example.hbl.bluetooth.newblue.BluetoothLeSecondeService;
 import com.example.hbl.bluetooth.newblue.BluetoothLeService;
 
 import java.util.ArrayList;
@@ -61,8 +62,8 @@ public class HomeActivity extends AppCompatActivity {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    private String address;
-    private Button connect;
+    private String address1, address2;
+    private Button connect, connect2;
     private Handler handler = new Handler();
     private boolean DONE = true;
 
@@ -73,12 +74,21 @@ public class HomeActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         initHost();
         ininData();
-        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        if (!TextUtils.isEmpty(address1)) {
+            Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+            bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        }
+        if (!TextUtils.isEmpty(address2)) {
+            Intent gattServiceIntent = new Intent(this, BluetoothLeSecondeService.class);
+            bindService(gattServiceIntent, mServiceSecondConnection, BIND_AUTO_CREATE);
+        }
+
     }
 
     public BluetoothGattCharacteristic RWNCharacteristic;
+    public BluetoothGattCharacteristic RWNSECharacteristic;
     public BluetoothLeService mBluetoothLeService;
+    public BluetoothLeSecondeService mBluetoothLeSecondService;
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -92,7 +102,7 @@ public class HomeActivity extends AppCompatActivity {
             }
             // Automatically connects to the device upon successful start-up
             // initialization.
-            mBluetoothLeService.connect(address);
+            mBluetoothLeService.connect(address1);
         }
 
         @Override
@@ -100,10 +110,38 @@ public class HomeActivity extends AppCompatActivity {
             mBluetoothLeService = null;
         }
     };
+    private final ServiceConnection mServiceSecondConnection = new ServiceConnection() {
+
+
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder service) {
+            mBluetoothLeSecondService = ((BluetoothLeSecondeService.LocalBinder) service).getService();
+            if (!mBluetoothLeSecondService.initialize()) {
+                BLog.e("Unable to initialize Bluetooth");
+                finish();
+            }
+            // Automatically connects to the device upon successful start-up
+            // initialization.
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            mBluetoothLeSecondService = null;
+        }
+    };
 
     private void ininData() {
-        address = getIntent().getStringExtra("address");
-
+        ArrayList<String> address = getIntent().getStringArrayListExtra("address");
+        address1 = address.get(0);
+        if (address.size() == 1) {
+            address1 = address.get(0);
+            App.ISDOUBLE = false;
+        } else if (address.size() == 2) {
+            address1 = address.get(0);
+            address2 = address.get(1);
+            App.ISDOUBLE = true;
+        }
     }
 
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
@@ -113,8 +151,12 @@ public class HomeActivity extends AppCompatActivity {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 connect.setText(getResources().getString(R.string.connected));
+                if (mBluetoothLeSecondService != null) {
+                    mBluetoothLeSecondService.connect(address2);
+                }
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 connect.setText(getResources().getString(R.string.disconnected));
+                canDo=true;
             } else if (BluetoothLeService.ACTION_GATT_CONNECTEING.equals(action)) {
                 connect.setText("连接中");
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
@@ -123,22 +165,91 @@ public class HomeActivity extends AppCompatActivity {
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+            } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTED.equals(action)) {
+                connect2.setText(getResources().getString(R.string.connected));
+            } else if (BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED.equals(action)) {
+                connect2.setText(getResources().getString(R.string.disconnected));
+                canDo2=true;
+            } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTEING.equals(action)) {
+                connect2.setText("连接中");
+            } else if (BluetoothLeSecondeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
+                // Show all the supported services and characteristics on the
+                // user interface.
+                displayTGattServices(mBluetoothLeSecondService.getSupportedGattServices());
+            } else if (BluetoothLeSecondeService.ACTION_DATA_AVAILABLE.equals(action)) {
+                displayTData(intent.getStringExtra(BluetoothLeSecondeService.EXTRA_DATA));
             }
         }
 
     };
+    private boolean canDo = true;
 
     private void displayData(String stringExtra) {
         String resString = ProcessData.StringToByte(stringExtra);
         DONE = true;
-        ToastUtil.show(resString);
+        BLog.e("display1: " + resString + " - > " + orderList.toString());
         if (resString.contains("AC")) {
             failOrderList.offer(preOrder);
             write();
         } else {
             if (orderList.size() > 0) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 write();
+            } else {
+                canDo = true;
             }
+        }
+    }
+
+    boolean DONE2 = true;
+
+    private void displayTData(String stringExtra) {
+        String resString = ProcessData.StringToByte(stringExtra);
+        DONE2 = true;
+        BLog.e("display2: " + resString + " - > " + orderList2.toString());
+        if (resString.contains("AC")) {
+            failOrderList2.offer(preOrder2);
+            write2();
+        } else {
+            if (orderList2.size() > 0) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                write2();
+            } else {
+                canDo2 = true;
+            }
+        }
+    }
+
+    private void displayTGattServices(List<BluetoothGattService> supportedGattServices) {
+        for (BluetoothGattService service : supportedGattServices) {
+            if (service.getUuid().toString().equals(SampleGattAttributes.BLUE_HOT_MEASUREMENT)) {
+                for (BluetoothGattCharacteristic gattCharacteristic : service.getCharacteristics()) {
+                    if (gattCharacteristic.getUuid().toString().equals(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG)) {
+                        RWNSECharacteristic = gattCharacteristic;
+                    }
+                }
+            }
+        }
+        if (RWNSECharacteristic == null) {
+            ToastUtil.show("error");
+        } else {
+            mBluetoothLeSecondService.setCharacteristicNotification(RWNSECharacteristic, true);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    addOrder2(Order.WRITE_OPEN);
+                    addOrder2(Order.WRITE_HEAT + "10");
+                    addOrder2(Order.WRITE_LIGHT + "03");
+                }
+            }, 500);
         }
     }
 
@@ -194,10 +305,18 @@ public class HomeActivity extends AppCompatActivity {
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBluetoothLeService.connect(address);
+                mBluetoothLeService.connect(address1);
             }
         });
-//        getModeData();
+        //TODO 测试实验代码
+        connect2 = (Button) findViewById(R.id.connect2);
+        connect2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBluetoothLeSecondService.connect(address2);
+            }
+        });
+        getModeData();
     }
 
     @Override
@@ -206,7 +325,11 @@ public class HomeActivity extends AppCompatActivity {
         tabhost.setCurrentTab(currentIndex);
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         if (mBluetoothLeService != null) {
-            final boolean result = mBluetoothLeService.connect(address);
+            final boolean result = mBluetoothLeService.connect(address1);
+            System.out.println("Connect request result=" + result);
+        }
+        if (mBluetoothLeSecondService != null) {
+            final boolean result = mBluetoothLeSecondService.connect(address2);
             System.out.println("Connect request result=" + result);
         }
         ToastUtil.show("OK");
@@ -241,14 +364,22 @@ public class HomeActivity extends AppCompatActivity {
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
+        intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_SERVICES_DISCOVERED);
+        intentFilter.addAction(BluetoothLeSecondeService.ACTION_DATA_AVAILABLE);
+
         return intentFilter;
     }
 
     private String preOrder;
+    private String preOrder2;
 
     private void write() {
         if (RWNCharacteristic == null) {
-            ToastUtil.show("蓝牙连接异常");
+            ToastUtil.show("蓝牙连接异常,正在重新连接");
+            mBluetoothLeService.connect(address1);
+            canDo = true;
             return;
         }
         if (DONE) {
@@ -259,13 +390,45 @@ public class HomeActivity extends AppCompatActivity {
 
             }
             if (TextUtils.isEmpty(preOrder)) {
+                canDo = true;
                 return;
             }
             BLog.e(preOrder);
+            canDo = false;
             BluetoothGattCharacteristic writeGattCharacteristic = RWNCharacteristic;
             writeGattCharacteristic.setValue(ProcessData.StrToHexbyte(ProcessData.StringToNul(preOrder)));
             mBluetoothLeService.writeCharacteristic(writeGattCharacteristic);
             DONE = false;
+        }
+
+    }
+
+    private boolean canDo2 = true;
+
+    private void write2() {
+        if (RWNSECharacteristic == null) {
+            ToastUtil.show("蓝牙连接异常,正在重新连接");
+            mBluetoothLeSecondService.connect(address2);
+            canDo2 = true;
+            return;
+        }
+        if (DONE2) {
+            if (failOrderList2.size() > 0) {
+                preOrder2 = failOrderList2.poll();
+            } else if (orderList2.size() > 0) {
+                preOrder2 = orderList2.poll();
+
+            }
+            if (TextUtils.isEmpty(preOrder2)) {
+                canDo2 = true;
+                return;
+            }
+            canDo2 = false;
+            BLog.e(preOrder2);
+            BluetoothGattCharacteristic writeGattCharacteristic = RWNSECharacteristic;
+            writeGattCharacteristic.setValue(ProcessData.StrToHexbyte(ProcessData.StringToNul(preOrder2)));
+            mBluetoothLeSecondService.writeCharacteristic(writeGattCharacteristic);
+            DONE2 = false;
         }
 
     }
@@ -286,11 +449,27 @@ public class HomeActivity extends AppCompatActivity {
     private Queue<String> orderList = new LinkedList<>();
     private Queue<String> failOrderList = new LinkedList<>();
 
+    private Queue<String> orderList2 = new LinkedList<>();
+    private Queue<String> failOrderList2 = new LinkedList<>();
+
     public void addOrder(String order) {
-        orderList.offer(order);
-        BLog.e(orderList.toString());
-        if (orderList.size() == 1) {
+        if (!orderList.contains(order)) {
+            orderList.offer(order);
+        }
+        BLog.e("order1: " + orderList.toString());
+        if (orderList.size() >= 1 && canDo) {
             write();
+        }
+    }
+
+    public void addOrder2(String order) {
+        if (TextUtils.isEmpty(address2)) return;
+        if (!orderList2.contains(order)) {
+            orderList2.offer(order);
+        }
+        BLog.e("order2: " + orderList2.toString());
+        if (orderList2.size() >= 1 && canDo2) {
+            write2();
         }
     }
 }

@@ -59,6 +59,9 @@
         <service
             android:name=".newblue.BluetoothLeService"
             android:enabled="true" />
+        <service
+            android:name=".newblue.BluetoothLeSecondeService"
+            android:enabled="true" />
 
         <activity android:name=".LoginActivity">
             <intent-filter>

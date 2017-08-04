@@ -109,7 +109,7 @@ public class OperationFragment extends Fragment {
 
             @Override
             public void getProgressOnActionUp(int progress, float progressFloat) {
-                mTimeGrade=progress;
+                mTimeGrade = progress;
             }
 
             @Override
@@ -145,19 +145,19 @@ public class OperationFragment extends Fragment {
     }
 
     private void saveData() {
-        ModelData data=new ModelData();
+        ModelData data = new ModelData();
         data.setUp(String.valueOf(mTeeGrade));
         data.setDown(String.valueOf(mPanGrade));
         data.setTime(String.valueOf(mTimeGrade));
         App.addData(data);
         RetrofitUtil.getService()
-                .setMode(App.tel,data.getUp(),data.getDown(),data.getTime())
+                .setMode(App.tel, data.getUp(), data.getDown(), data.getTime())
                 .enqueue(new DefaultCallback<BaseResponse>() {
                     @Override
                     public void onFinish(int status, BaseResponse body) {
-                        if(status==DefaultCallback.SUCCESS){
+                        if (status == DefaultCallback.SUCCESS) {
                             ToastUtil.show("保存成功");
-                        }else{
+                        } else {
                             ToastUtil.show("保存失败");
                         }
                     }
@@ -165,8 +165,18 @@ public class OperationFragment extends Fragment {
     }
 
     private void sendOrder() {
-        activity.addOrder(Order.WRITE_HEAT+"20");
-        activity.addOrder(Order.WRITE_TIME+"14");
+        activity.addOrder(Order.WRITE_HEAT + toHex(mTeeGrade));
+//        activity.addOrder(Order.WRITE_TIME+Integer.toHexString(mTimeGrade));
+        activity.addOrder2(Order.WRITE_HEAT + toHex(mPanGrade));
+//        activity.addOrder2(Order.WRITE_TIME+Integer.toHexString(mTimeGrade));
+    }
+
+    private String toHex(int i) {
+        if (i < 16) {
+            return "0" + Integer.toHexString(i);
+        } else {
+            return Integer.toHexString(i);
+        }
     }
 }
 
