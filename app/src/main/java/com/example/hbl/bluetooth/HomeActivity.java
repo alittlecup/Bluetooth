@@ -108,6 +108,7 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             mBluetoothLeService = null;
+            DONE = true;
         }
     };
     private final ServiceConnection mServiceSecondConnection = new ServiceConnection() {
@@ -128,6 +129,7 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             mBluetoothLeSecondService = null;
+            DONE2 = true;
         }
     };
 
@@ -151,14 +153,18 @@ public class HomeActivity extends AppCompatActivity {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 connect.setText(getResources().getString(R.string.connected));
+                mConnected=2;
                 if (mBluetoothLeSecondService != null) {
                     mBluetoothLeSecondService.connect(address2);
                 }
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 connect.setText(getResources().getString(R.string.disconnected));
-                canDo=true;
+                DONE = true;
+                canDo = true;
+                mConnected=0;
             } else if (BluetoothLeService.ACTION_GATT_CONNECTEING.equals(action)) {
                 connect.setText("连接中");
+                mConnected=1;
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the
                 // user interface.
@@ -167,11 +173,15 @@ public class HomeActivity extends AppCompatActivity {
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTED.equals(action)) {
                 connect2.setText(getResources().getString(R.string.connected));
+                mConnected2=2;
             } else if (BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 connect2.setText(getResources().getString(R.string.disconnected));
-                canDo2=true;
+                canDo2 = true;
+                DONE2 = true;
+                mConnected2=0;
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTEING.equals(action)) {
                 connect2.setText("连接中");
+                mConnected2=1;
             } else if (BluetoothLeSecondeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the
                 // user interface.
@@ -246,10 +256,16 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     addOrder2(Order.WRITE_OPEN);
-                    addOrder2(Order.WRITE_HEAT + "10");
-                    addOrder2(Order.WRITE_LIGHT + "03");
+                    addOrder2(Order.WRITE_HEAT + "00");
+//                    addOrder2(Order.WRITE_LIGHT + "03");
                 }
             }, 500);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+//                    addOrder2(Order.WRITE_LIGHT + "00");
+                }
+            }, 2500);
         }
     }
 
@@ -271,10 +287,16 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     addOrder(Order.WRITE_OPEN);
-                    addOrder(Order.WRITE_HEAT + "10");
-                    addOrder(Order.WRITE_LIGHT + "03");
+                    addOrder(Order.WRITE_HEAT + "00");
+//                    addOrder(Order.WRITE_LIGHT + "03");
                 }
             }, 500);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+//                    addOrder(Order.WRITE_LIGHT + "00");
+                }
+            }, 2500);
         }
     }
 
@@ -317,18 +339,21 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
         getModeData();
+        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
     }
+
+    private int mConnected = 0;
+    private int mConnected2 = 0;
 
     @Override
     protected void onResume() {
         super.onResume();
         tabhost.setCurrentTab(currentIndex);
-        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
-        if (mBluetoothLeService != null) {
+        if (mBluetoothLeService != null && mConnected == 0) {
             final boolean result = mBluetoothLeService.connect(address1);
             System.out.println("Connect request result=" + result);
         }
-        if (mBluetoothLeSecondService != null) {
+        if (mBluetoothLeSecondService != null&& mConnected2==0) {
             final boolean result = mBluetoothLeSecondService.connect(address2);
             System.out.println("Connect request result=" + result);
         }
@@ -338,12 +363,12 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mGattUpdateReceiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mGattUpdateReceiver);
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
 

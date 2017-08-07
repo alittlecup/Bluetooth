@@ -2,6 +2,7 @@ package com.example.hbl.bluetooth;
 
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +47,8 @@ public class OperationFragment extends Fragment {
     BubbleSeekBar sbTime;
     @BindView(R.id.btnStart)
     Button btnStart;
+    @BindView(R.id.btnreadtime)
+    Button btnreadtime;
     @BindView(R.id.scrollView)
     ScrollView scrollView;
     @BindView(R.id.edit)
@@ -55,6 +58,7 @@ public class OperationFragment extends Fragment {
     private int mTeeGrade = 0;
     private int mPanGrade = 0;
     private int mTimeGrade = 0;
+    private CountDownTimer timer;
 
     public OperationFragment() {
         // Required empty public constructor
@@ -78,7 +82,8 @@ public class OperationFragment extends Fragment {
 
             @Override
             public void getProgressOnActionUp(int progress, float progressFloat) {
-                mTeeGrade = progress;
+                activity.addOrder(Order.WRITE_HEAT + toHex(progress));
+
             }
 
             @Override
@@ -93,7 +98,7 @@ public class OperationFragment extends Fragment {
 
             @Override
             public void getProgressOnActionUp(int progress, float progressFloat) {
-                mPanGrade = progress;
+                activity.addOrder2(Order.WRITE_HEAT + toHex(progress));
             }
 
             @Override
@@ -109,7 +114,9 @@ public class OperationFragment extends Fragment {
 
             @Override
             public void getProgressOnActionUp(int progress, float progressFloat) {
-                mTimeGrade = progress;
+//                activity.addOrder(Order.WRITE_TIME + timeToHex(progress));
+//                activity.addOrder2(Order.WRITE_TIME + timeToHex(progress));
+                resetTimer(progress);
             }
 
             @Override
@@ -120,13 +127,37 @@ public class OperationFragment extends Fragment {
         return view;
     }
 
+    private void resetTimer(int progress) {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        timer = new CountDownTimer(progress*1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                sbTime.setProgress(millisUntilFinished/1000);
+            }
+
+            @Override
+            public void onFinish() {
+                sbTime.setProgress(0);
+            }
+        };
+        timer.start();
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }
 
-    @OnClick({R.id.imTee, R.id.imPans, R.id.btnStart})
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @OnClick({R.id.imTee, R.id.imPans, R.id.btnStart, R.id.btnreadtime})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imTee:
@@ -139,7 +170,11 @@ public class OperationFragment extends Fragment {
                 break;
             case R.id.btnStart:
                 sendOrder();
-//                saveData();
+                saveData();
+                break;
+            case R.id.btnreadtime:
+                activity.addOrder(Order.READ_TIME);
+                activity.addOrder2(Order.READ_TIME);
                 break;
         }
     }
@@ -165,10 +200,8 @@ public class OperationFragment extends Fragment {
     }
 
     private void sendOrder() {
-        activity.addOrder(Order.WRITE_HEAT + toHex(mTeeGrade));
-//        activity.addOrder(Order.WRITE_TIME+Integer.toHexString(mTimeGrade));
-        activity.addOrder2(Order.WRITE_HEAT + toHex(mPanGrade));
-//        activity.addOrder2(Order.WRITE_TIME+Integer.toHexString(mTimeGrade));
+        activity.addOrder(Order.WRITE_CLOSE);
+        activity.addOrder2(Order.WRITE_CLOSE);
     }
 
     private String toHex(int i) {
@@ -176,6 +209,18 @@ public class OperationFragment extends Fragment {
             return "0" + Integer.toHexString(i);
         } else {
             return Integer.toHexString(i);
+        }
+    }
+
+    private String timeToHex(int secondes) {
+        if (secondes <= 15) {
+            return "000" + Integer.toHexString(secondes);
+        } else if (secondes <= 255) {
+            return "00" + Integer.toHexString(secondes);
+        } else if (secondes <= 4095) {
+            return "0" + Integer.toHexString(secondes);
+        } else {
+            return Integer.toHexString(secondes);
         }
     }
 }

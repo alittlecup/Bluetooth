@@ -18,6 +18,7 @@ public interface Order {
     String WRITE_OPEN = "AB27000101";
     String WRITE_CLOSE = "AB27000100";
     String WRITE_TIME = "AB200012";
+    String READ_TIME = "AA200012";
 
 
 
