@@ -7,4 +7,5 @@ package com.example.hbl.bluetooth.network.bean;
 public class CodeResponse extends BaseResponse {
     public String tel = "";
     public String code = "";
+    public String time = "";
 }

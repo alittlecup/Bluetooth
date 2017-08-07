@@ -119,6 +119,8 @@ public class LoginActivity extends BaseActivity {
                             editYz.setText(body.code);
                         }
                         timer.cancel();
+                        btnYz.setText("获取验证码");
+                        btnYz.setEnabled(true);
                     }
                 });
     }

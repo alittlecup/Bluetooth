@@ -169,7 +169,7 @@ public class OperationFragment extends Fragment {
                 sbPans.setEnabled(rlPants.isEnabled());
                 break;
             case R.id.btnStart:
-                sendOrder();
+//                sendOrder();
                 saveData();
                 break;
             case R.id.btnreadtime:
@@ -181,9 +181,9 @@ public class OperationFragment extends Fragment {
 
     private void saveData() {
         ModelData data = new ModelData();
-        data.setUp(String.valueOf(mTeeGrade));
-        data.setDown(String.valueOf(mPanGrade));
-        data.setTime(String.valueOf(mTimeGrade));
+        data.setUp(String.valueOf(sbTee.getProgress()));
+        data.setDown(String.valueOf(sbPans.getProgress()));
+        data.setTime(String.valueOf(sbTime.getProgress()));
         App.addData(data);
         RetrofitUtil.getService()
                 .setMode(App.tel, data.getUp(), data.getDown(), data.getTime())

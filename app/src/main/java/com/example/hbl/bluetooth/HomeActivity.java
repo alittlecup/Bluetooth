@@ -25,7 +25,6 @@ import android.widget.TextView;
 
 import com.example.hbl.bluetooth.bluetooth_old.SampleGattAttributes;
 import com.example.hbl.bluetooth.network.BLog;
-import com.example.hbl.bluetooth.network.DefaultCallback;
 import com.example.hbl.bluetooth.network.RetrofitUtil;
 import com.example.hbl.bluetooth.network.ToastUtil;
 import com.example.hbl.bluetooth.newblue.BluetoothLeSecondeService;
@@ -38,6 +37,9 @@ import java.util.Queue;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -461,12 +463,19 @@ public class HomeActivity extends AppCompatActivity {
     private void getModeData() {
         RetrofitUtil.getService()
                 .getMode(App.tel)
-                .enqueue(new DefaultCallback<ModelData>() {
+                .enqueue(new Callback<List<ModelData>>() {
                     @Override
-                    public void onFinish(int status, ModelData body) {
-                        if (status == DefaultCallback.SUCCESS) {
-                            App.addData(body);
+                    public void onResponse(Call<List<ModelData>> call, Response<List<ModelData>> response) {
+                        if(response.body()!=null&&response.body().size()>=0){
+                            for(ModelData data:response.body()){
+                                App.addData(data);
+                            }
                         }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<ModelData>> call, Throwable t) {
+                        ToastUtil.show("网络请求异常，请重试");
                     }
                 });
     }

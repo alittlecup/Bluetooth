@@ -12,6 +12,7 @@ public class ModelData extends BaseResponse {
     private String down;
     private String time;
     private String date;
+    private String tel;
 
 
     public String getDate() {

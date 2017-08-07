@@ -5,6 +5,7 @@ import com.example.hbl.bluetooth.network.bean.BaseResponse;
 import com.example.hbl.bluetooth.network.bean.CodeResponse;
 import com.example.hbl.bluetooth.network.bean.UserInfo;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -35,7 +36,7 @@ public interface NetService {
 
     @FormUrlEncoded
     @POST("getMode")
-    Call<ModelData> getMode(@Field("tel")String tel);
+    Call<List<ModelData>> getMode(@Field("tel")String tel);
 
     @FormUrlEncoded
     @GET("getnews")
