@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f1f5f8"
+    android:paddingEnd="20dp"
+    android:paddingStart="20dp"
+    tools:context="com.example.hbl.bluetooth.LoginActivity">
+
+    <LinearLayout
+        android:id="@+id/lllogin"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/white_coner"
+        android:orientation="vertical"
+        android:paddingEnd="20dp"
+        android:paddingStart="20dp"
+        android:translationZ="10dp"
+        android:visibility="visible">
+
+        <EditText
+            android:id="@+id/editPhone"
+            style="@style/base_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="50dp"
+            android:drawableLeft="@drawable/selector_phone"
+            android:drawablePadding="8dp"
+            android:hint="请输入手机号"
+            android:inputType="phone" />
+
+        <View
+            android:id="@+id/viewLine"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/diliver" />
+
+        <LinearLayout
+            android:id="@+id/llYz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editYz"
+                style="@style/base_edittext"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/selector_locak"
+                android:drawablePadding="8dp"
+                android:hint="请输入验证码"
+                android:inputType="phone" />
+
+            <Button
+                android:id="@+id/btnYz"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:text="获取验证码"
+                android:textColor="@drawable/white_coner_color"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/vieLine"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/diliver" />
+
+        <Button
+            android:id="@+id/btnLogin"
+            style="@style/base_btn"
+            android:layout_marginTop="60dp"
+            android:text="登录" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llserach"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/white_coner"
+        android:orientation="vertical"
+        android:paddingEnd="20dp"
+        android:paddingStart="20dp"
+        android:visibility="gone"
+        android:translationZ="10dp">
+
+        <ImageView
+            android:id="@+id/ivBluetooth"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:padding="50dp"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_bluetooth_searching_black_24dp" />
+
+        <TextView
+            android:id="@+id/tvName1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="50dp"
+            android:background="@color/app_bg_color"
+            android:gravity="center"
+            tools:text="hotcloth"
+            android:visibility="gone"
+            android:textSize="30dp" />
+
+        <TextView
+            android:id="@+id/tvName2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="40dp"
+            android:background="@color/app_bg_color"
+            android:gravity="center"
+            android:visibility="gone"
+            tools:text="hotcloth"
+            android:textSize="30dp" />
+
+        <android.support.v4.widget.Space
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btnMatch"
+            style="@style/base_btn"
+            android:layout_marginBottom="20dp"
+            android:text="配对"
+            android:visibility="visible" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvDevice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        tools:text="111111" />
+
+    <Button
+        android:id="@+id/btnSerach"
+        style="@style/base_btn"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="20dp"
+        android:text="搜索设备" />
+</FrameLayout>
