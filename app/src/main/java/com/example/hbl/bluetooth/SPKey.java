@@ -13,4 +13,5 @@ public class SPKey {
     public static final String DEVICE = "device";
     public static final String DISEASE = "disease";
     public static final String ABOUT = "device";
+    public static final String TIME = "time";
 }

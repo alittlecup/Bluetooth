@@ -135,26 +135,38 @@ public class OperationFragment extends Fragment {
         timer = new CountDownTimer(progress*1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
+                currentMills=  millisUntilFinished;
                 sbTime.setProgress(millisUntilFinished/1000);
             }
 
             @Override
             public void onFinish() {
+                currentMills=0;
                 sbTime.setProgress(0);
             }
         };
         timer.start();
     }
-
+    private long currentMills=0;
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        if(timer!=null){
+            timer.cancel();
+            timer=null;
+        }
+        SharedPreferenceUtil.putValue(SPKey.TIME,System.currentTimeMillis()+currentMills);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Integer value = SharedPreferenceUtil.getValue(SPKey.TIME, 0);
+        long l = System.currentTimeMillis();
+        if(l<value){
+            sbTime.setProgress((value-l)/1000);
+        }
     }
 
     @OnClick({R.id.imTee, R.id.imPans, R.id.btnStart, R.id.btnreadtime})
