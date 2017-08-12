@@ -3,10 +3,9 @@ package com.example.hbl.bluetooth;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -20,7 +19,6 @@ import com.example.hbl.bluetooth.network.bean.BaseResponse;
 import com.xw.repo.BubbleSeekBar;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
@@ -28,7 +26,7 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OperationFragment extends Fragment {
+public class OperationFragment extends BaseFragment {
 
 
     @BindView(R.id.imTee)
@@ -55,6 +53,10 @@ public class OperationFragment extends Fragment {
     EditText editText;
     Unbinder unbinder;
     HomeActivity activity;
+    @BindView(R.id.message1)
+    MyTextView tv1;
+    @BindView(R.id.message2)
+    MyTextView tv2;
     private int mTeeGrade = 0;
     private int mPanGrade = 0;
     private int mTimeGrade = 0;
@@ -66,14 +68,14 @@ public class OperationFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_operation, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        rlPants.setEnabled(false);
-        rlTee.setEnabled(false);
-        sbTee.setEnabled(false);
-        sbPans.setEnabled(false);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        rlPants.setEnabled(App.ISPAINENABLE);
+        rlTee.setEnabled(App.ISTEEENABLE);
+        sbTee.setEnabled(App.ISTEEENABLE);
+        sbPans.setEnabled(App.ISPAINENABLE);
+        imTee.setClickable(App.ISTEEENABLE);
+        imPans.setClickable(App.ISPAINENABLE);
         activity = (HomeActivity) getActivity();
         sbTee.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListener() {
             @Override
@@ -114,9 +116,9 @@ public class OperationFragment extends Fragment {
 
             @Override
             public void getProgressOnActionUp(int progress, float progressFloat) {
-//                activity.addOrder(Order.WRITE_TIME + timeToHex(progress));
-//                activity.addOrder2(Order.WRITE_TIME + timeToHex(progress));
-                resetTimer(progress);
+                activity.addOrder(Order.WRITE_TIME + timeToHex(progress*60));
+                activity.addOrder2(Order.WRITE_TIME + timeToHex(progress*60));
+                resetTimer(progress*60);
             }
 
             @Override
@@ -124,7 +126,11 @@ public class OperationFragment extends Fragment {
 
             }
         });
-        return view;
+    }
+
+    @Override
+    int getLayoutId() {
+        return R.layout.fragment_operation;
     }
 
     private void resetTimer(int progress) {
@@ -136,13 +142,22 @@ public class OperationFragment extends Fragment {
             @Override
             public void onTick(long millisUntilFinished) {
                 currentMills=  millisUntilFinished;
-                sbTime.setProgress(millisUntilFinished/1000);
+                sbTime.setProgress((int)millisUntilFinished/1000/60);
             }
 
             @Override
             public void onFinish() {
                 currentMills=0;
                 sbTime.setProgress(0);
+                btnStart.setText("开启蓝牙");
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                activity.addOrder(Order.WRITE_CLOSE);
+                activity.addOrder2(Order.WRITE_CLOSE);
+
             }
         };
         timer.start();
@@ -151,7 +166,6 @@ public class OperationFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         if(timer!=null){
             timer.cancel();
             timer=null;
@@ -162,10 +176,10 @@ public class OperationFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Integer value = SharedPreferenceUtil.getValue(SPKey.TIME, 0);
+        Long value = SharedPreferenceUtil.getValue(SPKey.TIME, 0L);
         long l = System.currentTimeMillis();
         if(l<value){
-            sbTime.setProgress((value-l)/1000);
+            sbTime.setProgress((value-l)/1000/60);
         }
     }
 
@@ -181,12 +195,12 @@ public class OperationFragment extends Fragment {
                 sbPans.setEnabled(rlPants.isEnabled());
                 break;
             case R.id.btnStart:
-//                sendOrder();
+                sendOrder(btnStart.getText().toString().contains("开启"));
                 saveData();
                 break;
             case R.id.btnreadtime:
-                activity.addOrder(Order.READ_TIME);
-                activity.addOrder2(Order.READ_TIME);
+//                activity.addOrder(Order.READ_TIME);
+//                activity.addOrder2(Order.READ_TIME);
                 break;
         }
     }
@@ -202,7 +216,7 @@ public class OperationFragment extends Fragment {
                 .enqueue(new DefaultCallback<BaseResponse>() {
                     @Override
                     public void onFinish(int status, BaseResponse body) {
-                        if (status == DefaultCallback.SUCCESS) {
+                        if (status == DefaultCallback.SUCCESS||body.status==1) {
                             ToastUtil.show("保存成功");
                         } else {
                             ToastUtil.show("保存失败");
@@ -211,9 +225,16 @@ public class OperationFragment extends Fragment {
                 });
     }
 
-    private void sendOrder() {
-        activity.addOrder(Order.WRITE_CLOSE);
-        activity.addOrder2(Order.WRITE_CLOSE);
+    private void sendOrder(boolean isOpen) {
+        if(isOpen){
+//            activity.addOrder(Order.WRITE_TIME+"1C00");
+//            activity.addOrder2(Order.WRITE_TIME+"1C00");
+            btnStart.setText("关闭蓝牙");
+        }else {
+            btnStart.setText("开启蓝牙");
+        }
+        activity.addOrder(isOpen?Order.WRITE_OPEN:Order.WRITE_CLOSE);
+        activity.addOrder2(isOpen?Order.WRITE_OPEN:Order.WRITE_CLOSE);
     }
 
     private String toHex(int i) {
@@ -234,6 +255,12 @@ public class OperationFragment extends Fragment {
         } else {
             return Integer.toHexString(secondes);
         }
+    }
+    public  MyTextView getTextView(){
+        return tv1;
+    }
+    public  MyTextView getText2View(){
+        return tv2;
     }
 }
 

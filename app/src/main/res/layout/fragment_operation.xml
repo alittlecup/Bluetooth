@@ -27,15 +27,16 @@
                 android:layout_height="50dp"
                 android:background="@drawable/jumper" />
 
-            <TextView
+            <com.example.hbl.bluetooth.MyTextView
+                android:id="@+id/message1"
                 android:layout_width="200dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_toRightOf="@id/imTee"
-                android:background="@color/colorAccent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="30dp"
                 android:gravity="center"
                 android:text="电量显示区"
-                android:textColor="@color/app_bg_color" />
+                android:textColor="@color/app_bg_color"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
             <com.xw.repo.BubbleSeekBar
                 android:id="@+id/sbTee"
                 android:layout_width="match_parent"
@@ -63,11 +64,11 @@
                 android:layout_height="50dp"
                 android:background="@drawable/trousers" />
 
-            <TextView
+            <com.example.hbl.bluetooth.MyTextView
+                android:id="@+id/message2"
                 android:layout_width="200dp"
                 android:layout_height="50dp"
-                android:layout_marginLeft="20dp"
-                android:background="@color/colorAccent"
+                android:layout_marginLeft="30dp"
                 android:gravity="center"
                 android:text="电量显示区"
                 android:textColor="@color/app_bg_color"

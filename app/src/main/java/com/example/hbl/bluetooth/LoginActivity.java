@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.Button;
@@ -24,8 +25,6 @@ import com.example.hbl.bluetooth.network.DefaultCallback;
 import com.example.hbl.bluetooth.network.RetrofitUtil;
 import com.example.hbl.bluetooth.network.ToastUtil;
 import com.example.hbl.bluetooth.network.bean.CodeResponse;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,7 +65,7 @@ public class LoginActivity extends BaseActivity {
     private BluetoothAdapter mBluetoothAdapter;
     private static final int REQUEST_ENABLE_BT = 1;
     private Handler mHandler = new Handler();
-    private static final long SCAN_PERIOD = 5000;
+    private static final long SCAN_PERIOD = 10000;
     private CountDownTimer timer;
 
     @Override
@@ -89,7 +88,11 @@ public class LoginActivity extends BaseActivity {
                 scanLeDevice(true);
                 break;
             case R.id.btnMatch:
-                startActivity(new Intent(this, HomeActivity.class).putStringArrayListExtra("address", list));
+                Intent intent = new Intent(this, HomeActivity.class);
+                intent.putExtra("hotup",map.get("hotup"));
+                intent.putExtra("hotdw",map.get("hotdw"));
+                startActivity(intent);
+                mBluetoothAdapter.stopLeScan(mLeScanCallback);
                 break;
             case R.id.btnLogin:
                 if (editYz.getText().toString().trim().equals(code)) {
@@ -188,7 +191,7 @@ public class LoginActivity extends BaseActivity {
             finish();
         }
 
-        // Initializes a Bluetooth adapter. For API level 18 and above, get a
+        // Initializes a Bluetooth adapter. For APopI level 18 and above, get a
         // reference to
         // BluetoothAdapter through BluetoothManager.
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
@@ -228,7 +231,7 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    private ArrayList<String> list = new ArrayList<>();
+    private ArrayMap<String,String> map = new ArrayMap<>();
     // Device scan callback.
     private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
 
@@ -239,22 +242,26 @@ public class LoginActivity extends BaseActivity {
                 @Override
                 public void run() {
                     BLog.e(device.getAddress() + "/" + device.getName());
-                    if ("hotcloth".equals(device.getName())) {
-                        if (!list.contains(device.getAddress())) {
-                            list.add(device.getAddress());
+                    if ("hotup".equals(device.getName())) {
+                        if (map.get("hotup")==null) {
+                            map.put("hotup",device.getAddress());
                         }
                     }
-                    if(list.size()==1){
-                        tvName1.setVisibility(View.VISIBLE);
-                        tvName1.setText(list.get(0));
-                        ivBluetooth.setVisibility(View.GONE);
-                    }else if(list.size()==2){
-                        tvName2.setVisibility(View.VISIBLE);
-                        tvName2.setText(list.get(1));
-                        mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    if("hotdw".equals(device.getName())){
+                        if ((map.get("hotdw")==null)) {
+                            map.put("hotdw",device.getAddress());
+                        }
                     }
-
-
+                    if(map.get("hotup")!=null){
+                        ivBluetooth.setVisibility(View.GONE);
+                        tvName1.setText("上衣模块");
+                        tvName1.setVisibility(View.VISIBLE);
+                    }
+                    if(map.get("hotdw")!=null){
+                        tvName2.setVisibility(View.VISIBLE);
+                        tvName2.setText("下衣模块");
+                        ivBluetooth.setVisibility(View.GONE);
+                    }
                 }
             });
         }

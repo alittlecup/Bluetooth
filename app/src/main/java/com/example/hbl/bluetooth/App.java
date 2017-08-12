@@ -8,7 +8,8 @@ public class App extends Application {
 
     public static App app;
     public static String tel;
-    public static boolean ISDOUBLE;
+    public static boolean ISTEEENABLE=false;
+    public static boolean ISPAINENABLE=false;
 
     public static ArrayList<ModelData> getDatas() {
         return datas;

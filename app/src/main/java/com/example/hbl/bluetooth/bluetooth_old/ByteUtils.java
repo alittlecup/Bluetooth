@@ -1,10 +1,5 @@
 package com.example.hbl.bluetooth.bluetooth_old;
 
-import com.example.hbl.bluetooth.Order;
-
-import java.util.LinkedList;
-import java.util.Queue;
-
 /**
  * @author zhaomeng
  */
@@ -59,29 +54,29 @@ public class ByteUtils {
     }
 
     public static void main(String[] args) {
-        Queue<String> orderlist = new LinkedList<>();
-        orderlist.offer(Order.WRITE_OPEN);
-        orderlist.offer(Order.WRITE_LIGHT + "03");
-        orderlist.offer(Order.READ_MAC1);
-        orderlist.offer(Order.READ_MAC2);
-        orderlist.offer(Order.READ_MAC3);
-        orderlist.offer(Order.WRITE_LIGHT + "00");
-        orderlist.offer(Order.WRITE_CLOSE);
-        for (String q : orderlist) {
-            System.out.print(q + "->");
-        }
-        System.out.println("==");
-        String poll = orderlist.poll();
-        System.out.println(poll);
-        for (String q : orderlist) {
-            System.out.print(q + "->");
-        }
-        System.out.println("  ");
-        String asdf = orderlist.poll();
-        String df = orderlist.poll();
-        for (String q : orderlist) {
-            System.out.print(q + "->");
-        }
+//        Queue<String> orderlist = new LinkedList<>();
+//        orderlist.offer(Order.WRITE_OPEN);
+//        orderlist.offer(Order.WRITE_LIGHT + "03");
+//        orderlist.offer(Order.READ_MAC1);
+//        orderlist.offer(Order.READ_MAC2);
+//        orderlist.offer(Order.READ_MAC3);
+//        orderlist.offer(Order.WRITE_LIGHT + "00");
+//        orderlist.offer(Order.WRITE_CLOSE);
+//        for (String q : orderlist) {
+//            System.out.print(q + "->");
+//        }
+//        System.out.println("==");
+//        String poll = orderlist.poll();
+//        System.out.println(poll);
+//        for (String q : orderlist) {
+//            System.out.print(q + "->");
+//        }
+//        System.out.println("  ");
+//        String asdf = orderlist.poll();
+//        String df = orderlist.poll();
+//        for (String q : orderlist) {
+//            System.out.print(q + "->");
+//        }
     }
 
 }

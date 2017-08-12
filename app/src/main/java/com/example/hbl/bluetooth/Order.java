@@ -13,8 +13,8 @@ public interface Order {
     String READ_MAC6 = "AA050011";
     String READ_ENERGY = "AA060001";
     String WRITE_LIGHT = "AB070001";
-    String READ_HEAT = "AA250001";
-    String WRITE_HEAT = "AB250001";
+    String READ_HEAT = "AA240001";
+    String WRITE_HEAT = "AB240001";
     String WRITE_OPEN = "AB27000101";
     String WRITE_CLOSE = "AB27000100";
     String WRITE_TIME = "AB200012";

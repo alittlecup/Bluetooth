@@ -10,7 +10,9 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -66,7 +68,38 @@ public class HomeActivity extends AppCompatActivity {
 
     private String address1, address2;
     private Button connect, connect2;
-    private Handler handler = new Handler();
+    private MyTextView tv1, tv2;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 3) {
+                OperationFragment operationFragment =
+                        (OperationFragment) getSupportFragmentManager().findFragmentByTag(getResources().getString(tabTextResArr[0]));
+                tv1 = operationFragment.getTextView();
+                tv2 = operationFragment.getText2View();
+                tv1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        threadhandler.sendEmptyMessage(1);
+                    }
+                });
+                tv2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        threadhandler.sendEmptyMessage(2);
+
+                    }
+                });
+            } else if (msg.what == 1) {
+                addOrder(Order.READ_ENERGY);
+                handler.sendEmptyMessageDelayed(1,5*60*1000);
+            } else if (msg.what == 2) {
+                addOrder2(Order.READ_ENERGY);
+                handler.sendEmptyMessageDelayed(2,5*60*1000);
+            }
+        }
+    };
     private boolean DONE = true;
 
     @Override
@@ -77,12 +110,18 @@ public class HomeActivity extends AppCompatActivity {
         initHost();
         ininData();
         if (!TextUtils.isEmpty(address1)) {
+            App.ISTEEENABLE = true;
             Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
             bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        } else {
+            App.ISTEEENABLE = false;
         }
         if (!TextUtils.isEmpty(address2)) {
+            App.ISPAINENABLE = true;
             Intent gattServiceIntent = new Intent(this, BluetoothLeSecondeService.class);
             bindService(gattServiceIntent, mServiceSecondConnection, BIND_AUTO_CREATE);
+        } else {
+            App.ISPAINENABLE = false;
         }
 
     }
@@ -125,7 +164,9 @@ public class HomeActivity extends AppCompatActivity {
             }
             // Automatically connects to the device upon successful start-up
             // initialization.
-
+            if (TextUtils.isEmpty(address1)) {
+                mBluetoothLeSecondService.connect(address2);
+            }
         }
 
         @Override
@@ -136,15 +177,14 @@ public class HomeActivity extends AppCompatActivity {
     };
 
     private void ininData() {
-        ArrayList<String> address = getIntent().getStringArrayListExtra("address");
-        address1 = address.get(0);
-        if (address.size() == 1) {
-            address1 = address.get(0);
-            App.ISDOUBLE = false;
-        } else if (address.size() == 2) {
-            address1 = address.get(0);
-            address2 = address.get(1);
-            App.ISDOUBLE = true;
+        String hotup = getIntent().getStringExtra("hotup");
+        String hotdw = getIntent().getStringExtra("hotdw");
+
+        if (!TextUtils.isEmpty(hotup)) {
+            address1 = hotup;
+        }
+        if (!TextUtils.isEmpty(hotdw)) {
+            address2 = hotdw;
         }
     }
 
@@ -154,19 +194,19 @@ public class HomeActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
-                connect.setText(getResources().getString(R.string.connected));
-                mConnected=2;
+                tv1.setText(getResources().getString(R.string.connected));
+                mConnected = 2;
                 if (mBluetoothLeSecondService != null) {
                     mBluetoothLeSecondService.connect(address2);
                 }
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                connect.setText(getResources().getString(R.string.disconnected));
+                tv1.setText(getResources().getString(R.string.disconnected));
                 DONE = true;
                 canDo = true;
-                mConnected=0;
+                mConnected = 0;
             } else if (BluetoothLeService.ACTION_GATT_CONNECTEING.equals(action)) {
-                connect.setText("连接中");
-                mConnected=1;
+                tv1.setText("正在连接...");
+                mConnected = 1;
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the
                 // user interface.
@@ -174,16 +214,16 @@ public class HomeActivity extends AppCompatActivity {
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTED.equals(action)) {
-                connect2.setText(getResources().getString(R.string.connected));
-                mConnected2=2;
+//                connect2.setText(getResources().getString(R.string.connected));
+                mConnected2 = 2;
             } else if (BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                connect2.setText(getResources().getString(R.string.disconnected));
+                tv2.setText(getResources().getString(R.string.disconnected));
                 canDo2 = true;
                 DONE2 = true;
-                mConnected2=0;
+                mConnected2 = 0;
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTEING.equals(action)) {
-                connect2.setText("连接中");
-                mConnected2=1;
+                tv2.setText("正在连接...");
+                mConnected2 = 1;
             } else if (BluetoothLeSecondeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the
                 // user interface.
@@ -204,6 +244,15 @@ public class HomeActivity extends AppCompatActivity {
             failOrderList.offer(preOrder);
             write();
         } else {
+            if (resString.contains("AA")) {
+                char c = resString.charAt(resString.length() - 1);
+                tv1.setColor(Integer.valueOf(c + ""));
+                if ("0".equals("" + c)) {
+                    tv1.setText("连接成功，剩余电量过低，请充电");
+                } else {
+                    tv1.setText("连接成功，剩余电量" + c + "0%");
+                }
+            }
             if (orderList.size() > 0) {
                 try {
                     Thread.sleep(200);
@@ -227,6 +276,15 @@ public class HomeActivity extends AppCompatActivity {
             failOrderList2.offer(preOrder2);
             write2();
         } else {
+            if (resString.contains("AA")) {
+                char c = resString.charAt(resString.length() - 1);
+                tv2.setColor(Integer.valueOf(c + ""));
+                if ("0".equals("" + c)) {
+                    tv2.setText("连接成功，剩余电量过低，请充电");
+                } else {
+                    tv2.setText("连接成功，剩余电量" + c + "0%");
+                }
+            }
             if (orderList2.size() > 0) {
                 try {
                     Thread.sleep(200);
@@ -258,16 +316,13 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     addOrder2(Order.WRITE_OPEN);
-                    addOrder2(Order.WRITE_HEAT + "00");
+                    addOrder2(Order.WRITE_TIME + "1C00");
+                    addOrder2(Order.READ_ENERGY);
 //                    addOrder2(Order.WRITE_LIGHT + "03");
                 }
             }, 500);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-//                    addOrder2(Order.WRITE_LIGHT + "00");
-                }
-            }, 2500);
+            handler.sendEmptyMessageDelayed(2,5*60*1000);
+
         }
     }
 
@@ -289,16 +344,13 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     addOrder(Order.WRITE_OPEN);
-                    addOrder(Order.WRITE_HEAT + "00");
+                    addOrder(Order.WRITE_TIME + "1C00");
+                    addOrder(Order.READ_ENERGY);
 //                    addOrder(Order.WRITE_LIGHT + "03");
                 }
             }, 500);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-//                    addOrder(Order.WRITE_LIGHT + "00");
-                }
-            }, 2500);
+            handler.sendEmptyMessageDelayed(1,5*60*1000);
+
         }
     }
 
@@ -323,27 +375,27 @@ public class HomeActivity extends AppCompatActivity {
                 currentIndex = tabTagList.indexOf(tabId);
             }
         });
-
-        //TODO 测试实验代码
-        connect = (Button) findViewById(R.id.connect);
-        connect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mBluetoothLeService.connect(address1);
-            }
-        });
-        //TODO 测试实验代码
-        connect2 = (Button) findViewById(R.id.connect2);
-        connect2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mBluetoothLeSecondService.connect(address2);
-            }
-        });
         getModeData();
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
     }
 
+    public static HandlerThread thread;
+
+    static {
+        thread = new HandlerThread("Pool");
+        thread.start();
+    }
+
+    private Handler threadhandler = new Handler(thread.getLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
+                mBluetoothLeService.connect(address1);
+            } else if (msg.what == 2) {
+                mBluetoothLeSecondService.connect(address2);
+            }
+        }
+    };
     private int mConnected = 0;
     private int mConnected2 = 0;
 
@@ -355,11 +407,15 @@ public class HomeActivity extends AppCompatActivity {
             final boolean result = mBluetoothLeService.connect(address1);
             System.out.println("Connect request result=" + result);
         }
-        if (mBluetoothLeSecondService != null&& mConnected2==0) {
+        if (mBluetoothLeSecondService != null && mConnected2 == 0) {
             final boolean result = mBluetoothLeSecondService.connect(address2);
             System.out.println("Connect request result=" + result);
         }
         ToastUtil.show("OK");
+        if (tv1 == null || tv2 == null) {
+            handler.sendEmptyMessage(3);
+        }
+
     }
 
     @Override
@@ -371,8 +427,14 @@ public class HomeActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mGattUpdateReceiver);
-        unbindService(mServiceConnection);
-        mBluetoothLeService = null;
+        if (!TextUtils.isEmpty(address1)) {
+            unbindService(mServiceConnection);
+            mBluetoothLeService = null;
+        }
+        if (!TextUtils.isEmpty(address2)) {
+            unbindService(mServiceSecondConnection);
+            mBluetoothLeSecondService = null;
+        }
 
     }
 
@@ -389,9 +451,11 @@ public class HomeActivity extends AppCompatActivity {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTEING);
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_CONNECTEING);
         intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED);
         intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeSecondeService.ACTION_DATA_AVAILABLE);
@@ -426,6 +490,17 @@ public class HomeActivity extends AppCompatActivity {
             writeGattCharacteristic.setValue(ProcessData.StrToHexbyte(ProcessData.StringToNul(preOrder)));
             mBluetoothLeService.writeCharacteristic(writeGattCharacteristic);
             DONE = false;
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!DONE) {
+                        DONE = true;
+                        canDo = true;
+                        orderList.clear();
+                        failOrderList.clear();
+                    }
+                }
+            }, 2000);
         }
 
     }
@@ -456,6 +531,18 @@ public class HomeActivity extends AppCompatActivity {
             writeGattCharacteristic.setValue(ProcessData.StrToHexbyte(ProcessData.StringToNul(preOrder2)));
             mBluetoothLeSecondService.writeCharacteristic(writeGattCharacteristic);
             DONE2 = false;
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!DONE2) {
+                        DONE2 = true;
+                        canDo2 = true;
+                        orderList2.clear();
+                        failOrderList2.clear();
+                    }
+                }
+            }, 3000);
+
         }
 
     }
@@ -466,8 +553,8 @@ public class HomeActivity extends AppCompatActivity {
                 .enqueue(new Callback<List<ModelData>>() {
                     @Override
                     public void onResponse(Call<List<ModelData>> call, Response<List<ModelData>> response) {
-                        if(response.body()!=null&&response.body().size()>=0){
-                            for(ModelData data:response.body()){
+                        if (response.body() != null && response.body().size() >= 0) {
+                            for (ModelData data : response.body()) {
                                 App.addData(data);
                             }
                         }
@@ -487,6 +574,7 @@ public class HomeActivity extends AppCompatActivity {
     private Queue<String> failOrderList2 = new LinkedList<>();
 
     public void addOrder(String order) {
+        if (TextUtils.isEmpty(address1)) return;
         if (!orderList.contains(order)) {
             orderList.offer(order);
         }

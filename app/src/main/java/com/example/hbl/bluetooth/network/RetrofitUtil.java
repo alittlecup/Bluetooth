@@ -25,6 +25,7 @@ public class RetrofitUtil {
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(20, TimeUnit.SECONDS)
                 .writeTimeout(20, TimeUnit.SECONDS)
+                .addInterceptor(new AddParamsInterceptor())
                 .addInterceptor(new LoggingIntercepter())//打印日志
                 .build();
         builder = new Retrofit.Builder()
