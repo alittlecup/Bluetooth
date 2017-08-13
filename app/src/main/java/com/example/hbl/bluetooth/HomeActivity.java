@@ -78,25 +78,33 @@ public class HomeActivity extends AppCompatActivity {
                         (OperationFragment) getSupportFragmentManager().findFragmentByTag(getResources().getString(tabTextResArr[0]));
                 tv1 = operationFragment.getTextView();
                 tv2 = operationFragment.getText2View();
-                tv1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        threadhandler.sendEmptyMessage(1);
-                    }
-                });
-                tv2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        threadhandler.sendEmptyMessage(2);
+                if (!TextUtils.isEmpty(address1)) {
+                    tv1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            threadhandler.sendEmptyMessage(1);
+                        }
+                    });
+                }else{
+                    tv1.setText("当前模块不可用");
+                }
+                if (!TextUtils.isEmpty(address2)) {
+                    tv2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            threadhandler.sendEmptyMessage(2);
 
-                    }
-                });
+                        }
+                    });
+                }else{
+                    tv2.setText("当前模块不可用");
+                }
             } else if (msg.what == 1) {
                 addOrder(Order.READ_ENERGY);
-                handler.sendEmptyMessageDelayed(1,5*60*1000);
+                handler.sendEmptyMessageDelayed(1, 5 * 60 * 1000);
             } else if (msg.what == 2) {
                 addOrder2(Order.READ_ENERGY);
-                handler.sendEmptyMessageDelayed(2,5*60*1000);
+                handler.sendEmptyMessageDelayed(2, 5 * 60 * 1000);
             }
         }
     };
@@ -321,7 +329,7 @@ public class HomeActivity extends AppCompatActivity {
 //                    addOrder2(Order.WRITE_LIGHT + "03");
                 }
             }, 500);
-            handler.sendEmptyMessageDelayed(2,5*60*1000);
+            handler.sendEmptyMessageDelayed(2, 5 * 60 * 1000);
 
         }
     }
@@ -349,7 +357,7 @@ public class HomeActivity extends AppCompatActivity {
 //                    addOrder(Order.WRITE_LIGHT + "03");
                 }
             }, 500);
-            handler.sendEmptyMessageDelayed(1,5*60*1000);
+            handler.sendEmptyMessageDelayed(1, 5 * 60 * 1000);
 
         }
     }

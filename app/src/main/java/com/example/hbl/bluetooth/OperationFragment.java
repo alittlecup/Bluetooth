@@ -196,7 +196,7 @@ public class OperationFragment extends BaseFragment {
                 break;
             case R.id.btnStart:
                 sendOrder(btnStart.getText().toString().contains("开启"));
-                saveData();
+//                saveData();
                 break;
             case R.id.btnreadtime:
 //                activity.addOrder(Order.READ_TIME);

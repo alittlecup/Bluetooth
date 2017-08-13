@@ -32,11 +32,12 @@
                 android:layout_width="200dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="30dp"
+                android:layout_toRightOf="@id/imTee"
                 android:gravity="center"
                 android:text="电量显示区"
                 android:textColor="@color/app_bg_color"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
+                />
             <com.xw.repo.BubbleSeekBar
                 android:id="@+id/sbTee"
                 android:layout_width="match_parent"
@@ -69,11 +70,11 @@
                 android:layout_width="200dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="30dp"
+                android:layout_toRightOf="@id/imPans"
                 android:gravity="center"
                 android:text="电量显示区"
                 android:textColor="@color/app_bg_color"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
+                android:layout_alignParentTop="true" />
 
             <com.xw.repo.BubbleSeekBar
                 android:id="@+id/sbPans"
