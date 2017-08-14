@@ -48,7 +48,7 @@ public class OperationFragment extends BaseFragment {
     @BindView(R.id.btnreadtime)
     Button btnreadtime;
     @BindView(R.id.scrollView)
-    ScrollView scrollView;
+    ObservableScrollView scrollView;
     @BindView(R.id.edit)
     EditText editText;
     Unbinder unbinder;
@@ -124,6 +124,14 @@ public class OperationFragment extends BaseFragment {
             @Override
             public void getProgressOnFinally(int progress, float progressFloat) {
 
+            }
+        });
+        scrollView.addOnScrollChangeListener(new ObservableScrollView.ScrollViewListener() {
+            @Override
+            public void onScrollChanged(ScrollView view, int x, int y, int oldx, int oldy) {
+                sbPans.correctOffsetWhenContainerOnScrolling();
+                sbTime.correctOffsetWhenContainerOnScrolling();
+                sbTee.correctOffsetWhenContainerOnScrolling();
             }
         });
     }

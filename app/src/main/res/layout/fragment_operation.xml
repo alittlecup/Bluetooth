@@ -1,4 +1,4 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.hbl.bluetooth.ObservableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
@@ -156,4 +156,4 @@
             android:layout_marginTop="10dp"
             android:background="@color/colorPrimaryDark" />
     </LinearLayout>
-</ScrollView>
+</com.example.hbl.bluetooth.ObservableScrollView>
