@@ -86,7 +86,7 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     });
                 }else{
-                    tv1.setText("当前模块不可用");
+                    tv1.setText("当前不可用");
                 }
                 if (!TextUtils.isEmpty(address2)) {
                     tv2.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +97,7 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     });
                 }else{
-                    tv2.setText("当前模块不可用");
+                    tv2.setText("当前不可用");
                 }
             } else if (msg.what == 1) {
                 addOrder(Order.READ_ENERGY);

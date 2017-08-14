@@ -149,7 +149,7 @@ public class OperationFragment extends BaseFragment {
             public void onFinish() {
                 currentMills=0;
                 sbTime.setProgress(0);
-                btnStart.setText("开启蓝牙");
+                btnStart.setText("开");
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -195,7 +195,7 @@ public class OperationFragment extends BaseFragment {
                 sbPans.setEnabled(rlPants.isEnabled());
                 break;
             case R.id.btnStart:
-                sendOrder(btnStart.getText().toString().contains("开启"));
+                sendOrder(btnStart.getText().toString().contains("开"));
 //                saveData();
                 break;
             case R.id.btnreadtime:
@@ -229,9 +229,9 @@ public class OperationFragment extends BaseFragment {
         if(isOpen){
 //            activity.addOrder(Order.WRITE_TIME+"1C00");
 //            activity.addOrder2(Order.WRITE_TIME+"1C00");
-            btnStart.setText("关闭蓝牙");
+            btnStart.setText("关");
         }else {
-            btnStart.setText("开启蓝牙");
+            btnStart.setText("开");
         }
         activity.addOrder(isOpen?Order.WRITE_OPEN:Order.WRITE_CLOSE);
         activity.addOrder2(isOpen?Order.WRITE_OPEN:Order.WRITE_CLOSE);

@@ -92,8 +92,8 @@
         android:orientation="vertical"
         android:paddingEnd="20dp"
         android:paddingStart="20dp"
-        android:visibility="gone"
-        android:translationZ="10dp">
+        android:translationZ="10dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/ivBluetooth"
@@ -105,31 +105,56 @@
             android:visibility="visible"
             app:srcCompat="@drawable/ic_bluetooth_searching_black_24dp" />
 
-        <TextView
-            android:id="@+id/tvName1"
+        <LinearLayout
+            android:id="@+id/ll_tv1"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="50dp"
-            android:background="@color/app_bg_color"
-            android:gravity="center"
-            tools:text="hotcloth"
-            android:visibility="gone"
-            android:textSize="30dp" />
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
-        <TextView
-            android:id="@+id/tvName2"
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/jumper" />
+
+            <TextView
+                android:id="@+id/tvName1"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="50dp"
+                android:background="@color/app_bg_color"
+                android:gravity="center"
+                android:textSize="30dp"
+                tools:text="hotcloth" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_tv2"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="40dp"
-            android:background="@color/app_bg_color"
-            android:gravity="center"
-            android:visibility="gone"
-            tools:text="hotcloth"
-            android:textSize="30dp" />
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/trousers" />
+
+            <TextView
+                android:id="@+id/tvName2"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/app_bg_color"
+                android:gravity="center"
+                android:textSize="30dp"
+                tools:text="hotcloth" />
+
+        </LinearLayout>
 
         <android.support.v4.widget.Space
             android:layout_width="wrap_content"

@@ -62,6 +62,10 @@ public class LoginActivity extends BaseActivity {
     Button btnMatch;
     @BindView(R.id.llserach)
     LinearLayout llserach;
+    @BindView(R.id.ll_tv1)
+    LinearLayout ll1;
+    @BindView(R.id.ll_tv2)
+    LinearLayout ll2;
     private BluetoothAdapter mBluetoothAdapter;
     private static final int REQUEST_ENABLE_BT = 1;
     private Handler mHandler = new Handler();
@@ -254,13 +258,13 @@ public class LoginActivity extends BaseActivity {
                     }
                     if(map.get("hotup")!=null){
                         ivBluetooth.setVisibility(View.GONE);
-                        tvName1.setText("上衣模块");
-                        tvName1.setVisibility(View.VISIBLE);
+                        tvName1.setText("衣");
+                        ll1.setVisibility(View.VISIBLE);
                     }
                     if(map.get("hotdw")!=null){
-                        tvName2.setVisibility(View.VISIBLE);
-                        tvName2.setText("下衣模块");
+                        tvName2.setText("裤");
                         ivBluetooth.setVisibility(View.GONE);
+                        ll2.setVisibility(View.VISIBLE);
                     }
                 }
             });
