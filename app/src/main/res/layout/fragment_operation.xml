@@ -34,7 +34,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_toRightOf="@id/imTee"
                 android:gravity="center"
-                android:text="电量显示区"
+                tools:text="电量显示区"
                 android:textColor="@color/app_bg_color"
                 android:layout_alignParentTop="true"
                 />
@@ -72,7 +72,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_toRightOf="@id/imPans"
                 android:gravity="center"
-                android:text="电量显示区"
+                tools:text="电量显示区"
                 android:textColor="@color/app_bg_color"
                 android:layout_alignParentTop="true" />
 
@@ -146,7 +146,7 @@
                 style="@style/base_btn"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:text="关闭蓝牙" />
+                android:text="关" />
 
         </LinearLayout>
 
