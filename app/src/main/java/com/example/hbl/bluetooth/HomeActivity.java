@@ -13,8 +13,8 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.view.View;
@@ -43,7 +43,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends FragmentActivity {
 
     @BindView(R.id.realtabcontent)
     FrameLayout realtabcontent;
@@ -421,7 +421,7 @@ public class HomeActivity extends AppCompatActivity {
         }
         ToastUtil.show("OK");
         if (tv1 == null || tv2 == null) {
-            handler.sendEmptyMessage(3);
+            handler.sendEmptyMessageDelayed(3,200);
         }
 
     }
