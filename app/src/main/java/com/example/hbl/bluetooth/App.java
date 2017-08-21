@@ -2,6 +2,8 @@ package com.example.hbl.bluetooth;
 
 import android.app.Application;
 
+import com.tencent.bugly.crashreport.CrashReport;
+
 import java.util.ArrayList;
 
 public class App extends Application {
@@ -25,6 +27,7 @@ public class App extends Application {
     public void onCreate() {
         app = this;
         super.onCreate();
+        CrashReport.initCrashReport(getApplicationContext(), "d6f9fc5961", true);
         SharedPreferenceUtil.init(this, "Bluetooth");
     }
 

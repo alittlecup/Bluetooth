@@ -43,3 +43,6 @@
 -keepattributes Signature
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
+
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
