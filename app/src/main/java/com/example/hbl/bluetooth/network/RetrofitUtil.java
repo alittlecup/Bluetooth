@@ -18,7 +18,7 @@ public class RetrofitUtil {
     private static Retrofit.Builder builder;
         private static String debugHost = "http://food.xwzce.com/app/index/";
 //    private static String debugHost = "http://10.133.36.21:8080/online-sign/";
-    private static String releaseHost;
+    private static String releaseHost="http://food.xwzce.com/app/index/";
 
     static {
         okHttpClient = new OkHttpClient.Builder()

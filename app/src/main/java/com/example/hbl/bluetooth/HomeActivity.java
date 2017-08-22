@@ -13,18 +13,15 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTabHost;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TabHost;
-import android.widget.TextView;
 
+import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.example.hbl.bluetooth.bluetooth_old.SampleGattAttributes;
 import com.example.hbl.bluetooth.network.BLog;
 import com.example.hbl.bluetooth.network.RetrofitUtil;
@@ -43,24 +40,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeActivity extends FragmentActivity {
+public class HomeActivity extends BaseActivity {
 
-    @BindView(R.id.realtabcontent)
-    FrameLayout realtabcontent;
-    @BindView(android.R.id.tabcontent)
-    FrameLayout tabcontent;
-    @BindView(android.R.id.tabhost)
-    FragmentTabHost tabhost;
-    private Class<?>[] fragmentArr = {OperationFragment.class, ModelFragment.class, SettingFragment.class};
+    @BindView(R.id.bottom_navigation_bar)
+    BottomNavigationBar bottomNavigationBar;
 
-    private int[] tabImageResArr = {
-            R.drawable.selector_op
-            , R.drawable.selector_model
-            , R.drawable.selector_setting};
-
-    private int[] tabTextResArr = {R.string.op, R.string.model, R.string.setting};
-    private ArrayList<String> tabTagList;
-    private int currentIndex;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -74,10 +58,9 @@ public class HomeActivity extends FragmentActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 3) {
-                OperationFragment operationFragment =
-                        (OperationFragment) getSupportFragmentManager().findFragmentByTag(getResources().getString(tabTextResArr[0]));
-                tv1 = operationFragment.getTextView();
-                tv2 = operationFragment.getText2View();
+                OperationFragment fragment = (OperationFragment) fragmentList.get(0);
+                tv1 = fragment.getTextView();
+                tv2 = fragment.getText2View();
                 if (!TextUtils.isEmpty(address1)) {
                     tv1.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -85,7 +68,7 @@ public class HomeActivity extends FragmentActivity {
                             threadhandler.sendEmptyMessage(1);
                         }
                     });
-                }else{
+                } else {
                     tv1.setText("当前不可用");
                 }
                 if (!TextUtils.isEmpty(address2)) {
@@ -96,7 +79,7 @@ public class HomeActivity extends FragmentActivity {
 
                         }
                     });
-                }else{
+                } else {
                     tv2.setText("当前不可用");
                 }
             } else if (msg.what == 1) {
@@ -213,7 +196,6 @@ public class HomeActivity extends FragmentActivity {
                 canDo = true;
                 mConnected = 0;
             } else if (BluetoothLeService.ACTION_GATT_CONNECTEING.equals(action)) {
-                tv1.setText("正在连接...");
                 mConnected = 1;
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the
@@ -230,7 +212,6 @@ public class HomeActivity extends FragmentActivity {
                 DONE2 = true;
                 mConnected2 = 0;
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTEING.equals(action)) {
-                tv2.setText("正在连接...");
                 mConnected2 = 1;
             } else if (BluetoothLeSecondeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the
@@ -358,32 +339,60 @@ public class HomeActivity extends FragmentActivity {
                 }
             }, 500);
             handler.sendEmptyMessageDelayed(1, 5 * 60 * 1000);
-
         }
     }
 
+    private List<Fragment> fragmentList = new ArrayList<>();
+
+    private void getFragments() {
+
+        OperationFragment operationFragment = new OperationFragment();
+        ModelFragment modelFragment = new ModelFragment();
+
+        SettingFragment settingFragment = new SettingFragment();
+        fragmentList.add(operationFragment);
+        fragmentList.add(modelFragment);
+        fragmentList.add(settingFragment);
+
+    }
+
     private void initHost() {
-        tabhost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
-
-        tabTagList = new ArrayList<>();
-
-        for (int i = 0; i < fragmentArr.length; i++) {
-            tabTagList.add(getResources().getString(tabTextResArr[i]));
-            TabHost.TabSpec tabSpec = tabhost.newTabSpec(tabTagList.get(i));
-            tabSpec.setIndicator(getTabItemView(i));
-            tabhost.addTab(tabSpec, fragmentArr[i], null);
-        }
-        //隐藏默认分割线
-        tabhost.getTabWidget().setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);
-
-        //同步currentIndex
-        tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+        getFragments();
+        bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
+        bottomNavigationBar.addItem(new BottomNavigationItem(R.drawable.ic_op_black_24dp, "操作"))
+                .addItem(new BottomNavigationItem(R.drawable.ic_model_black_24dp, "模式"))
+                .addItem(new BottomNavigationItem(R.drawable.ic_person_black_24dp_bl, "我的"))
+                .setInActiveColor(R.color.text)
+                .setActiveColor(R.color.colorAccent)
+                .setFirstSelectedPosition(0)
+                .initialise();
+        bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
             @Override
-            public void onTabChanged(String tabId) {
-                currentIndex = tabTagList.indexOf(tabId);
+            public void onTabSelected(int i) {
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                if (fragmentList.get(i).isAdded()) {
+                    fragmentTransaction.show(fragmentList.get(i));
+                } else {
+                    fragmentTransaction.add(R.id.tabs, fragmentList.get(i));
+                }
+                fragmentTransaction.commitAllowingStateLoss();
+            }
+
+            @Override
+            public void onTabUnselected(int i) {
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.hide(fragmentList.get(i));
+                fragmentTransaction.commitAllowingStateLoss();
+            }
+            @Override
+            public void onTabReselected(int i) {
             }
         });
+        getSupportFragmentManager().beginTransaction().replace(R.id.tabs,fragmentList.get(0)).commitAllowingStateLoss();
         getModeData();
+        if (tv1 == null || tv2 == null) {
+            handler.sendEmptyMessage(3);
+        }
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
     }
 
@@ -410,7 +419,6 @@ public class HomeActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        tabhost.setCurrentTab(currentIndex);
         if (mBluetoothLeService != null && mConnected == 0) {
             final boolean result = mBluetoothLeService.connect(address1);
             System.out.println("Connect request result=" + result);
@@ -420,10 +428,6 @@ public class HomeActivity extends FragmentActivity {
             System.out.println("Connect request result=" + result);
         }
         ToastUtil.show("OK");
-        if (tv1 == null || tv2 == null) {
-            handler.sendEmptyMessageDelayed(3,200);
-        }
-
     }
 
     @Override
@@ -446,14 +450,6 @@ public class HomeActivity extends FragmentActivity {
 
     }
 
-    private View getTabItemView(int i) {
-        View view = View.inflate(this, R.layout.tabspec_home, null);
-        ImageView ivTab = (ImageView) view.findViewById(R.id.ivTab);
-        ivTab.setImageResource(tabImageResArr[i]);
-        TextView tvTab = (TextView) view.findViewById(R.id.tvTab);
-        tvTab.setText(tabTextResArr[i]);
-        return view;
-    }
 
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
@@ -463,7 +459,7 @@ public class HomeActivity extends FragmentActivity {
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_CONNECTED);
-        intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_CONNECTEING);
+//        intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_CONNECTEING);
         intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED);
         intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeSecondeService.ACTION_DATA_AVAILABLE);
