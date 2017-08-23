@@ -196,6 +196,7 @@ public class HomeActivity extends BaseActivity {
                 canDo = true;
                 mConnected = 0;
             } else if (BluetoothLeService.ACTION_GATT_CONNECTEING.equals(action)) {
+                tv1.setText("正在连接...");
                 mConnected = 1;
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the
@@ -212,6 +213,7 @@ public class HomeActivity extends BaseActivity {
                 DONE2 = true;
                 mConnected2 = 0;
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTEING.equals(action)) {
+                tv2.setText("正在连接...");
                 mConnected2 = 1;
             } else if (BluetoothLeSecondeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the
@@ -306,10 +308,16 @@ public class HomeActivity extends BaseActivity {
                 public void run() {
                     addOrder2(Order.WRITE_OPEN);
                     addOrder2(Order.WRITE_TIME + "1C00");
-                    addOrder2(Order.READ_ENERGY);
+
 //                    addOrder2(Order.WRITE_LIGHT + "03");
                 }
             }, 500);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    addOrder2(Order.READ_ENERGY);
+                }
+            },600);
             handler.sendEmptyMessageDelayed(2, 5 * 60 * 1000);
 
         }
@@ -334,10 +342,16 @@ public class HomeActivity extends BaseActivity {
                 public void run() {
                     addOrder(Order.WRITE_OPEN);
                     addOrder(Order.WRITE_TIME + "1C00");
-                    addOrder(Order.READ_ENERGY);
+
 //                    addOrder(Order.WRITE_LIGHT + "03");
                 }
             }, 500);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    addOrder(Order.READ_ENERGY);
+                }
+            },600);
             handler.sendEmptyMessageDelayed(1, 5 * 60 * 1000);
         }
     }
@@ -459,7 +473,7 @@ public class HomeActivity extends BaseActivity {
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_CONNECTED);
-//        intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_CONNECTEING);
+        intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_CONNECTEING);
         intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED);
         intentFilter.addAction(BluetoothLeSecondeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeSecondeService.ACTION_DATA_AVAILABLE);
