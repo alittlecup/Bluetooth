@@ -238,10 +238,15 @@ public class HomeActivity extends BaseActivity {
             if (resString.contains("AA")) {
                 char c = resString.charAt(resString.length() - 1);
                 tv1.setColor(Integer.valueOf(c + ""));
-                if ("0".equals("" + c)) {
-                    tv1.setText("连接成功，剩余电量过低，请充电");
-                } else {
-                    tv1.setText("连接成功，剩余电量" + c + "0%");
+                switch (c) {
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        tv1.setText("连接成功，剩余电量过低，请充电");
+                        break;
+                    default:
+                        tv1.setText("连接成功，剩余电量" + (c+1) + "0%");
                 }
             }
             if (orderList.size() > 0) {
@@ -270,10 +275,15 @@ public class HomeActivity extends BaseActivity {
             if (resString.contains("AA")) {
                 char c = resString.charAt(resString.length() - 1);
                 tv2.setColor(Integer.valueOf(c + ""));
-                if ("0".equals("" + c)) {
-                    tv2.setText("连接成功，剩余电量过低，请充电");
-                } else {
-                    tv2.setText("连接成功，剩余电量" + c + "0%");
+                switch (c) {
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        tv2.setText("连接成功，剩余电量过低，请充电");
+                        break;
+                    default:
+                        tv2.setText("连接成功，剩余电量" + (c+1) + "0%");
                 }
             }
             if (orderList2.size() > 0) {
@@ -317,7 +327,7 @@ public class HomeActivity extends BaseActivity {
                 public void run() {
                     addOrder2(Order.READ_ENERGY);
                 }
-            },600);
+            }, 600);
             handler.sendEmptyMessageDelayed(2, 5 * 60 * 1000);
 
         }
@@ -351,7 +361,7 @@ public class HomeActivity extends BaseActivity {
                 public void run() {
                     addOrder(Order.READ_ENERGY);
                 }
-            },600);
+            }, 600);
             handler.sendEmptyMessageDelayed(1, 5 * 60 * 1000);
         }
     }
@@ -398,11 +408,12 @@ public class HomeActivity extends BaseActivity {
                 fragmentTransaction.hide(fragmentList.get(i));
                 fragmentTransaction.commitAllowingStateLoss();
             }
+
             @Override
             public void onTabReselected(int i) {
             }
         });
-        getSupportFragmentManager().beginTransaction().replace(R.id.tabs,fragmentList.get(0)).commitAllowingStateLoss();
+        getSupportFragmentManager().beginTransaction().replace(R.id.tabs, fragmentList.get(0)).commitAllowingStateLoss();
         getModeData();
         if (tv1 == null || tv2 == null) {
             handler.sendEmptyMessage(3);
