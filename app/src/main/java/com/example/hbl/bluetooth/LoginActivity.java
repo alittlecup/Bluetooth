@@ -96,6 +96,7 @@ public class LoginActivity extends BaseActivity {
                 intent.putExtra("hotup",map.get("hotup"));
                 intent.putExtra("hotdw",map.get("hotdw"));
                 startActivity(intent);
+                finish();
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
                 break;
             case R.id.btnLogin:

@@ -237,8 +237,9 @@ public class HomeActivity extends BaseActivity {
         } else {
             if (resString.contains("AA")) {
                 char c = resString.charAt(resString.length() - 1);
-                tv1.setColor(Integer.valueOf(c + ""));
-                switch (c) {
+                Integer integer = Integer.valueOf(c + "");
+                tv1.setColor(integer);
+                switch (integer) {
                     case 0:
                     case 1:
                     case 2:
@@ -246,7 +247,7 @@ public class HomeActivity extends BaseActivity {
                         tv1.setText("连接成功，剩余电量过低，请充电");
                         break;
                     default:
-                        tv1.setText("连接成功，剩余电量" + (c+1) + "0%");
+                        tv1.setText("连接成功，剩余电量" + (integer+1) + "0%");
                 }
             }
             if (orderList.size() > 0) {
@@ -274,8 +275,9 @@ public class HomeActivity extends BaseActivity {
         } else {
             if (resString.contains("AA")) {
                 char c = resString.charAt(resString.length() - 1);
-                tv2.setColor(Integer.valueOf(c + ""));
-                switch (c) {
+                Integer integer = Integer.valueOf(c + "");
+                tv2.setColor(integer);
+                switch (integer) {
                     case 0:
                     case 1:
                     case 2:
@@ -283,7 +285,7 @@ public class HomeActivity extends BaseActivity {
                         tv2.setText("连接成功，剩余电量过低，请充电");
                         break;
                     default:
-                        tv2.setText("连接成功，剩余电量" + (c+1) + "0%");
+                        tv2.setText("连接成功，剩余电量" + (integer+1) + "0%");
                 }
             }
             if (orderList2.size() > 0) {
@@ -622,5 +624,10 @@ public class HomeActivity extends BaseActivity {
         if (orderList2.size() >= 1 && canDo2) {
             write2();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 }
