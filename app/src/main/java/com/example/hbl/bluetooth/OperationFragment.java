@@ -15,7 +15,6 @@ import android.widget.ScrollView;
 import com.example.hbl.bluetooth.network.DefaultCallback;
 import com.example.hbl.bluetooth.network.RetrofitUtil;
 import com.example.hbl.bluetooth.network.ToastUtil;
-import com.example.hbl.bluetooth.network.bean.BaseResponse;
 import com.xw.repo.BubbleSeekBar;
 
 import butterknife.BindView;
@@ -214,18 +213,18 @@ public class OperationFragment extends BaseFragment {
     }
 
     private void saveData() {
-        ModelData data = new ModelData();
+        final ModelData data = new ModelData();
         data.setUp(String.valueOf(sbTee.getProgress()));
         data.setDown(String.valueOf(sbPans.getProgress()));
         data.setTime(String.valueOf(sbTime.getProgress()));
-        App.addData(data);
         RetrofitUtil.getService()
                 .setMode(App.tel, data.getUp(), data.getDown(), data.getTime())
-                .enqueue(new DefaultCallback<BaseResponse>() {
+                .enqueue(new DefaultCallback<ResultData>() {
                     @Override
-                    public void onFinish(int status, BaseResponse body) {
+                    public void onFinish(int status, ResultData body) {
                         if (status == DefaultCallback.SUCCESS||body.status==1) {
                             ToastUtil.show("保存成功");
+                            App.addData(data);
                         } else {
                             ToastUtil.show("保存失败");
                         }
@@ -235,8 +234,6 @@ public class OperationFragment extends BaseFragment {
 
     private void sendOrder(boolean isOpen) {
         if(isOpen){
-//            activity.addOrder(Order.WRITE_TIME+"1C00");
-//            activity.addOrder2(Order.WRITE_TIME+"1C00");
             btnStart.setText("关");
         }else {
             btnStart.setText("开");
