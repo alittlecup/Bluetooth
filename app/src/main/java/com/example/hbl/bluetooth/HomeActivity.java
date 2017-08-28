@@ -84,10 +84,10 @@ public class HomeActivity extends BaseActivity {
                 }
             } else if (msg.what == 1) {
                 addOrder(Order.READ_ENERGY);
-                handler.sendEmptyMessageDelayed(1, 5 * 60 * 1000);
+                handler.sendEmptyMessageDelayed(1, 30 * 1000);
             } else if (msg.what == 2) {
                 addOrder2(Order.READ_ENERGY);
-                handler.sendEmptyMessageDelayed(2, 5 * 60 * 1000);
+                handler.sendEmptyMessageDelayed(2, 30 * 1000);
             }
         }
     };
@@ -324,13 +324,7 @@ public class HomeActivity extends BaseActivity {
 //                    addOrder2(Order.WRITE_LIGHT + "03");
                 }
             }, 500);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    addOrder2(Order.READ_ENERGY);
-                }
-            }, 600);
-            handler.sendEmptyMessageDelayed(2, 5 * 60 * 1000);
+            handler.sendEmptyMessageDelayed(2, 30 * 1000);
 
         }
     }
@@ -358,13 +352,7 @@ public class HomeActivity extends BaseActivity {
 //                    addOrder(Order.WRITE_LIGHT + "03");
                 }
             }, 500);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    addOrder(Order.READ_ENERGY);
-                }
-            }, 600);
-            handler.sendEmptyMessageDelayed(1, 5 * 60 * 1000);
+            handler.sendEmptyMessageDelayed(1, 30 * 1000);
         }
     }
 
