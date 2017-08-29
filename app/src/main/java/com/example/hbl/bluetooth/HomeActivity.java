@@ -65,7 +65,9 @@ public class HomeActivity extends BaseActivity {
                     tv1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            threadhandler.sendEmptyMessage(1);
+                            if (tv1.getText().toString().contains("断开")) {
+                                threadhandler.sendEmptyMessage(1);
+                            }
                         }
                     });
                 } else {
@@ -75,7 +77,9 @@ public class HomeActivity extends BaseActivity {
                     tv2.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            threadhandler.sendEmptyMessage(2);
+                            if (tv2.getText().toString().contains("断开")) {
+                                threadhandler.sendEmptyMessage(2);
+                            }
 
                         }
                     });
@@ -84,10 +88,10 @@ public class HomeActivity extends BaseActivity {
                 }
             } else if (msg.what == 1) {
                 addOrder(Order.READ_ENERGY);
-                handler.sendEmptyMessageDelayed(1, 30 * 1000);
+                handler.sendEmptyMessageDelayed(1, 60 * 1000);
             } else if (msg.what == 2) {
                 addOrder2(Order.READ_ENERGY);
-                handler.sendEmptyMessageDelayed(2, 30 * 1000);
+                handler.sendEmptyMessageDelayed(2, 60 * 1000);
             }
         }
     };
@@ -195,6 +199,7 @@ public class HomeActivity extends BaseActivity {
                 DONE = true;
                 canDo = true;
                 mConnected = 0;
+                handler.removeMessages(1);
             } else if (BluetoothLeService.ACTION_GATT_CONNECTEING.equals(action)) {
                 tv1.setText("正在连接...");
                 mConnected = 1;
@@ -212,6 +217,7 @@ public class HomeActivity extends BaseActivity {
                 canDo2 = true;
                 DONE2 = true;
                 mConnected2 = 0;
+                handler.removeMessages(2);
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTEING.equals(action)) {
                 tv2.setText("正在连接...");
                 mConnected2 = 1;
@@ -320,8 +326,6 @@ public class HomeActivity extends BaseActivity {
                 public void run() {
                     addOrder2(Order.WRITE_OPEN);
                     addOrder2(Order.WRITE_TIME + "1C00");
-
-//                    addOrder2(Order.WRITE_LIGHT + "03");
                 }
             }, 500);
             handler.sendEmptyMessageDelayed(2, 30 * 1000);
@@ -348,8 +352,6 @@ public class HomeActivity extends BaseActivity {
                 public void run() {
                     addOrder(Order.WRITE_OPEN);
                     addOrder(Order.WRITE_TIME + "1C00");
-
-//                    addOrder(Order.WRITE_LIGHT + "03");
                 }
             }, 500);
             handler.sendEmptyMessageDelayed(1, 30 * 1000);
