@@ -191,7 +191,7 @@ public class HomeActivity extends BaseActivity {
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 tv1.setText(getResources().getString(R.string.connected));
                 mConnected = 2;
-                if (mBluetoothLeSecondService != null) {
+                if (mBluetoothLeSecondService != null && mConnected2 == 0) {
                     mBluetoothLeSecondService.connect(address2);
                 }
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
@@ -253,7 +253,7 @@ public class HomeActivity extends BaseActivity {
                         tv1.setText("连接成功，剩余电量过低，请充电");
                         break;
                     default:
-                        tv1.setText("连接成功，剩余电量" + (integer+1) + "0%");
+                        tv1.setText("连接成功，剩余电量" + (integer + 1) + "0%");
                 }
             }
             if (orderList.size() > 0) {
@@ -291,7 +291,7 @@ public class HomeActivity extends BaseActivity {
                         tv2.setText("连接成功，剩余电量过低，请充电");
                         break;
                     default:
-                        tv2.setText("连接成功，剩余电量" + (integer+1) + "0%");
+                        tv2.setText("连接成功，剩余电量" + (integer + 1) + "0%");
                 }
             }
             if (orderList2.size() > 0) {
