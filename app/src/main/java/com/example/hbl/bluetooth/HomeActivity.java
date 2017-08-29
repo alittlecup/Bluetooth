@@ -211,6 +211,7 @@ public class HomeActivity extends BaseActivity {
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTED.equals(action)) {
 //                connect2.setText(getResources().getString(R.string.connected));
+                tv2.setText(getResources().getString(R.string.connected));
                 mConnected2 = 2;
             } else if (BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 tv2.setText(getResources().getString(R.string.disconnected));
@@ -490,7 +491,6 @@ public class HomeActivity extends BaseActivity {
     private void write() {
         if (RWNCharacteristic == null) {
             ToastUtil.show("蓝牙连接异常,正在重新连接");
-            mBluetoothLeService.connect(address1);
             canDo = true;
             return;
         }
@@ -531,7 +531,6 @@ public class HomeActivity extends BaseActivity {
     private void write2() {
         if (RWNSECharacteristic == null) {
             ToastUtil.show("蓝牙连接异常,正在重新连接");
-            mBluetoothLeSecondService.connect(address2);
             canDo2 = true;
             return;
         }
