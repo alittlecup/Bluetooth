@@ -1,25 +1,33 @@
-package com.example.hbl.bluetooth;
+package com.example.hbl.bluetooth.home;
 
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.RelativeLayout;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
+import com.example.hbl.bluetooth.App;
+import com.example.hbl.bluetooth.BaseFragment;
+import com.example.hbl.bluetooth.ModelData;
+import com.example.hbl.bluetooth.Order;
+import com.example.hbl.bluetooth.R;
+import com.example.hbl.bluetooth.ResultData;
 import com.example.hbl.bluetooth.network.DefaultCallback;
 import com.example.hbl.bluetooth.network.RetrofitUtil;
 import com.example.hbl.bluetooth.network.ToastUtil;
+import com.example.hbl.bluetooth.util.SPKey;
+import com.example.hbl.bluetooth.util.SharedPreferenceUtil;
+import com.example.hbl.bluetooth.view.ObservableScrollView;
 import com.xw.repo.BubbleSeekBar;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 
 /**
@@ -28,53 +36,44 @@ import butterknife.Unbinder;
 public class OperationFragment extends BaseFragment {
 
 
-    @BindView(R.id.imTee)
-    ImageButton imTee;
+    @BindView(R.id.imageUp)
+    ImageView imageUp;
+    @BindView(R.id.upText)
+    TextView upText;
+    @BindView(R.id.upImageEn)
+    ImageView upImageEn;
+    @BindView(R.id.upCheck)
+    CheckBox upCheck;
     @BindView(R.id.sbTee)
     BubbleSeekBar sbTee;
-    @BindView(R.id.rlTee)
-    RelativeLayout rlTee;
-    @BindView(R.id.imPans)
-    ImageButton imPans;
+    @BindView(R.id.imageDown)
+    ImageView imageDown;
+    @BindView(R.id.downText)
+    TextView downText;
+    @BindView(R.id.downImageEn)
+    ImageView downImageEn;
+    @BindView(R.id.downCheck)
+    CheckBox downCheck;
     @BindView(R.id.sbPans)
     BubbleSeekBar sbPans;
-    @BindView(R.id.rlPants)
-    RelativeLayout rlPants;
     @BindView(R.id.sbTime)
     BubbleSeekBar sbTime;
-    @BindView(R.id.btnStart)
-    Button btnStart;
-    @BindView(R.id.btnreadtime)
-    Button btnreadtime;
     @BindView(R.id.scrollView)
     ObservableScrollView scrollView;
-    @BindView(R.id.edit)
-    EditText editText;
-    Unbinder unbinder;
-    HomeActivity activity;
-    @BindView(R.id.message1)
-    MyTextView tv1;
-    @BindView(R.id.message2)
-    MyTextView tv2;
-    private int mTeeGrade = 0;
-    private int mPanGrade = 0;
-    private int mTimeGrade = 0;
     private CountDownTimer timer;
-
-    public OperationFragment() {
-        // Required empty public constructor
-    }
+    private HomeActivity activity;
+    private long currentMills=0;
 
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        rlPants.setEnabled(App.ISPAINENABLE);
-        rlTee.setEnabled(App.ISTEEENABLE);
+        upText.setEnabled(App.ISPAINENABLE);
+        downText.setEnabled(App.ISTEEENABLE);
         sbTee.setEnabled(App.ISTEEENABLE);
         sbPans.setEnabled(App.ISPAINENABLE);
-        imTee.setClickable(App.ISTEEENABLE);
-        imPans.setClickable(App.ISPAINENABLE);
+        imageUp.setClickable(App.ISTEEENABLE);
+        imageDown.setClickable(App.ISPAINENABLE);
         activity = (HomeActivity) getActivity();
         sbTee.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListener() {
             @Override
@@ -115,9 +114,9 @@ public class OperationFragment extends BaseFragment {
 
             @Override
             public void getProgressOnActionUp(int progress, float progressFloat) {
-                activity.addOrder(Order.WRITE_TIME + timeToHex(progress*60));
-                activity.addOrder2(Order.WRITE_TIME + timeToHex(progress*60));
-                resetTimer(progress*60);
+                activity.addOrder(Order.WRITE_TIME + timeToHex(progress * 60));
+                activity.addOrder2(Order.WRITE_TIME + timeToHex(progress * 60));
+                resetTimer(progress * 60);
             }
 
             @Override
@@ -133,11 +132,12 @@ public class OperationFragment extends BaseFragment {
                 sbTee.correctOffsetWhenContainerOnScrolling();
             }
         });
+
     }
 
     @Override
-    int getLayoutId() {
-        return R.layout.fragment_operation;
+    protected int getLayoutId() {
+        return R.layout.operator_fragment;
     }
 
     private void resetTimer(int progress) {
@@ -145,18 +145,19 @@ public class OperationFragment extends BaseFragment {
             timer.cancel();
             timer = null;
         }
-        timer = new CountDownTimer(progress*1000, 1000) {
+        timer = new CountDownTimer(progress * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                currentMills=  millisUntilFinished;
-                sbTime.setProgress((int)millisUntilFinished/1000/60);
+                currentMills = millisUntilFinished;
+                sbTime.setProgress((int) millisUntilFinished / 1000 / 60);
             }
 
             @Override
             public void onFinish() {
-                currentMills=0;
+                currentMills = 0;
                 sbTime.setProgress(0);
-                btnStart.setText("开");
+                downCheck.setChecked(true);
+                upCheck.setChecked(true);
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -169,46 +170,44 @@ public class OperationFragment extends BaseFragment {
         };
         timer.start();
     }
-    private long currentMills=0;
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if(timer!=null){
-            timer.cancel();
-            timer=null;
-        }
-        SharedPreferenceUtil.putValue(SPKey.TIME,System.currentTimeMillis()+currentMills);
-    }
+
 
     @Override
     public void onResume() {
         super.onResume();
         Long value = SharedPreferenceUtil.getValue(SPKey.TIME, 0L);
         long l = System.currentTimeMillis();
-        if(l<value){
-            sbTime.setProgress((value-l)/1000/60);
+        if (l < value) {
+            sbTime.setProgress((value - l) / 1000 / 60);
         }
     }
-
-    @OnClick({R.id.imTee, R.id.imPans, R.id.btnStart, R.id.btnreadtime})
+    private Handler handler=new Handler();
+    @OnClick({R.id.downCheck, R.id.upCheck})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.imTee:
-                rlTee.setEnabled(!rlTee.isEnabled());
-                sbTee.setEnabled(rlTee.isEnabled());
+            case R.id.downCheck:
+                    activity.addOrder2(downCheck.isChecked()?Order.WRITE_OPEN:Order.WRITE_CLOSE);
+                if(downCheck.isChecked()){
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                activity.addOrder2(Order.READ_ENERGY);
+                            }
+                        },30000);
+                }
                 break;
-            case R.id.imPans:
-                rlPants.setEnabled(!rlPants.isEnabled());
-                sbPans.setEnabled(rlPants.isEnabled());
+            case R.id.upCheck:
+                activity.addOrder(upCheck.isChecked()?Order.WRITE_OPEN:Order.WRITE_CLOSE);
+                if(downCheck.isChecked()){
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            activity.addOrder(Order.READ_ENERGY);
+                        }
+                    },30000);
+                }
                 break;
-            case R.id.btnStart:
-                sendOrder(btnStart.getText().toString().contains("开"));
-//                saveData();
-                break;
-            case R.id.btnreadtime:
-//                activity.addOrder(Order.READ_TIME);
-//                activity.addOrder2(Order.READ_TIME);
-                break;
+
         }
     }
 
@@ -222,7 +221,7 @@ public class OperationFragment extends BaseFragment {
                 .enqueue(new DefaultCallback<ResultData>() {
                     @Override
                     public void onFinish(int status, ResultData body) {
-                        if (status == DefaultCallback.SUCCESS||body.status==1) {
+                        if (status == DefaultCallback.SUCCESS || body.status == 1) {
                             ToastUtil.show("保存成功");
                             App.addData(data);
                         } else {
@@ -231,17 +230,6 @@ public class OperationFragment extends BaseFragment {
                     }
                 });
     }
-
-    private void sendOrder(boolean isOpen) {
-        if(isOpen){
-            btnStart.setText("关");
-        }else {
-            btnStart.setText("开");
-        }
-        activity.addOrder(isOpen?Order.WRITE_OPEN:Order.WRITE_CLOSE);
-        activity.addOrder2(isOpen?Order.WRITE_OPEN:Order.WRITE_CLOSE);
-    }
-
     private String toHex(int i) {
         if (i < 16) {
             return "0" + Integer.toHexString(i);
@@ -261,12 +249,32 @@ public class OperationFragment extends BaseFragment {
             return Integer.toHexString(secondes);
         }
     }
-    public  MyTextView getTextView(){
-        return tv1;
+
+    public TextView getTextView() {
+        return upText;
     }
-    public  MyTextView getText2View(){
-        return tv2;
+
+    public TextView getText2View() {
+        return downText;
     }
+
+
+    public ImageView getUpImage() {
+        return upImageEn;
+    }
+
+    public ImageView getDownImage() {
+        return downImageEn;
+    }
+
+    public CheckBox getUpCheck() {
+        return upCheck;
+    }
+
+    public CheckBox getDownCheck() {
+        return downCheck;
+    }
+
 }
 
 

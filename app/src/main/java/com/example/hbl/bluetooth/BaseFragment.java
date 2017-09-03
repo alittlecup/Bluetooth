@@ -38,7 +38,7 @@ public abstract class BaseFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    abstract int getLayoutId();
+    protected abstract int getLayoutId();
 
     @Override
     public void onDestroyView() {
@@ -48,5 +48,6 @@ public abstract class BaseFragment extends Fragment {
         }
         super.onDestroyView();
     }
+
 
 }

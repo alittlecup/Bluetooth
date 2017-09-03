@@ -2,6 +2,7 @@ package com.example.hbl.bluetooth;
 
 import android.app.Application;
 
+import com.example.hbl.bluetooth.util.SharedPreferenceUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.ArrayList;

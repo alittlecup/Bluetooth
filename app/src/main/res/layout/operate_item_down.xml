@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/llleft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageDown"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="27dp"
+            android:src="@drawable/selector_opear_down_icon" />
+
+        <TextView
+            style="@style/base_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="21dp"
+            android:text="加热" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llenergy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/llleft"
+        android:layout_marginTop="27dp">
+
+        <TextView
+            android:id="@+id/downText"
+            style="@style/base_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:drawableLeft="@drawable/selector_opear_ble"
+            android:drawablePadding="5dp"
+            android:visibility="visible"
+            tools:text="蓝牙已连接" />
+
+        <ImageView
+            android:id="@+id/downImageEn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/opear_energy"
+            android:visibility="gone" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <CheckBox
+            android:id="@+id/downCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/selector_opear_ble_oc"
+            android:button="@null" />
+    </LinearLayout>
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/sbPans"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_toRightOf="@id/llleft"
+        android:layout_below="@+id/llenergy"
+        app:bsb_progress_drawable="true"
+        app:bsb_progress_hight="8dp"
+        app:bsb_max="100"
+        app:bsb_min="0"
+        app:bsb_hide_bubble="true"
+        app:bsb_thumb_color="@color/white"
+        app:bsb_thumb_radius="15dp"/>
+
+</RelativeLayout>

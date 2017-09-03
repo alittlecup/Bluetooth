@@ -1,4 +1,4 @@
-package com.example.hbl.bluetooth;
+package com.example.hbl.bluetooth.util;
 
 /**
  * Created by hbl on 2017/6/8.

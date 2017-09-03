@@ -74,8 +74,8 @@ public class MyAdapter extends BaseAdapter {
         });
         ModelData data = list.get(position);
         holder.checkbox.setChecked(array.get(position, false));
-        holder.tvModel.setText("上衣加热强度："+data.getUp()+",下衣加热强度："+data.getDown()+"\n加热时长"+data.getTime());
-        holder.checkbox.setText("模式" + position + "  ");
+        holder.tvModel.setText("衣加热强度："+data.getUp()+"\n裤加热强度："+data.getDown()+"\n加热时长"+data.getTime());
+        holder.tvLeft.setText("模式"+toChinese(String.valueOf(position+1)));
 
         return convertView;
     }
@@ -85,6 +85,8 @@ public class MyAdapter extends BaseAdapter {
         CheckBox checkbox;
         @BindView(R.id.tvModel)
         TextView tvModel;
+        @BindView(R.id.tvLeft)
+        TextView tvLeft;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
@@ -94,4 +96,26 @@ public class MyAdapter extends BaseAdapter {
    public int getCheckedPosition(){
         return curPosition;
    }
+
+    private String toChinese(String string) {
+        String[] s1 = { "零", "一", "二", "三", "四", "五", "六", "七", "八", "九" };
+        String[] s2 = { "十", "百", "千", "万", "十", "百", "千", "亿", "十", "百", "千" };
+
+        String result = "";
+
+        int n = string.length();
+        for (int i = 0; i < n; i++) {
+
+            int num = string.charAt(i) - '0';
+
+            if (i != n - 1 && num != 0) {
+                result += s1[num] + s2[n - 2 - i];
+            } else {
+                result += s1[num];
+            }
+        }
+
+        return result;
+
+    }
 }

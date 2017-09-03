@@ -1,23 +1,37 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.hbl.bluetooth.ModelFragment">
+    tools:context="com.example.hbl.bluetooth.home.ModelFragment">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <TextView
+            style="@style/base_text"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:gravity="center"
+            android:text="@string/model"
+            android:textSize="23sp" />
+
+        <Button
+            android:id="@+id/btnSure"
+            style="@style/base_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:background="@android:color/transparent"
+            android:text="确定"
+            android:textSize="18sp" />
+    </FrameLayout>
     <ListView
         android:id="@+id/listview"
-        android:layout_above="@+id/btnSure"
         android:layout_width="match_parent"
-        android:padding="10dp"
+        android:layout_height="match_parent"
         android:choiceMode="singleChoice"
-        android:layout_height="match_parent" />
-
-    <Button
-        android:id="@+id/btnSure"
-       style="@style/base_btn"
-        android:text="确定"
-        android:layout_marginBottom="20dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-</RelativeLayout>
+        android:divider="@null" />
+</LinearLayout>

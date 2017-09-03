@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/lift"
+        style="@style/base_text"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="24dp"
+        android:gravity="center_vertical"
+        tools:text="姓名"/>
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
+    <EditText
+        android:id="@+id/mineItemEdit"
+        android:layout_width="100dp"
+        android:gravity="right|center_vertical"
+        tools:text="111111"
+        android:layout_height="match_parent"
+        android:textColor="@color/textcolor"
+        android:layout_marginRight="14dp"
+        style="@style/base_edittext"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/min_arrow_right" />
+</LinearLayout>

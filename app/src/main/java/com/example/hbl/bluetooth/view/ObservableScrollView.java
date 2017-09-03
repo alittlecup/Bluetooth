@@ -1,4 +1,4 @@
-package com.example.hbl.bluetooth;
+package com.example.hbl.bluetooth.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

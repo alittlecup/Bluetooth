@@ -1,4 +1,4 @@
-package com.example.hbl.bluetooth;
+package com.example.hbl.bluetooth.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

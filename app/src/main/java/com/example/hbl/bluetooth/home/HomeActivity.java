@@ -1,4 +1,4 @@
-package com.example.hbl.bluetooth;
+package com.example.hbl.bluetooth.home;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
@@ -15,13 +15,21 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.example.hbl.bluetooth.App;
+import com.example.hbl.bluetooth.BaseActivity;
+import com.example.hbl.bluetooth.ModelData;
+import com.example.hbl.bluetooth.Order;
+import com.example.hbl.bluetooth.ProcessData;
+import com.example.hbl.bluetooth.R;
 import com.example.hbl.bluetooth.bluetooth_old.SampleGattAttributes;
 import com.example.hbl.bluetooth.network.BLog;
 import com.example.hbl.bluetooth.network.RetrofitUtil;
@@ -46,13 +54,12 @@ public class HomeActivity extends BaseActivity {
     BottomNavigationBar bottomNavigationBar;
 
 
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
 
     private String address1, address2;
     private Button connect, connect2;
-    private MyTextView tv1, tv2;
+    private TextView tv1, tv2;
+    private ImageView ivUp,ivDown;
+    private CheckBox ckUp,ckDown;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -61,6 +68,10 @@ public class HomeActivity extends BaseActivity {
                 OperationFragment fragment = (OperationFragment) fragmentList.get(0);
                 tv1 = fragment.getTextView();
                 tv2 = fragment.getText2View();
+                ivUp=fragment.getUpImage();
+                ivDown=fragment.getDownImage();
+                ckDown=fragment.getDownCheck();
+                ckUp=fragment.getUpCheck();
                 if (!TextUtils.isEmpty(address1)) {
                     tv1.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -72,6 +83,7 @@ public class HomeActivity extends BaseActivity {
                     });
                 } else {
                     tv1.setText("当前不可用");
+                    tv1.setPressed(false);
                 }
                 if (!TextUtils.isEmpty(address2)) {
                     tv2.setOnClickListener(new View.OnClickListener() {
@@ -85,6 +97,7 @@ public class HomeActivity extends BaseActivity {
                     });
                 } else {
                     tv2.setText("当前不可用");
+                    tv2.setPressed(false);
                 }
             } else if (msg.what == 1) {
                 addOrder(Order.READ_ENERGY);
@@ -190,18 +203,24 @@ public class HomeActivity extends BaseActivity {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 tv1.setText(getResources().getString(R.string.connected));
+                tv1.setPressed(true);
                 mConnected = 2;
                 if (mBluetoothLeSecondService != null && mConnected2 == 0) {
                     mBluetoothLeSecondService.connect(address2);
                 }
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 tv1.setText(getResources().getString(R.string.disconnected));
+                tv1.setPressed(false);
+                ivUp.setVisibility(View.GONE);
+                tv1.setVisibility(View.VISIBLE);
+                ckUp.setChecked(false);
                 DONE = true;
                 canDo = true;
                 mConnected = 0;
                 handler.removeMessages(1);
             } else if (BluetoothLeService.ACTION_GATT_CONNECTEING.equals(action)) {
                 tv1.setText("正在连接...");
+                tv1.setPressed(false);
                 mConnected = 1;
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the
@@ -212,15 +231,21 @@ public class HomeActivity extends BaseActivity {
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTED.equals(action)) {
 //                connect2.setText(getResources().getString(R.string.connected));
                 tv2.setText(getResources().getString(R.string.connected));
+                tv2.setPressed(true);
                 mConnected2 = 2;
             } else if (BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 tv2.setText(getResources().getString(R.string.disconnected));
+                tv2.setPressed(false);
+                ckDown.setChecked(false);
+                ivDown.setVisibility(View.GONE);
+                tv2.setVisibility(View.VISIBLE);
                 canDo2 = true;
                 DONE2 = true;
                 mConnected2 = 0;
                 handler.removeMessages(2);
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTEING.equals(action)) {
                 tv2.setText("正在连接...");
+                tv2.setPressed(false);
                 mConnected2 = 1;
             } else if (BluetoothLeSecondeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the
@@ -245,16 +270,17 @@ public class HomeActivity extends BaseActivity {
             if (resString.contains("AA")) {
                 char c = resString.charAt(resString.length() - 1);
                 Integer integer = Integer.valueOf(c + "");
-                tv1.setColor(integer);
+                ivUp.setVisibility(View.VISIBLE);
+                tv1.setVisibility(View.GONE);
                 switch (integer) {
                     case 0:
                     case 1:
                     case 2:
                     case 3:
-                        tv1.setText("连接成功，剩余电量过低，请充电");
+                        ivUp.setImageResource(R.drawable.opear_energy_low);
                         break;
                     default:
-                        tv1.setText("连接成功，剩余电量" + (integer + 1) + "0%");
+                        ivUp.setImageResource(R.drawable.opear_energy);
                 }
             }
             if (orderList.size() > 0) {
@@ -283,16 +309,17 @@ public class HomeActivity extends BaseActivity {
             if (resString.contains("AA")) {
                 char c = resString.charAt(resString.length() - 1);
                 Integer integer = Integer.valueOf(c + "");
-                tv2.setColor(integer);
+                ivDown.setVisibility(View.VISIBLE);
+                tv2.setVisibility(View.GONE);
                 switch (integer) {
                     case 0:
                     case 1:
                     case 2:
                     case 3:
-                        tv2.setText("连接成功，剩余电量过低，请充电");
+                        ivDown.setImageResource(R.drawable.opear_energy_low);
                         break;
                     default:
-                        tv2.setText("连接成功，剩余电量" + (integer + 1) + "0%");
+                        ivDown.setImageResource(R.drawable.opear_energy);
                 }
             }
             if (orderList2.size() > 0) {
@@ -322,14 +349,7 @@ public class HomeActivity extends BaseActivity {
             ToastUtil.show("error");
         } else {
             mBluetoothLeSecondService.setCharacteristicNotification(RWNSECharacteristic, true);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    addOrder2(Order.WRITE_OPEN);
-                    addOrder2(Order.WRITE_TIME + "1C00");
-                }
-            }, 500);
-            handler.sendEmptyMessageDelayed(2, 30 * 1000);
+
 
         }
     }
@@ -348,14 +368,7 @@ public class HomeActivity extends BaseActivity {
             ToastUtil.show("error");
         } else {
             mBluetoothLeService.setCharacteristicNotification(RWNCharacteristic, true);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    addOrder(Order.WRITE_OPEN);
-                    addOrder(Order.WRITE_TIME + "1C00");
-                }
-            }, 500);
-            handler.sendEmptyMessageDelayed(1, 30 * 1000);
+
         }
     }
 
@@ -363,7 +376,7 @@ public class HomeActivity extends BaseActivity {
 
     private void getFragments() {
 
-        OperationFragment operationFragment = new OperationFragment();
+        OperationFragment operationFragment =new OperationFragment();
         ModelFragment modelFragment = new ModelFragment();
 
         SettingFragment settingFragment = new SettingFragment();
@@ -376,11 +389,10 @@ public class HomeActivity extends BaseActivity {
     private void initHost() {
         getFragments();
         bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
-        bottomNavigationBar.addItem(new BottomNavigationItem(R.drawable.ic_op_black_24dp, "操作"))
-                .addItem(new BottomNavigationItem(R.drawable.ic_model_black_24dp, "模式"))
-                .addItem(new BottomNavigationItem(R.drawable.ic_person_black_24dp_bl, "我的"))
-                .setInActiveColor(R.color.text)
-                .setActiveColor(R.color.colorAccent)
+        bottomNavigationBar
+                .addItem(new BottomNavigationItem(R.drawable.opeartor_on, "操作").setInactiveIconResource(R.drawable.operator_un))
+                .addItem(new BottomNavigationItem(R.drawable.module_on, "模式").setInactiveIconResource(R.drawable.module_un))
+                .addItem(new BottomNavigationItem(R.drawable.mine_on, "我的").setInactiveIconResource(R.drawable.mine_un))
                 .setFirstSelectedPosition(0)
                 .initialise();
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
@@ -437,15 +449,15 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mBluetoothLeService != null && mConnected == 0) {
-            final boolean result = mBluetoothLeService.connect(address1);
-            System.out.println("Connect request result=" + result);
-        }
-        if (mBluetoothLeSecondService != null && mConnected2 == 0) {
-            final boolean result = mBluetoothLeSecondService.connect(address2);
-            System.out.println("Connect request result=" + result);
-        }
-        ToastUtil.show("OK");
+//        if (mBluetoothLeService != null && mConnected == 0) {
+//            final boolean result = mBluetoothLeService.connect(address1);
+//            System.out.println("Connect request result=" + result);
+//        }
+//        if (mBluetoothLeSecondService != null && mConnected2 == 0) {
+//            final boolean result = mBluetoothLeSecondService.connect(address2);
+//            System.out.println("Connect request result=" + result);
+//        }
+//        ToastUtil.show("OK");
     }
 
     @Override
@@ -619,4 +631,5 @@ public class HomeActivity extends BaseActivity {
     public void onBackPressed() {
         moveTaskToBack(true);
     }
+
 }

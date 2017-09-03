@@ -1,4 +1,4 @@
-package com.example.hbl.bluetooth;
+package com.example.hbl.bluetooth.home;
 
 
 import android.os.Bundle;
@@ -7,6 +7,12 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+
+import com.example.hbl.bluetooth.App;
+import com.example.hbl.bluetooth.BaseFragment;
+import com.example.hbl.bluetooth.ModelData;
+import com.example.hbl.bluetooth.MyAdapter;
+import com.example.hbl.bluetooth.R;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -34,8 +40,39 @@ public class ModelFragment extends BaseFragment {
         if (adapter != null && adapter.getCheckedPosition() != -1) {
             return;
         }
+        addData();
         adapter = new MyAdapter(getActivity(), App.getDatas());
         listview.setAdapter(adapter);
+    }
+    private void addData(){
+        ModelData data=new ModelData();
+        data.setUp("30");
+        data.setDown("30");
+        data.setTime("30");
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
+        App.addData(data);
     }
 
     @Override
@@ -47,7 +84,7 @@ public class ModelFragment extends BaseFragment {
     }
 
     @Override
-    int getLayoutId() {
+   protected int getLayoutId() {
         return R.layout.fragment_model;
     }
 

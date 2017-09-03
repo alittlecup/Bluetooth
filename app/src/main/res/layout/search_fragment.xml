@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/graybackground"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+
+            <TextView
+                style="@style/base_text"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:gravity="center"
+                android:text="@string/mach"
+                android:textSize="23sp" />
+
+            <ImageView
+                android:id="@+id/imBack"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
+                android:padding="15dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/search_arrow_left" />
+        </FrameLayout>
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.4" />
+
+        <ImageView
+            android:id="@+id/imBlu"
+            android:layout_width="224dp"
+            android:layout_height="224dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/search_ble_unopen" />
+
+        <TextView
+            android:id="@+id/tvBluState"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:text="@string/searchText" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.6" />
+
+        <Button
+            android:id="@+id/btnSearch"
+            style="@style/base_btn"
+            android:layout_marginBottom="20dp"
+            android:text="@string/searchMadicine"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/machView"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/dialog_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#77000000" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/new_feed_subscription_content_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="60dp"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvUp"
+                    style="@style/base_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="5dp"
+                    android:drawableTop="@drawable/mach_up"
+                    android:gravity="center_horizontal"
+                    android:text="@string/mach_up"
+                    android:visibility="gone"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tvDown"
+                    style="@style/base_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:drawablePadding="5dp"
+                    android:drawableTop="@drawable/mach_down"
+                    android:gravity="center_horizontal"
+                    android:text="@string/mach_down"
+                    android:visibility="gone"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/btnMach"
+                    style="@style/base_btn"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/mach"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+    </FrameLayout>
+</FrameLayout>
