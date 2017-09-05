@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -43,7 +42,7 @@ public class OperationFragment extends BaseFragment {
     @BindView(R.id.upImageEn)
     ImageView upImageEn;
     @BindView(R.id.upCheck)
-    CheckBox upCheck;
+    ImageView upCheck;
     @BindView(R.id.sbTee)
     BubbleSeekBar sbTee;
     @BindView(R.id.imageDown)
@@ -53,7 +52,7 @@ public class OperationFragment extends BaseFragment {
     @BindView(R.id.downImageEn)
     ImageView downImageEn;
     @BindView(R.id.downCheck)
-    CheckBox downCheck;
+    ImageView downCheck;
     @BindView(R.id.sbPans)
     BubbleSeekBar sbPans;
     @BindView(R.id.sbTime)
@@ -156,8 +155,8 @@ public class OperationFragment extends BaseFragment {
             public void onFinish() {
                 currentMills = 0;
                 sbTime.setProgress(0);
-                downCheck.setChecked(true);
-                upCheck.setChecked(true);
+                downCheck.setPressed(true);
+                upCheck.setPressed(true);
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -186,8 +185,8 @@ public class OperationFragment extends BaseFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.downCheck:
-                    activity.addOrder2(downCheck.isChecked()?Order.WRITE_OPEN:Order.WRITE_CLOSE);
-                if(downCheck.isChecked()){
+                    activity.addOrder2(downCheck.isPressed()?Order.WRITE_OPEN:Order.WRITE_CLOSE);
+                if(downCheck.isPressed()){
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -197,8 +196,8 @@ public class OperationFragment extends BaseFragment {
                 }
                 break;
             case R.id.upCheck:
-                activity.addOrder(upCheck.isChecked()?Order.WRITE_OPEN:Order.WRITE_CLOSE);
-                if(downCheck.isChecked()){
+                activity.addOrder(upCheck.isPressed()?Order.WRITE_OPEN:Order.WRITE_CLOSE);
+                if(upCheck.isPressed()){
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -267,11 +266,11 @@ public class OperationFragment extends BaseFragment {
         return downImageEn;
     }
 
-    public CheckBox getUpCheck() {
+    public ImageView getUpCheck() {
         return upCheck;
     }
 
-    public CheckBox getDownCheck() {
+    public ImageView getDownCheck() {
         return downCheck;
     }
 

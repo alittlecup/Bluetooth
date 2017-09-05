@@ -12,21 +12,21 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/title_bar_hight"
             android:background="@color/white">
 
             <TextView
                 style="@style/base_text"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="@string/mach"
-                android:textSize="23sp" />
+                android:textSize="@dimen/title_bar_textsize" />
 
             <ImageView
                 android:id="@+id/imBack"
-                android:layout_width="40dp"
-                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:padding="15dp"
                 android:scaleType="fitXY"

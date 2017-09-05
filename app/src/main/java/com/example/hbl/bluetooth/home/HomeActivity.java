@@ -18,7 +18,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -59,7 +58,7 @@ public class HomeActivity extends BaseActivity {
     private Button connect, connect2;
     private TextView tv1, tv2;
     private ImageView ivUp,ivDown;
-    private CheckBox ckUp,ckDown;
+    private ImageView ckUp,ckDown;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -213,7 +212,7 @@ public class HomeActivity extends BaseActivity {
                 tv1.setPressed(false);
                 ivUp.setVisibility(View.GONE);
                 tv1.setVisibility(View.VISIBLE);
-                ckUp.setChecked(false);
+                ckUp.setPressed(false);
                 DONE = true;
                 canDo = true;
                 mConnected = 0;
@@ -236,7 +235,7 @@ public class HomeActivity extends BaseActivity {
             } else if (BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 tv2.setText(getResources().getString(R.string.disconnected));
                 tv2.setPressed(false);
-                ckDown.setChecked(false);
+                ckDown.setPressed(false);
                 ivDown.setVisibility(View.GONE);
                 tv2.setVisibility(View.VISIBLE);
                 canDo2 = true;

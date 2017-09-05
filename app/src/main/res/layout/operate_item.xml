@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/llleft"
@@ -34,19 +34,20 @@
     <LinearLayout
         android:id="@+id/llenergy"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginLeft="20dp"
-        android:layout_toRightOf="@id/llleft"
-        android:layout_marginTop="27dp">
+        android:layout_marginTop="27dp"
+        android:layout_toRightOf="@id/llleft">
 
         <TextView
             android:id="@+id/upText"
             style="@style/base_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:button="@null"
             android:drawableLeft="@drawable/selector_opear_ble"
             android:drawablePadding="5dp"
+            android:gravity="center_vertical"
             android:visibility="visible"
             tools:text="蓝牙已连接" />
 
@@ -62,28 +63,31 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <CheckBox
+        <ImageView
             android:id="@+id/upCheck"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginRight="30dp"
-            android:background="@drawable/selector_opear_ble_oc"
-            android:button="@null" />
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:src="@drawable/selector_opear_ble_oc"
+            />
     </LinearLayout>
+
     <com.xw.repo.BubbleSeekBar
         android:id="@+id/sbTee"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
+        android:layout_below="@+id/llenergy"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
         android:layout_toRightOf="@id/llleft"
-        android:layout_below="@+id/llenergy"
-        app:bsb_progress_drawable="true"
-        app:bsb_progress_hight="8dp"
+        app:bsb_hide_bubble="true"
         app:bsb_max="100"
         app:bsb_min="0"
-        app:bsb_hide_bubble="true"
+        app:bsb_progress_drawable="true"
+        app:bsb_progress_hight="8dp"
         app:bsb_thumb_color="@color/white"
-        app:bsb_thumb_radius="15dp"/>
+        app:bsb_thumb_radius="15dp" />
 </RelativeLayout>

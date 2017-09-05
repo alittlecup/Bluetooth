@@ -15,11 +15,11 @@
         <TextView
             style="@style/base_text"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="@dimen/title_bar_hight"
             android:background="@color/white"
             android:gravity="center"
             android:text="@string/op"
-            android:textSize="23sp" />
+            android:textSize="@dimen/title_bar_textsize" />
 
         <android.support.v4.view.ViewPager
             android:layout_width="match_parent"
@@ -38,27 +38,32 @@
             android:layout_width="1dp"
             android:layout_height="10dp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="wrap_content"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:layout_marginBottom="40dp"
-            android:padding="15dp">
+            android:layout_marginBottom="10dp"
+            android:padding="20dp">
 
             <TextView
+                android:id="@+id/textclock"
                 style="@style/base_text"
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
-                android:gravity="center"
+                android:layout_alignTop="@id/sbTime"
+                android:layout_marginTop="10dp"
                 android:text="定时"
                 android:textSize="20dp" />
 
             <com.xw.repo.BubbleSeekBar
                 android:id="@+id/sbTime"
+                android:layout_gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/textclock"
+                android:layout_marginLeft="5dp"
                 app:bsb_max="60"
                 app:bsb_min="0"
                 app:bsb_second_track_color="@color/bluedark"
@@ -72,6 +77,6 @@
                 app:bsb_thumb_text_color="@color/text"
                 app:bsb_thumb_text_size="18sp"
                 app:bsb_track_color="@color/bluedark" />
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 </com.example.hbl.bluetooth.view.ObservableScrollView>

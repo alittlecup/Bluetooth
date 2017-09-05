@@ -34,7 +34,7 @@
     <LinearLayout
         android:id="@+id/llenergy"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginLeft="20dp"
         android:layout_toRightOf="@id/llleft"
         android:layout_marginTop="27dp">
@@ -43,10 +43,11 @@
             android:id="@+id/downText"
             style="@style/base_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:button="@null"
             android:drawableLeft="@drawable/selector_opear_ble"
             android:drawablePadding="5dp"
+            android:gravity="center_vertical"
             android:visibility="visible"
             tools:text="蓝牙已连接" />
 
@@ -62,13 +63,15 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <CheckBox
+        <ImageView
             android:id="@+id/downCheck"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginRight="30dp"
-            android:background="@drawable/selector_opear_ble_oc"
-            android:button="@null" />
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:src="@drawable/selector_opear_ble_oc"
+            />
     </LinearLayout>
     <com.xw.repo.BubbleSeekBar
         android:id="@+id/sbPans"
