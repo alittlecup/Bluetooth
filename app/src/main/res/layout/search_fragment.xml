@@ -38,12 +38,24 @@
             android:layout_height="0dp"
             android:layout_weight="0.4" />
 
-        <ImageView
-            android:id="@+id/imBlu"
+        <FrameLayout
             android:layout_width="224dp"
             android:layout_height="224dp"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/search_ble_unopen" />
+            android:layout_gravity="center_horizontal">
+
+            <ImageView
+                android:id="@+id/imBlu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/search_ble_unopen" />
+            <ImageView
+                android:id="@+id/imBleCenter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="70dp"
+                android:visibility="gone"
+                android:src="@drawable/search_ble_blue"/>
+        </FrameLayout>
 
         <TextView
             android:id="@+id/tvBluState"
@@ -69,9 +81,9 @@
 
     <FrameLayout
         android:id="@+id/machView"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <View
             android:id="@+id/dialog_background"
@@ -106,8 +118,8 @@
                     android:drawableTop="@drawable/mach_up"
                     android:gravity="center_horizontal"
                     android:text="@string/mach_up"
-                    android:visibility="gone"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tvDown"
@@ -119,8 +131,8 @@
                     android:drawableTop="@drawable/mach_down"
                     android:gravity="center_horizontal"
                     android:text="@string/mach_down"
-                    android:visibility="gone"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/btnMach"
