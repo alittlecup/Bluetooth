@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -15,6 +16,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -53,24 +55,25 @@ public class HomeActivity extends BaseActivity {
     BottomNavigationBar bottomNavigationBar;
 
 
-
     private String address1, address2;
     private Button connect, connect2;
     private TextView tv1, tv2;
-    private ImageView ivUp,ivDown;
-    private ImageView ckUp,ckDown;
+    private ImageView ivUp, ivDown;
+    private ImageView ckUp, ckDown;
+    public OperationFragment fragment;
     private Handler handler = new Handler() {
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 3) {
-                OperationFragment fragment = (OperationFragment) fragmentList.get(0);
+                fragment = (OperationFragment) fragmentList.get(0);
                 tv1 = fragment.getTextView();
                 tv2 = fragment.getText2View();
-                ivUp=fragment.getUpImage();
-                ivDown=fragment.getDownImage();
-                ckDown=fragment.getDownCheck();
-                ckUp=fragment.getUpCheck();
+                ivUp = fragment.getUpImage();
+                ivDown = fragment.getDownImage();
+                ckDown = fragment.getDownCheck();
+                ckUp = fragment.getUpCheck();
                 if (!TextUtils.isEmpty(address1)) {
                     tv1.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -212,7 +215,8 @@ public class HomeActivity extends BaseActivity {
                 tv1.setPressed(false);
                 ivUp.setVisibility(View.GONE);
                 tv1.setVisibility(View.VISIBLE);
-                ckUp.setPressed(false);
+                ckUp.setImageResource(R.drawable.opear_ble_close);
+                OperationFragment.isUpOpened = false;
                 DONE = true;
                 canDo = true;
                 mConnected = 0;
@@ -235,7 +239,8 @@ public class HomeActivity extends BaseActivity {
             } else if (BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 tv2.setText(getResources().getString(R.string.disconnected));
                 tv2.setPressed(false);
-                ckDown.setPressed(false);
+                ckDown.setImageResource(R.drawable.opear_ble_close);
+                OperationFragment.isDownOpened = false;
                 ivDown.setVisibility(View.GONE);
                 tv2.setVisibility(View.VISIBLE);
                 canDo2 = true;
@@ -375,7 +380,7 @@ public class HomeActivity extends BaseActivity {
 
     private void getFragments() {
 
-        OperationFragment operationFragment =new OperationFragment();
+        OperationFragment operationFragment = new OperationFragment();
         ModelFragment modelFragment = new ModelFragment();
 
         SettingFragment settingFragment = new SettingFragment();
@@ -628,7 +633,19 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        moveTaskToBack(true);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage("确认退出吗？").setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        HomeActivity.super.onBackPressed();
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create().show();
     }
 
 }

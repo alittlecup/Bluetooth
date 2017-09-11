@@ -16,6 +16,7 @@ import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -106,6 +107,7 @@ public class BubbleSeekBar extends View {
     private boolean triggerBubbleShowing;
     private boolean triggerSeekBySection;
     private boolean progressDrawable;
+    private BitmapDrawable thumDrawable;
 
     private OnProgressChangedListener mProgressListener; // progress changing listener
     private float mLeft; // space between left of track and left of the view
@@ -186,6 +188,7 @@ public class BubbleSeekBar extends View {
         mAlwaysShowBubbleDelay = duration <= 0 ? 200 : duration;
         isHideBubble = a.getBoolean(R.styleable.BubbleSeekBar_bsb_hide_bubble, false);
         progressDrawable = a.getBoolean(R.styleable.BubbleSeekBar_bsb_progress_drawable, false);
+        thumDrawable = (BitmapDrawable) a.getDrawable(R.styleable.BubbleSeekBar_bsb_thum_drawable);
 
         progressHight = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_progress_hight, dp2px(2));
         a.recycle();
@@ -211,11 +214,9 @@ public class BubbleSeekBar extends View {
 
         calculateRadiusOfBubble();
     }
-    private Bitmap thumBitmap;
-    public void setThumBitmap(Bitmap bitmap){
-        this.thumBitmap=bitmap;
-        invalidate();
-    }
+
+
+
     private void initConfigByPriority() {
         if (mMin == mMax) {
             mMin = 0.0f;
@@ -545,14 +546,15 @@ public class BubbleSeekBar extends View {
             canvas.drawLine(mThumbCenterX, yTop, xRight, yTop, mPaint);
         }
 
-        // draw thumb
-
-//        if(thumBitmap!=null){
-//            canvas.drawBitmap(thumBitmap,mThumbCenterX+thumBitmap.getWidth()/2,yTop+thumBitmap.getHeight()/2,mPaint);
-//        }else{
+        if(thumDrawable!=null){
+            Bitmap bitmap = thumDrawable.getBitmap();
+            Rect dst = new Rect(((int) mThumbCenterX - mThumbRadius), ((int) yTop - mThumbRadius), ((int) mThumbCenterX + mThumbRadius), ((int) yTop + mThumbRadius));
+            Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+            canvas.drawBitmap(bitmap, src, dst, new Paint(Paint.ANTI_ALIAS_FLAG));
+        }else{
             mPaint.setColor(mThumbColor);
             canvas.drawCircle(mThumbCenterX, yTop, isThumbOnDragging ? mThumbRadiusOnDragging : mThumbRadius, mPaint);
-//        }
+        }
     }
 
     @Override

@@ -42,5 +42,6 @@
         <attr name="bsb_hide_bubble" format="boolean"/> <!--hide bubble, default: false-->
         <attr name="bsb_progress_drawable" format="boolean"/> <!--progress drawable-->
         <attr name="bsb_progress_hight" format="dimension"/> <!--progress drawable-->
+        <attr name="bsb_thum_drawable" format="reference"/> <!--progress drawable-->
     </declare-styleable>
 </resources>

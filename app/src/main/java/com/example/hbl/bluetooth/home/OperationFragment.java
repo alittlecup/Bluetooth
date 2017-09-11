@@ -61,7 +61,7 @@ public class OperationFragment extends BaseFragment {
     ObservableScrollView scrollView;
     private CountDownTimer timer;
     private HomeActivity activity;
-    private long currentMills=0;
+    private long currentMills = 0;
 
 
     @Override
@@ -180,31 +180,39 @@ public class OperationFragment extends BaseFragment {
             sbTime.setProgress((value - l) / 1000 / 60);
         }
     }
-    private Handler handler=new Handler();
+
+    private Handler handler = new Handler();
+    public static boolean isDownOpened;
+    public static boolean isUpOpened;
+
     @OnClick({R.id.downCheck, R.id.upCheck})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.downCheck:
-                    activity.addOrder2(downCheck.isPressed()?Order.WRITE_OPEN:Order.WRITE_CLOSE);
-                if(downCheck.isPressed()){
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                activity.addOrder2(Order.READ_ENERGY);
-                            }
-                        },30000);
+                activity.addOrder2(!isDownOpened? Order.WRITE_OPEN : Order.WRITE_CLOSE);
+                if (!isDownOpened) {
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            activity.addOrder2(Order.READ_ENERGY);
+                        }
+                    }, 30000);
                 }
+                downCheck.setImageResource(!isDownOpened?R.drawable.opear_ble_open:R.drawable.opear_ble_close);
+                isDownOpened = !isDownOpened;
                 break;
             case R.id.upCheck:
-                activity.addOrder(upCheck.isPressed()?Order.WRITE_OPEN:Order.WRITE_CLOSE);
-                if(upCheck.isPressed()){
+                activity.addOrder(!isUpOpened? Order.WRITE_OPEN : Order.WRITE_CLOSE);
+                if (!isUpOpened) {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             activity.addOrder(Order.READ_ENERGY);
                         }
-                    },30000);
+                    }, 30000);
                 }
+                upCheck.setImageResource(!isUpOpened?R.drawable.opear_ble_open:R.drawable.opear_ble_close);
+                isUpOpened = !isUpOpened;
                 break;
 
         }
@@ -229,6 +237,7 @@ public class OperationFragment extends BaseFragment {
                     }
                 });
     }
+
     private String toHex(int i) {
         if (i < 16) {
             return "0" + Integer.toHexString(i);

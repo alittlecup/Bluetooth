@@ -43,8 +43,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:layout_marginBottom="10dp"
-            android:padding="20dp">
+            android:padding="10dp">
 
             <TextView
                 android:id="@+id/textclock"
@@ -72,8 +71,8 @@
                 app:bsb_show_section_mark="true"
                 app:bsb_show_section_text="true"
                 app:bsb_show_thumb_text="true"
-                app:bsb_thumb_color="@color/white"
-                app:bsb_thumb_radius="15dp"
+                app:bsb_thumb_radius="16dp"
+                app:bsb_thum_drawable="@drawable/seekbar_thum_down"
                 app:bsb_thumb_text_color="@color/text"
                 app:bsb_thumb_text_size="18sp"
                 app:bsb_track_color="@color/bluedark" />
