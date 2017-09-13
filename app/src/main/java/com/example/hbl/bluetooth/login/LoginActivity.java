@@ -1,10 +1,12 @@
 package com.example.hbl.bluetooth.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.example.hbl.bluetooth.BaseActivity;
 import com.example.hbl.bluetooth.R;
+import com.example.hbl.bluetooth.home.HomeActivity;
 import com.example.hbl.bluetooth.interfaces.onFragmentClick;
 import com.example.hbl.bluetooth.util.ActivityUtilsImpl;
 import com.example.hbl.bluetooth.util.CollectionUtilsImpl;
@@ -28,10 +30,11 @@ public class LoginActivity extends BaseActivity implements onFragmentClick {
     public void onFragmentClick(int action) {
         switch (action) {
             case Action.Action_Login:
-                activityUtils.addFragmentWithTagToActivity(getSupportFragmentManager(), SearchFragment.newInstance(this), R.id.activity_container, LoginFragment.TAG);
+                startActivity(new Intent(this, HomeActivity.class));
+                finish();
                 break;
             case Action.Action_MachBack:
-                activityUtils.removeFragmentWithTagFromActivity(getSupportFragmentManager(),SearchFragment.TAG);
+                activityUtils.removeFragmentWithTagFromActivity(getSupportFragmentManager(), SearchFragment.TAG);
                 break;
         }
     }

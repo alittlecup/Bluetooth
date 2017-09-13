@@ -22,7 +22,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/MyAppTheme">
-        <activity android:name=".home.HomeActivity">
+        <activity android:name=".home.HomeActivity"
+            android:launchMode="singleTask">
 
              <!--<intent-filter>-->
              <!--<action android:name="android.intent.action.MAIN" />-->
@@ -41,7 +42,8 @@
         <service
             android:name=".newblue.BluetoothLeSecondeService"
             android:enabled="true" />
-
+        <activity android:name=".search.SearchActivity"
+            android:enabled="true" />
         <activity android:name=".LoginActivity">
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->

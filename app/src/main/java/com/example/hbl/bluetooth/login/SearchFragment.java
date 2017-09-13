@@ -22,7 +22,6 @@ import android.widget.TextView;
 import com.example.hbl.bluetooth.BaseFragment;
 import com.example.hbl.bluetooth.R;
 import com.example.hbl.bluetooth.home.HomeActivity;
-import com.example.hbl.bluetooth.interfaces.onFragmentClick;
 import com.example.hbl.bluetooth.network.ToastUtil;
 
 import butterknife.BindView;
@@ -52,7 +51,6 @@ public class SearchFragment extends BaseFragment {
     Button btnMach;
     @BindView(R.id.machView)
     FrameLayout machView;
-    private onFragmentClick clickListen;
     private static final int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter mBluetoothAdapter;
     private Activity activity;
@@ -61,15 +59,6 @@ public class SearchFragment extends BaseFragment {
     public static final String TAG = SearchFragment.class.getSimpleName();
     private RotateAnimation animation;
 
-    public static SearchFragment newInstance(onFragmentClick click) {
-        SearchFragment searchFragment = new SearchFragment();
-        searchFragment.setFragmentClick(click);
-        return searchFragment;
-    }
-
-    private void setFragmentClick(onFragmentClick click) {
-        this.clickListen = click;
-    }
 
     @Override
     protected int getLayoutId() {
@@ -120,7 +109,7 @@ public class SearchFragment extends BaseFragment {
 
     @OnClick(R.id.imBack)
     public void onBackClick() {
-        clickListen.onFragmentClick(Action.Action_MachBack);
+        activity.finish();
         imBlu.clearAnimation();
     }
 

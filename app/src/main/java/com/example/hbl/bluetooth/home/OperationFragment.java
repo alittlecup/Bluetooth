@@ -1,6 +1,7 @@
 package com.example.hbl.bluetooth.home;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -20,6 +21,7 @@ import com.example.hbl.bluetooth.ResultData;
 import com.example.hbl.bluetooth.network.DefaultCallback;
 import com.example.hbl.bluetooth.network.RetrofitUtil;
 import com.example.hbl.bluetooth.network.ToastUtil;
+import com.example.hbl.bluetooth.search.SearchActivity;
 import com.example.hbl.bluetooth.util.SPKey;
 import com.example.hbl.bluetooth.util.SharedPreferenceUtil;
 import com.example.hbl.bluetooth.view.ObservableScrollView;
@@ -53,6 +55,8 @@ public class OperationFragment extends BaseFragment {
     ImageView downImageEn;
     @BindView(R.id.downCheck)
     ImageView downCheck;
+    @BindView(R.id.ivBleFind)
+    ImageView ivBleFind;
     @BindView(R.id.sbPans)
     BubbleSeekBar sbPans;
     @BindView(R.id.sbTime)
@@ -185,7 +189,7 @@ public class OperationFragment extends BaseFragment {
     public static boolean isDownOpened;
     public static boolean isUpOpened;
 
-    @OnClick({R.id.downCheck, R.id.upCheck})
+    @OnClick({R.id.downCheck, R.id.upCheck,R.id.ivBleFind})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.downCheck:
@@ -214,6 +218,8 @@ public class OperationFragment extends BaseFragment {
                 upCheck.setImageResource(!isUpOpened?R.drawable.opear_ble_open:R.drawable.opear_ble_close);
                 isUpOpened = !isUpOpened;
                 break;
+            case R.id.ivBleFind:
+                startActivity(new Intent(getActivity(), SearchActivity.class));
 
         }
     }

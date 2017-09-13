@@ -118,22 +118,6 @@ public class HomeActivity extends BaseActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         initHost();
-        ininData();
-        if (!TextUtils.isEmpty(address1)) {
-            App.ISTEEENABLE = true;
-            Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-            bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-        } else {
-            App.ISTEEENABLE = false;
-        }
-        if (!TextUtils.isEmpty(address2)) {
-            App.ISPAINENABLE = true;
-            Intent gattServiceIntent = new Intent(this, BluetoothLeSecondeService.class);
-            bindService(gattServiceIntent, mServiceSecondConnection, BIND_AUTO_CREATE);
-        } else {
-            App.ISPAINENABLE = false;
-        }
-
     }
 
     public BluetoothGattCharacteristic RWNCharacteristic;
@@ -186,15 +170,35 @@ public class HomeActivity extends BaseActivity {
         }
     };
 
-    private void ininData() {
-        String hotup = getIntent().getStringExtra("hotup");
-        String hotdw = getIntent().getStringExtra("hotdw");
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ininData(intent);
+    }
+
+    private void ininData(Intent intent) {
+        String hotup = intent.getStringExtra("hotup");
+        String hotdw = intent.getStringExtra("hotdw");
 
         if (!TextUtils.isEmpty(hotup)) {
             address1 = hotup;
         }
         if (!TextUtils.isEmpty(hotdw)) {
             address2 = hotdw;
+        }
+        if (!TextUtils.isEmpty(address1)) {
+            App.ISTEEENABLE = true;
+            Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+            bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        } else {
+            App.ISTEEENABLE = false;
+        }
+        if (!TextUtils.isEmpty(address2)) {
+            App.ISPAINENABLE = true;
+            Intent gattServiceIntent = new Intent(this, BluetoothLeSecondeService.class);
+            bindService(gattServiceIntent, mServiceSecondConnection, BIND_AUTO_CREATE);
+        } else {
+            App.ISPAINENABLE = false;
         }
     }
 
@@ -449,25 +453,6 @@ public class HomeActivity extends BaseActivity {
     };
     private int mConnected = 0;
     private int mConnected2 = 0;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        if (mBluetoothLeService != null && mConnected == 0) {
-//            final boolean result = mBluetoothLeService.connect(address1);
-//            System.out.println("Connect request result=" + result);
-//        }
-//        if (mBluetoothLeSecondService != null && mConnected2 == 0) {
-//            final boolean result = mBluetoothLeSecondService.connect(address2);
-//            System.out.println("Connect request result=" + result);
-//        }
-//        ToastUtil.show("OK");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
     @Override
     protected void onDestroy() {
