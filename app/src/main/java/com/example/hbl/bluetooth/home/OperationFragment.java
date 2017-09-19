@@ -147,15 +147,19 @@ public class OperationFragment extends BaseFragment {
             @Override
             public void onTick(long millisUntilFinished) {
                 currentMills = millisUntilFinished;
-                sbTime.setProgress((int) millisUntilFinished / 1000 / 60);
+                if (isVisible()) {
+                    sbTime.setProgress((int) millisUntilFinished / 1000 / 60);
+                }
             }
 
             @Override
             public void onFinish() {
                 currentMills = 0;
-                sbTime.setProgress(0);
-                downCheck.setPressed(true);
-                upCheck.setPressed(true);
+                if (isVisible()) {
+                    sbTime.setProgress(0);
+                    downCheck.setPressed(true);
+                    upCheck.setPressed(true);
+                }
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -179,7 +183,7 @@ public class OperationFragment extends BaseFragment {
         sbPans.setEnabled(App.ISPAINENABLE);
         imageUp.setClickable(App.ISTEEENABLE);
         imageDown.setClickable(App.ISPAINENABLE);
-        sbTime.setEnabled(App.ISPAINENABLE||App.ISPAINENABLE);
+        sbTime.setEnabled(App.ISPAINENABLE || App.ISPAINENABLE);
         Long value = SharedPreferenceUtil.getValue(SPKey.TIME, 0L);
         long l = System.currentTimeMillis();
         if (l < value) {
@@ -191,11 +195,11 @@ public class OperationFragment extends BaseFragment {
     public static boolean isDownOpened;
     public static boolean isUpOpened;
 
-    @OnClick({R.id.downCheck, R.id.upCheck,R.id.ivBleFind})
+    @OnClick({R.id.downCheck, R.id.upCheck, R.id.ivBleFind})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.downCheck:
-                activity.addOrder2(!isDownOpened? Order.WRITE_OPEN : Order.WRITE_CLOSE);
+                activity.addOrder2(!isDownOpened ? Order.WRITE_OPEN : Order.WRITE_CLOSE);
                 if (!isDownOpened) {
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -204,11 +208,11 @@ public class OperationFragment extends BaseFragment {
                         }
                     }, 30000);
                 }
-                downCheck.setImageResource(!isDownOpened?R.drawable.opear_ble_open:R.drawable.opear_ble_close);
+                downCheck.setImageResource(!isDownOpened ? R.drawable.opear_ble_open : R.drawable.opear_ble_close);
                 isDownOpened = !isDownOpened;
                 break;
             case R.id.upCheck:
-                activity.addOrder(!isUpOpened? Order.WRITE_OPEN : Order.WRITE_CLOSE);
+                activity.addOrder(!isUpOpened ? Order.WRITE_OPEN : Order.WRITE_CLOSE);
                 if (!isUpOpened) {
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -217,7 +221,7 @@ public class OperationFragment extends BaseFragment {
                         }
                     }, 30000);
                 }
-                upCheck.setImageResource(!isUpOpened?R.drawable.opear_ble_open:R.drawable.opear_ble_close);
+                upCheck.setImageResource(!isUpOpened ? R.drawable.opear_ble_open : R.drawable.opear_ble_close);
                 isUpOpened = !isUpOpened;
                 break;
             case R.id.ivBleFind:

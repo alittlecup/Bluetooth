@@ -510,6 +510,7 @@ public class HomeActivity extends BaseActivity {
             canDo = false;
             BluetoothGattCharacteristic writeGattCharacteristic = RWNCharacteristic;
             writeGattCharacteristic.setValue(ProcessData.StrToHexbyte(ProcessData.StringToNul(preOrder)));
+            if(mBluetoothLeService==null)return;
             mBluetoothLeService.writeCharacteristic(writeGattCharacteristic);
             DONE = false;
             handler.postDelayed(new Runnable() {
@@ -550,6 +551,7 @@ public class HomeActivity extends BaseActivity {
             BLog.e(preOrder2);
             BluetoothGattCharacteristic writeGattCharacteristic = RWNSECharacteristic;
             writeGattCharacteristic.setValue(ProcessData.StrToHexbyte(ProcessData.StringToNul(preOrder2)));
+            if(mBluetoothLeSecondService==null)return;
             mBluetoothLeSecondService.writeCharacteristic(writeGattCharacteristic);
             DONE2 = false;
             handler.postDelayed(new Runnable() {
