@@ -71,12 +71,7 @@ public class OperationFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        upText.setEnabled(App.ISPAINENABLE);
-        downText.setEnabled(App.ISTEEENABLE);
-        sbTee.setEnabled(App.ISTEEENABLE);
-        sbPans.setEnabled(App.ISPAINENABLE);
-        imageUp.setClickable(App.ISTEEENABLE);
-        imageDown.setClickable(App.ISPAINENABLE);
+
         activity = (HomeActivity) getActivity();
         sbTee.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListener() {
             @Override
@@ -178,6 +173,13 @@ public class OperationFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        upText.setEnabled(App.ISPAINENABLE);
+        downText.setEnabled(App.ISTEEENABLE);
+        sbTee.setEnabled(App.ISTEEENABLE);
+        sbPans.setEnabled(App.ISPAINENABLE);
+        imageUp.setClickable(App.ISTEEENABLE);
+        imageDown.setClickable(App.ISPAINENABLE);
+        sbTime.setEnabled(App.ISPAINENABLE||App.ISPAINENABLE);
         Long value = SharedPreferenceUtil.getValue(SPKey.TIME, 0L);
         long l = System.currentTimeMillis();
         if (l < value) {

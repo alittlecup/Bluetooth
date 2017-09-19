@@ -2,9 +2,7 @@ package com.example.hbl.bluetooth;
 
 import org.junit.Test;
 
-import java.util.UUID;
-
-import static org.junit.Assert.assertEquals;
+import java.util.Arrays;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -14,24 +12,59 @@ import static org.junit.Assert.assertEquals;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
-        String s = UUID.randomUUID().toString().toUpperCase();
-        System.out.println(s);
-        int a=0xff;
-        int b=0xff;
-        int c=0xE0;
-        int d=0x00;
-        int e=0x00;
-        int f=0x07;
-        int g=0x2016;
-        System.out.println(a);
-        System.out.println(b);
-        System.out.println(c);
-        System.out.println(d);
-        System.out.println(e);
-        System.out.println(f);
-        System.out.println(g);
-        System.out.println(a+b+c+d+e+f+g);
+        int[] number = new int[]{890, 760, 660, 570, 1100, 990, 1200, 560, 740, 1020, 880, 580, 770, 450, 1350};
+        int[] count = new int[]{10, 9, 8, 9, 11, 13, 17, 9, 6, 10, 14, 4, 2, 6, 7};
+        sort(number);
+        int[] sortcount=sortCount(scor,number,count);
+        System.out.println(Arrays.toString(scor));
+        System.out.println(Arrays.toString(sortcount));
+
+    }
+
+    private int[] sortCount(int[] newnumber, int[] oldnumber,int[] count) {
+        int[] newConut=new int[count.length];
+        for(int i=0;i<newnumber.length-1;i++){
+            for(int j=0;j<oldnumber.length-1;j++){
+                if(newnumber[i]==oldnumber[j]){
+                    newConut[i]=count[j];
+                    break;
+                }
+            }
+        }
+        return newConut;
+    }
+
+    private void sort(int[] args) {
+        int[] p = new int[args.length];
+        mergesort(args, 0, args.length - 1, p);
+        return ;
+    }
+    private int [] scor;
+    private void mergesort(int[] args, int first, int last, int[] p) {
+        if (first < last) {
+            int mid = (first + last) / 2;
+            mergesort(args, first, mid, p);
+            mergesort(args, mid + 1, last, p);
+            mergeArray(args, first, mid, last, p);
+        }
+    }
+
+    private int[] mergeArray(int[] a, int first, int mid, int last, int[] p) {
+        int i = first, j = mid + 1, m = mid, n = last, k = 0;
+        while (i <= m && j <= n) {
+            if(a[i]<=a[j]){
+                p[k++]=a[i++];
+            }else {
+                p[k++]=a[j++];
+            }
+        }
+        while (i<=m){
+            p[k++]=a[i++];
+        }
+        while (j<=n){
+            p[k++]=a[j++];
+        }
+        return p;
     }
 
 }
