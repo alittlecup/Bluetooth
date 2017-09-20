@@ -15,7 +15,7 @@
     <string name="label_state">State:</string>
     <string name="no_data">No data</string>
     <string name="connected">蓝牙已连接</string>
-    <string name="disconnected">断开连接，请点击重试</string>
+    <string name="disconnected">蓝牙断开请重试</string>
     <string name="title_devices">BLE Device Scan</string>
     <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
 

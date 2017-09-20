@@ -183,7 +183,7 @@ public class OperationFragment extends BaseFragment {
         sbPans.setEnabled(App.ISPAINENABLE);
         imageUp.setClickable(App.ISTEEENABLE);
         imageDown.setClickable(App.ISPAINENABLE);
-        sbTime.setEnabled(App.ISPAINENABLE || App.ISPAINENABLE);
+        sbTime.setEnabled(App.ISPAINENABLE || App.ISTEEENABLE);
         Long value = SharedPreferenceUtil.getValue(SPKey.TIME, 0L);
         long l = System.currentTimeMillis();
         if (l < value) {

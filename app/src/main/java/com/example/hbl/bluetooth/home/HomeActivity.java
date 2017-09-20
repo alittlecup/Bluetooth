@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -85,7 +86,7 @@ public class HomeActivity extends BaseActivity {
                     });
                 } else {
                     tv1.setText("当前不可用");
-                    tv1.setPressed(false);
+                    setTextDrawable(tv1, false);
                 }
                 if (!TextUtils.isEmpty(address2)) {
                     tv2.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +100,8 @@ public class HomeActivity extends BaseActivity {
                     });
                 } else {
                     tv2.setText("当前不可用");
-                    tv2.setPressed(false);
+                    setTextDrawable(tv2, false);
+
                 }
             } else if (msg.what == 1) {
                 addOrder(Order.READ_ENERGY);
@@ -209,14 +211,14 @@ public class HomeActivity extends BaseActivity {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 tv1.setText(getResources().getString(R.string.connected));
-                tv1.setPressed(true);
+                setTextDrawable(tv1, true);
                 mConnected = 2;
                 if (mBluetoothLeSecondService != null && mConnected2 == 0) {
                     mBluetoothLeSecondService.connect(address2);
                 }
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 tv1.setText(getResources().getString(R.string.disconnected));
-                tv1.setPressed(false);
+                setTextDrawable(tv1, false);
                 ivUp.setVisibility(View.GONE);
                 tv1.setVisibility(View.VISIBLE);
                 ckUp.setImageResource(R.drawable.opear_ble_close);
@@ -227,7 +229,7 @@ public class HomeActivity extends BaseActivity {
                 handler.removeMessages(1);
             } else if (BluetoothLeService.ACTION_GATT_CONNECTEING.equals(action)) {
                 tv1.setText("正在连接...");
-                tv1.setPressed(false);
+                setTextDrawable(tv1, false);
                 mConnected = 1;
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the
@@ -238,11 +240,11 @@ public class HomeActivity extends BaseActivity {
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTED.equals(action)) {
 //                connect2.setText(getResources().getString(R.string.connected));
                 tv2.setText(getResources().getString(R.string.connected));
-                tv2.setPressed(true);
+                setTextDrawable(tv2, true);
                 mConnected2 = 2;
             } else if (BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 tv2.setText(getResources().getString(R.string.disconnected));
-                tv2.setPressed(false);
+                setTextDrawable(tv2, false);
                 ckDown.setImageResource(R.drawable.opear_ble_close);
                 OperationFragment.isDownOpened = false;
                 ivDown.setVisibility(View.GONE);
@@ -253,7 +255,7 @@ public class HomeActivity extends BaseActivity {
                 handler.removeMessages(2);
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTEING.equals(action)) {
                 tv2.setText("正在连接...");
-                tv2.setPressed(false);
+                setTextDrawable(tv2, false);
                 mConnected2 = 1;
             } else if (BluetoothLeSecondeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the
@@ -510,7 +512,7 @@ public class HomeActivity extends BaseActivity {
             canDo = false;
             BluetoothGattCharacteristic writeGattCharacteristic = RWNCharacteristic;
             writeGattCharacteristic.setValue(ProcessData.StrToHexbyte(ProcessData.StringToNul(preOrder)));
-            if(mBluetoothLeService==null)return;
+            if (mBluetoothLeService == null) return;
             mBluetoothLeService.writeCharacteristic(writeGattCharacteristic);
             DONE = false;
             handler.postDelayed(new Runnable() {
@@ -551,7 +553,7 @@ public class HomeActivity extends BaseActivity {
             BLog.e(preOrder2);
             BluetoothGattCharacteristic writeGattCharacteristic = RWNSECharacteristic;
             writeGattCharacteristic.setValue(ProcessData.StrToHexbyte(ProcessData.StringToNul(preOrder2)));
-            if(mBluetoothLeSecondService==null)return;
+            if (mBluetoothLeSecondService == null) return;
             mBluetoothLeSecondService.writeCharacteristic(writeGattCharacteristic);
             DONE2 = false;
             handler.postDelayed(new Runnable() {
@@ -635,4 +637,9 @@ public class HomeActivity extends BaseActivity {
         builder.create().show();
     }
 
+    private void setTextDrawable(TextView tv, boolean opean) {
+        Drawable drawable = getResources().getDrawable(opean ? R.drawable.opear_ble : R.drawable.opear_ble_dis);
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        tv.setCompoundDrawables(drawable, null, null, null);
+    }
 }
