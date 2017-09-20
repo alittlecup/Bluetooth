@@ -195,7 +195,7 @@ public class OperationFragment extends BaseFragment {
     public static boolean isDownOpened;
     public static boolean isUpOpened;
 
-    @OnClick({R.id.downCheck, R.id.upCheck, R.id.ivBleFind})
+    @OnClick({R.id.downCheck, R.id.upCheck, R.id.ivBleFind,R.id.upText,R.id.downText})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.downCheck:
@@ -226,6 +226,17 @@ public class OperationFragment extends BaseFragment {
                 break;
             case R.id.ivBleFind:
                 startActivity(new Intent(getActivity(), SearchActivity.class));
+                break;
+            case R.id.upText:
+                if (upText.getText().toString().contains("断开")) {
+                    activity.connect(1);
+                }
+                break;
+            case R.id.downText:
+                if (downText.getText().toString().contains("断开")) {
+                    activity.connect(2);
+                }
+                break;
 
         }
     }

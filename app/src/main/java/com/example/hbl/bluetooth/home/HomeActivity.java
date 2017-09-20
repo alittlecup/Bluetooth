@@ -642,4 +642,7 @@ public class HomeActivity extends BaseActivity {
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         tv.setCompoundDrawables(drawable, null, null, null);
     }
+    public void connect(int i){
+        threadhandler.sendEmptyMessage(i);
+    }
 }
