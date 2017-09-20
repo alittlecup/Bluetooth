@@ -177,8 +177,8 @@ public class OperationFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        upText.setEnabled(App.ISPAINENABLE);
-        downText.setEnabled(App.ISTEEENABLE);
+        upText.setEnabled(App.ISTEEENABLE);
+        downText.setEnabled(App.ISPAINENABLE);
         sbTee.setEnabled(App.ISTEEENABLE);
         sbPans.setEnabled(App.ISPAINENABLE);
         imageUp.setClickable(App.ISTEEENABLE);
