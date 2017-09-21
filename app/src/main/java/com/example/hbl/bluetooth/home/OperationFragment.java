@@ -2,11 +2,15 @@ package com.example.hbl.bluetooth.home;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -25,7 +29,13 @@ import com.example.hbl.bluetooth.search.SearchActivity;
 import com.example.hbl.bluetooth.util.SPKey;
 import com.example.hbl.bluetooth.util.SharedPreferenceUtil;
 import com.example.hbl.bluetooth.view.ObservableScrollView;
+import com.example.hbl.bluetooth.view.UltraViewPagerAdapter;
+import com.tmall.ultraviewpager.UltraViewPager;
+import com.tmall.ultraviewpager.transformer.UltraScaleTransformer;
 import com.xw.repo.BubbleSeekBar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -63,6 +73,8 @@ public class OperationFragment extends BaseFragment {
     BubbleSeekBar sbTime;
     @BindView(R.id.scrollView)
     ObservableScrollView scrollView;
+    @BindView(R.id.ultra_viewpager)
+    UltraViewPager ultraViewPager;
     private CountDownTimer timer;
     private HomeActivity activity;
     private long currentMills = 0;
@@ -130,6 +142,7 @@ public class OperationFragment extends BaseFragment {
                 sbTee.correctOffsetWhenContainerOnScrolling();
             }
         });
+        initViewPager();
 
     }
 
@@ -306,6 +319,34 @@ public class OperationFragment extends BaseFragment {
         return downCheck;
     }
 
+    private void initViewPager(){
+        List<Integer> draws=new ArrayList<>();
+        draws.add(R.drawable.banner);
+        draws.add(R.drawable.banner2);
+        ultraViewPager.setScrollMode(UltraViewPager.ScrollMode.HORIZONTAL);
+//UltraPagerAdapter 绑定子view到UltraViewPager
+        PagerAdapter adapter = new UltraViewPagerAdapter(draws);
+        ultraViewPager.setAdapter(adapter);
+        //内置indicator初始化
+        ultraViewPager.initIndicator();
+        //设置indicator样式
+        ultraViewPager.getIndicator()
+                .setOrientation(UltraViewPager.Orientation.HORIZONTAL)
+                .setFocusColor(getResources().getColor(R.color.getcode))
+                .setNormalColor(Color.WHITE)
+                .setRadius((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()));
+//设置indicator对齐方式
+        ultraViewPager.getIndicator().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+        ultraViewPager.getIndicator().setMargin(0,0,0,(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()));
+//构造indicator,绑定到UltraViewPager
+        ultraViewPager.getIndicator().build();
+
+//设定页面循环播放
+        ultraViewPager.setInfiniteLoop(true);
+        ultraViewPager.setPageTransformer(false,new UltraScaleTransformer());
+//设定页面自动切换  间隔2秒
+        ultraViewPager.setAutoScroll(5000);
+    }
 }
 
 

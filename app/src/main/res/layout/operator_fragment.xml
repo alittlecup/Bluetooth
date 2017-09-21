@@ -35,16 +35,11 @@
                 android:src="@drawable/find_ble"/>
         </FrameLayout>
 
-        <android.support.v4.view.ViewPager
+        <com.tmall.ultraviewpager.UltraViewPager
+            android:id="@+id/ultra_viewpager"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:visibility="gone"
-            android:background="@color/colorAccent" />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="180dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/banner"/>
+            android:layout_height="180dp" />
+
 
         <include layout="@layout/operate_item" />
 
