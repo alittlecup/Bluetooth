@@ -221,8 +221,8 @@ public class HomeActivity extends BaseActivity {
                 setTextDrawable(tv1, false);
                 ivUp.setVisibility(View.GONE);
                 tv1.setVisibility(View.VISIBLE);
-                ckUp.setImageResource(R.drawable.opear_ble_close);
-                OperationFragment.isUpOpened = false;
+//                ckUp.setImageResource(R.drawable.opear_ble_close);
+//                OperationFragment.isUpOpened = false;
                 DONE = true;
                 canDo = true;
                 mConnected = 0;
@@ -245,8 +245,8 @@ public class HomeActivity extends BaseActivity {
             } else if (BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 tv2.setText(getResources().getString(R.string.disconnected));
                 setTextDrawable(tv2, false);
-                ckDown.setImageResource(R.drawable.opear_ble_close);
-                OperationFragment.isDownOpened = false;
+//                ckDown.setImageResource(R.drawable.opear_ble_close);
+//                OperationFragment.isDownOpened = false;
                 ivDown.setVisibility(View.GONE);
                 tv2.setVisibility(View.VISIBLE);
                 canDo2 = true;
