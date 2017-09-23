@@ -293,6 +293,21 @@ public class HomeActivity extends BaseActivity {
                         ivUp.setImageResource(R.drawable.opear_energy);
                 }
             }
+            //关机的控制，首先发送关机指令，之后在回调中判断状态
+            //如果有两个设备，则需要判断当前的关机状态
+            if (BackClose) {
+                if (App.ISTEEENABLE && App.ISPAINENABLE) {
+                    if (hasOtherClose) {
+                        dismissDialog();
+                        finish();
+                    }else {
+                        hasOtherClose=true;
+                    }
+                }else{
+                    dismissDialog();
+                    finish();
+                }
+            }
             if (orderList.size() > 0) {
                 try {
                     Thread.sleep(200);
@@ -306,6 +321,7 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
+    boolean hasOtherClose = false;
     boolean DONE2 = true;
 
     private void displayTData(String stringExtra) {
@@ -330,6 +346,19 @@ public class HomeActivity extends BaseActivity {
                         break;
                     default:
                         ivDown.setImageResource(R.drawable.opear_energy);
+                }
+            }
+            if (BackClose) {
+                if (App.ISTEEENABLE && App.ISPAINENABLE) {
+                    if (hasOtherClose) {
+                        dismissDialog();
+                        finish();
+                    }else {
+                        hasOtherClose=true;
+                    }
+                }else{
+                    dismissDialog();
+                    finish();
                 }
             }
             if (orderList2.size() > 0) {
@@ -626,7 +655,9 @@ public class HomeActivity extends BaseActivity {
                 .setMessage("确认退出吗？").setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        HomeActivity.super.onBackPressed();
+                        BackClose = true;
+                        showDialog("");
+                        setBelClose();
                     }
                 }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
@@ -637,12 +668,20 @@ public class HomeActivity extends BaseActivity {
         builder.create().show();
     }
 
+    private boolean BackClose = false;
+
     private void setTextDrawable(TextView tv, boolean opean) {
         Drawable drawable = getResources().getDrawable(opean ? R.drawable.opear_ble : R.drawable.opear_ble_dis);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         tv.setCompoundDrawables(drawable, null, null, null);
     }
-    public void connect(int i){
+
+    public void connect(int i) {
         threadhandler.sendEmptyMessage(i);
+    }
+
+    private void setBelClose() {
+        addOrder(Order.WRITE_CLOSE);
+        addOrder2(Order.WRITE_CLOSE);
     }
 }
