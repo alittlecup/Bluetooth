@@ -7,4 +7,5 @@ package com.example.hbl.bluetooth.login;
 public final class Action {
   public static final int Action_Login=1;
    public static final int Action_MachBack=2;
+   public static final int Action_Regiest=3;
 }

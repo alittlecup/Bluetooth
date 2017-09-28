@@ -15,7 +15,7 @@ import butterknife.Unbinder;
  */
 
 public abstract class BaseFragment extends Fragment {
-    View RootView;
+    public View RootView;
     Unbinder unbinder;
 
     @Nullable
@@ -30,6 +30,7 @@ public abstract class BaseFragment extends Fragment {
         }
         return RootView;
     }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         if (unbinder == null) {

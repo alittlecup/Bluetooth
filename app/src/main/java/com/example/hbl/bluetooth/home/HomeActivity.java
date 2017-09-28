@@ -29,6 +29,7 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.example.hbl.bluetooth.App;
 import com.example.hbl.bluetooth.BaseActivity;
 import com.example.hbl.bluetooth.ModelData;
+import com.example.hbl.bluetooth.MsgFragment;
 import com.example.hbl.bluetooth.Order;
 import com.example.hbl.bluetooth.ProcessData;
 import com.example.hbl.bluetooth.R;
@@ -418,9 +419,13 @@ public class HomeActivity extends BaseActivity {
         OperationFragment operationFragment = new OperationFragment();
         ModelFragment modelFragment = new ModelFragment();
 
+        MsgFragment msgFragment=new MsgFragment();
+
         SettingFragment settingFragment = new SettingFragment();
         fragmentList.add(operationFragment);
-        fragmentList.add(modelFragment);
+//        fragmentList.add(modelFragment);
+        fragmentList.add(msgFragment);
+
         fragmentList.add(settingFragment);
 
     }
@@ -658,6 +663,10 @@ public class HomeActivity extends BaseActivity {
                         BackClose = true;
                         showDialog("");
                         setBelClose();
+                        if(TextUtils.isEmpty(address1)&&TextUtils.isEmpty(address2)){
+                            dismissDialog();
+                            finish();
+                        }
                     }
                 }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
@@ -684,4 +693,6 @@ public class HomeActivity extends BaseActivity {
         addOrder(Order.WRITE_CLOSE);
         addOrder2(Order.WRITE_CLOSE);
     }
+
+
 }

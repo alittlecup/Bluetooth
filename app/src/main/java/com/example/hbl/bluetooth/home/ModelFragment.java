@@ -13,6 +13,11 @@ import com.example.hbl.bluetooth.BaseFragment;
 import com.example.hbl.bluetooth.ModelData;
 import com.example.hbl.bluetooth.MyAdapter;
 import com.example.hbl.bluetooth.R;
+import com.hyphenate.EMMessageListener;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -34,6 +39,7 @@ public class ModelFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initOnce();
+
     }
 
     protected void initOnce() {
@@ -92,4 +98,6 @@ public class ModelFragment extends BaseFragment {
     public void onClick() {
 
     }
+
+
 }

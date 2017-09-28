@@ -1,8 +1,11 @@
 package com.example.hbl.bluetooth;
 
 import android.app.Application;
+import android.support.multidex.MultiDex;
 
 import com.example.hbl.bluetooth.util.SharedPreferenceUtil;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMOptions;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.ArrayList;
@@ -28,8 +31,14 @@ public class App extends Application {
     public void onCreate() {
         app = this;
         super.onCreate();
+        MultiDex.install(this);
         CrashReport.initCrashReport(getApplicationContext(), "d6f9fc5961", true);
         SharedPreferenceUtil.init(this, "Bluetooth");
+        EMOptions options=new EMOptions();
+        options.setAcceptInvitationAlways(false);
+
+        EMClient.getInstance().init(this,options);
+        EMClient.getInstance().setDebugMode(true);
     }
 
 }

@@ -1,25 +1,31 @@
 package com.example.hbl.bluetooth;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.hbl.bluetooth.home.HomeActivity;
 import com.example.hbl.bluetooth.network.BLog;
 import com.example.hbl.bluetooth.network.DefaultCallback;
 import com.example.hbl.bluetooth.network.RetrofitUtil;
-import com.example.hbl.bluetooth.network.ToastUtil;
 import com.example.hbl.bluetooth.network.bean.CodeResponse;
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,6 +72,7 @@ public class LoginActivity extends BaseActivity {
     private Handler mHandler = new Handler();
     private static final long SCAN_PERIOD = 10000;
     private CountDownTimer timer;
+    private boolean progressShow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,16 +101,22 @@ public class LoginActivity extends BaseActivity {
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
                 break;
             case R.id.btnLogin:
-                if (editYz.getText().toString().trim().equals(code)) {
-                    if (timer != null) {
-                        timer.cancel();
-                    }
-                    btnSerach.setEnabled(true);
-                } else {
-                    ToastUtil.show("验证码不正确");
-                }
+//                if (editYz.getText().toString().trim().equals(code)) {
+//                    if (timer != null) {
+//                        timer.cancel();
+//                    }
+//                    btnSerach.setEnabled(true);
+//                } else {
+//                    ToastUtil.show("验证码不正确");
+//                }
+                login(btnLogin);
                 break;
         }
+    }
+
+    @Override
+    public void onActivityReenter(int resultCode, Intent data) {
+        super.onActivityReenter(resultCode, data);
     }
 
     private String code = "";
@@ -210,5 +223,100 @@ public class LoginActivity extends BaseActivity {
             });
         }
     };
+    public void login(View view) {
+//        if (!EaseCommonUtils.isNetWorkConnected(this)) {
+//            Toast.makeText(this, R.string.network_isnot_available, Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+        String currentUsername = editPhone.getText().toString().trim();
+        String currentPassword = editPhone.getText().toString().trim();
+
+        if (TextUtils.isEmpty(currentUsername)) {
+            Toast.makeText(this, R.string.User_name_cannot_be_empty, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (TextUtils.isEmpty(currentPassword)) {
+            Toast.makeText(this, R.string.Password_cannot_be_empty, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        progressShow = true;
+        final ProgressDialog pd = new ProgressDialog(LoginActivity.this);
+        pd.setCanceledOnTouchOutside(false);
+        pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                Log.d("TAG", "EMClient.getInstance().onCancel");
+                progressShow = false;
+            }
+        });
+        pd.setMessage(getString(R.string.Is_landing));
+        pd.show();
+
+        // After logout，the DemoDB may still be accessed due to async callback, so the DemoDB will be re-opened again.
+        // close it before login to make sure DemoDB not overlap
+//        DemoDBManager.getInstance().closeDB();
+
+        // reset current user name before login
+//        DemoHelper.getInstance().setCurrentUserName(currentUsername);
+
+        final long start = System.currentTimeMillis();
+        // call login method
+        Log.d("TAG", "EMClient.getInstance().login");
+        EMClient.getInstance().login(currentUsername, currentPassword, new EMCallBack() {
+
+            @Override
+            public void onSuccess() {
+                Log.d("TAG", "login: onSuccess");
+
+
+                // ** manually load all local groups and conversation
+                EMClient.getInstance().groupManager().loadAllGroups();
+                EMClient.getInstance().chatManager().loadAllConversations();
+
+                // update current user's display name for APNs
+//                boolean updatenick = EMClient.getInstance().pushManager().updatePushNickname(
+//                        DemoApplication.currentUserNick.trim());
+//                if (!updatenick) {
+//                    Log.e("LoginActivity", "update current user nick fail");
+//                }
+
+                if (!LoginActivity.this.isFinishing() && pd.isShowing()) {
+                    pd.dismiss();
+                }
+                // get user's info (this should be get from App's server or 3rd party service)
+//                DemoHelper.getInstance().getUserProfileManager().asyncGetCurrentUserInfo();
+
+                Intent intent = new Intent(LoginActivity.this,
+                        HomeActivity.class);
+                startActivity(intent);
+
+                finish();
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+                Log.d("TAG", "login: onProgress");
+            }
+
+            @Override
+            public void onError(final int code, final String message) {
+                Log.d("TAG", "login: onError: " + code);
+                if (!progressShow) {
+                    return;
+                }
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        pd.dismiss();
+                        Toast.makeText(getApplicationContext(), getString(R.string.Login_failed) + message,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
+
 
 }

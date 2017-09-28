@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_hight"
+        android:background="@color/white">
+
+        <TextView
+            style="@style/base_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="测试界面"
+            android:textSize="@dimen/title_bar_textsize" />
+
+        <Button
+            android:id="@+id/btnSure"
+            style="@style/base_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:background="@android:color/transparent"
+            android:text="添加亲属"
+            android:textSize="16sp" />
+    </FrameLayout>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/editup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="20dp"
+        android:hint="衣加热强度" />
+
+    <EditText
+        android:id="@+id/editdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:hint="裤加热强度" />
+
+    <EditText
+        android:id="@+id/edittime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:hint="时间长度" />
+
+    <Button
+        android:id="@+id/btn_send"
+        style="@style/base_btn"
+        android:text="发送"
+        android:textSize="20sp" />
+</LinearLayout>
