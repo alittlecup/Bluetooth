@@ -1,7 +1,6 @@
 package com.example.hbl.bluetooth;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -153,8 +152,10 @@ public class MsgFragment extends BaseFragment {
 
     @OnClick(R.id.btnSure)
     public void onClick() {
-        startActivity(new Intent(activity, AddUserActivity.class));
+//        startActivity(new Intent(activity, AddUserActivity.class));
+        activity.changeTemperture(edittime.getText().toString());
     }
+
 
     @OnClick(R.id.btn_send)
     public void setInfo() {
@@ -162,7 +163,6 @@ public class MsgFragment extends BaseFragment {
         String downmsg = editdown.getText().toString().trim();
         String timemsg = edittime.getText().toString();
         if (TextUtils.isEmpty(mCurrentName)) return;
-//        EMMessage cmdMsg = EMMessage.createSendMessage(EMMessage.Type.CMD);
         String msg = "衣加热强度： " + upmsg + "\n" +
                 "裤加热强度： " + downmsg + "\n" +
                 "加热时长： " + timemsg;
@@ -175,27 +175,6 @@ public class MsgFragment extends BaseFragment {
 
 
     }
-    @OnClick(R.id.button)
-    public void setTouInfo() {
-        String upmsg = editup.getText().toString().trim();
-        String downmsg = editdown.getText().toString().trim();
-        String timemsg = edittime.getText().toString();
-        if (TextUtils.isEmpty(mCurrentName)) return;
-        EMMessage cmdMsg = EMMessage.createSendMessage(EMMessage.Type.CMD);
-
-        //支持单聊和群聊，默认单聊，如果是群聊添加下面这行
-//        cmdMsg.setChatType(EMMessage.ChatType.GroupChat);
-        cmdMsg.setAttribute("up", upmsg);
-        cmdMsg.setAttribute("down", downmsg);
-        cmdMsg.setAttribute("time", timemsg);
-        cmdMsg.setTo(mCurrentName);
-
-        EMClient.getInstance().chatManager().sendMessage(cmdMsg);
-        ToastUtil.show("发送成功");
-
-
-    }
-
 
     EMMessageListener msgListener = new EMMessageListener() {
 

@@ -124,6 +124,7 @@ public class OperationFragment extends BaseFragment {
 
             }
         });
+
         sbTime.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListener() {
             @Override
             public void onProgressChanged(int progress, float progressFloat) {
@@ -172,6 +173,7 @@ public class OperationFragment extends BaseFragment {
         mHomeViewModel.getmUpProgress().observe(this, integer -> {
             if (sbTee.isEnabled()) {
                 sbTee.setProgress(integer);
+                mHomeViewModel.sendOrderUp(Order.WRITE_HEAT + toHex(integer));
             } else {
                 ToastUtil.show("当前蓝牙设备不可用");
             }
@@ -179,6 +181,7 @@ public class OperationFragment extends BaseFragment {
         mHomeViewModel.getmDownProgress().observe(this, integer -> {
             if (sbPans.isEnabled()) {
                 sbPans.setProgress(integer);
+                mHomeViewModel.sendOrderDown(Order.WRITE_HEAT + toHex(integer));
             } else {
                 ToastUtil.show("当前蓝牙设备不可用");
             }
@@ -186,6 +189,8 @@ public class OperationFragment extends BaseFragment {
         mHomeViewModel.getmTimeProgress().observe(this, integer -> {
             if (sbTime.isEnabled()) {
                 sbTime.setProgress(integer);
+                mHomeViewModel.sendOrderUp(Order.WRITE_TIME + timeToHex(integer * 60));
+                mHomeViewModel.sendOrderDown(Order.WRITE_TIME + timeToHex(integer * 60));
             } else {
                 ToastUtil.show("当前蓝牙设备不可用");
             }
@@ -194,13 +199,13 @@ public class OperationFragment extends BaseFragment {
             upText.setEnabled(b);
             sbTee.setEnabled(b);
             imageUp.setEnabled(b);
-            sbTime.setEnabled(b||mHomeViewModel.getmIsPainEnable().getValue()==null?false:mHomeViewModel.getmIsPainEnable().getValue());
+            sbTime.setEnabled(b||(mHomeViewModel.getmIsPainEnable().getValue()==null?false:mHomeViewModel.getmIsPainEnable().getValue()));
         });
         mHomeViewModel.getmIsPainEnable().observe(this,b->{
             downText.setEnabled(b);
             sbPans.setEnabled(b);
             imageDown.setEnabled(b);
-            sbTime.setEnabled(b||mHomeViewModel.getmIsTeeEnable().getValue()==null?false:mHomeViewModel.getmIsTeeEnable().getValue());
+            sbTime.setEnabled(b||(mHomeViewModel.getmIsTeeEnable().getValue()==null?false:mHomeViewModel.getmIsTeeEnable().getValue()));
         });
 
 

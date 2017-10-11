@@ -15,6 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitUtil {
     private static OkHttpClient okHttpClient;
+    public static OkHttpClient weatherClient;
     private static Retrofit.Builder builder;
         private static String debugHost = "http://food.xwzce.com/app/index/";
 //    private static String debugHost = "http://10.133.36.21:8080/online-sign/";
@@ -31,6 +32,12 @@ public class RetrofitUtil {
         builder = new Retrofit.Builder()
                 .baseUrl(BuildConfig.DEBUG ? debugHost : releaseHost)
                 .addConverterFactory(GsonConverterFactory.create());
+        weatherClient = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS)
+                .addInterceptor(new LoggingIntercepter())//打印日志
+                .build();
     }
 
     public static NetService getService() {

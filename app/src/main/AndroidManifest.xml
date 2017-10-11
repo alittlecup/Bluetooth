@@ -13,8 +13,7 @@
     <!-- Required -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+    buses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -23,6 +22,14 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+
+    <!--用于进行网络定位-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!--用于获取wifi的获取权限，wifi信息会用来进行网络定位-->
+    <!--用于申请调用A-GPS模块-->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -35,6 +42,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/MyAppTheme">
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="8538c097caf8dd950af2231e16ee12cc"/>
         <activity
             android:name=".home.HomeActivity"
             android:launchMode="singleTask">
@@ -104,6 +114,7 @@
 
         <activity android:name=".RegiestActivity" />
         <activity android:name=".AddUserActivity"></activity>
+        <service android:name="com.amap.api.location.APSService"></service>
     </application>
 
 </manifest>

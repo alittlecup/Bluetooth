@@ -4,11 +4,14 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.view.View;
 
+import com.example.hbl.bluetooth.Order;
+import com.example.hbl.bluetooth.interfaces.HeatControl;
+
 /**
  * Created by hbl on 2017/10/10.
  */
 
-public class HomeViewModel extends ViewModel {
+public class HomeViewModel extends ViewModel implements HeatControl{
     private final MutableLiveData<String> mUpText = new MutableLiveData<>();
     private final MutableLiveData<String> mDownText = new MutableLiveData<>();
     private final MutableLiveData<Boolean> mUptextState = new MutableLiveData<>();
@@ -33,6 +36,7 @@ public class HomeViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> mIsTeeEnable=new MutableLiveData<>();
     private final MutableLiveData<Boolean> mIsPainEnable=new MutableLiveData<>();
+
 
     public MutableLiveData<Boolean> getmIsTeeEnable() {
         return mIsTeeEnable;
@@ -117,4 +121,19 @@ public class HomeViewModel extends ViewModel {
     public MutableLiveData<Integer> getmDownImg() {
         return mDownImg;
     }
+
+
+
+    @Override
+    public void changeHeat(Integer integer) {
+        mUpProgress.setValue(integer);
+        mDownProgress.setValue(integer);
+    }
+
+    @Override
+    public void stop() {
+        sendOrderUp(Order.WRITE_CLOSE);
+        sendOrderDown(Order.WRITE_CLOSE);
+    }
+
 }

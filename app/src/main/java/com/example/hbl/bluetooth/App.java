@@ -25,6 +25,7 @@ public class App extends Application {
 
     private static ArrayList<ModelData> datas = new ArrayList<>();
 
+
     @Override
     public void onCreate() {
         app = this;
@@ -32,11 +33,14 @@ public class App extends Application {
         MultiDex.install(this);
         CrashReport.initCrashReport(getApplicationContext(), "d6f9fc5961", true);
         SharedPreferenceUtil.init(this, "Bluetooth");
-        EMOptions options=new EMOptions();
+        EMOptions options = new EMOptions();
         options.setAcceptInvitationAlways(false);
 
-        EMClient.getInstance().init(this,options);
+        EMClient.getInstance().init(this, options);
         EMClient.getInstance().setDebugMode(true);
+
+        LocationManager instance = LocationManager.getInstance(this);
+        instance.init();
     }
 
 }

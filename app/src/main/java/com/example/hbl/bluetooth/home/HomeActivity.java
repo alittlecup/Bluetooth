@@ -26,15 +26,19 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.example.hbl.bluetooth.App;
 import com.example.hbl.bluetooth.BaseActivity;
+import com.example.hbl.bluetooth.LocationManager;
 import com.example.hbl.bluetooth.ModelData;
 import com.example.hbl.bluetooth.MsgFragment;
 import com.example.hbl.bluetooth.Order;
 import com.example.hbl.bluetooth.ProcessData;
 import com.example.hbl.bluetooth.R;
+import com.example.hbl.bluetooth.WeatherControl;
 import com.example.hbl.bluetooth.bluetooth_old.SampleGattAttributes;
 import com.example.hbl.bluetooth.network.BLog;
 import com.example.hbl.bluetooth.network.RetrofitUtil;
 import com.example.hbl.bluetooth.network.ToastUtil;
+import com.example.hbl.bluetooth.network.WeatherCallback;
+import com.example.hbl.bluetooth.network.bean.CityWeather;
 import com.example.hbl.bluetooth.newblue.BluetoothLeSecondeService;
 import com.example.hbl.bluetooth.newblue.BluetoothLeService;
 
@@ -104,6 +108,7 @@ public class HomeActivity extends BaseActivity {
     };
     private boolean DONE = true;
     private HomeViewModel mHomeViewModel;
+    private WeatherControl control;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,14 +117,38 @@ public class HomeActivity extends BaseActivity {
         ButterKnife.bind(this);
         initHost();
         initViewModel();
+        LocationManager.getInstance(getApplication()).addObserver(location->{
+            System.out.println();
+            RetrofitUtil.getService(RetrofitUtil.weatherClient)
+                    .getweather(location.getLatitude()+":"+location.getLongitude())
+                    .enqueue(new WeatherCallback() {
+                        @Override
+                        public void onSucess(CityWeather cityWeather) {
+                            String temperature = cityWeather.results.get(0).now.temperature;
+                            control.changeHeat(Integer.valueOf(temperature));
+                        }
+
+                        @Override
+                        public void onFailure(String msg) {
+                        }
+                    });
+
+        });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocationManager.getInstance(getApplication()).startLocation();
+    }
+    public void changeTemperture(String temperature){
+        control.changeHeat(Integer.valueOf(temperature));
+    }
     private void initViewModel() {
         mHomeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         mHomeViewModel.getmOrderUp().observe(this, str -> addOrder(str));
         mHomeViewModel.getmOrderDown().observe(this, str -> addOrder2(str));
-
-
+        control=WeatherControl.getInstance(mHomeViewModel);
     }
 
     public BluetoothGattCharacteristic RWNCharacteristic;
