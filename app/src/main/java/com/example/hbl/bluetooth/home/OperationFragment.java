@@ -1,8 +1,10 @@
 package com.example.hbl.bluetooth.home;
 
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -81,9 +83,15 @@ public class OperationFragment extends BaseFragment {
 
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initViewModelObserver();
+
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         activity = (HomeActivity) getActivity();
         sbTee.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListener() {
             @Override
@@ -92,7 +100,7 @@ public class OperationFragment extends BaseFragment {
 
             @Override
             public void getProgressOnActionUp(int progress, float progressFloat) {
-                activity.addOrder(Order.WRITE_HEAT + toHex(progress));
+                mHomeViewModel.sendOrderUp(Order.WRITE_HEAT + toHex(progress));
 
             }
 
@@ -108,7 +116,7 @@ public class OperationFragment extends BaseFragment {
 
             @Override
             public void getProgressOnActionUp(int progress, float progressFloat) {
-                activity.addOrder2(Order.WRITE_HEAT + toHex(progress));
+                mHomeViewModel.sendOrderDown(Order.WRITE_HEAT + toHex(progress));
             }
 
             @Override
@@ -124,8 +132,8 @@ public class OperationFragment extends BaseFragment {
 
             @Override
             public void getProgressOnActionUp(int progress, float progressFloat) {
-                activity.addOrder(Order.WRITE_TIME + timeToHex(progress * 60));
-                activity.addOrder2(Order.WRITE_TIME + timeToHex(progress * 60));
+                mHomeViewModel.sendOrderUp(Order.WRITE_TIME + timeToHex(progress * 60));
+                mHomeViewModel.sendOrderDown(Order.WRITE_TIME + timeToHex(progress * 60));
                 resetTimer(progress * 60);
             }
 
@@ -144,6 +152,64 @@ public class OperationFragment extends BaseFragment {
         });
         initViewPager();
 
+
+    }
+
+    HomeViewModel mHomeViewModel;
+
+    private void initViewModelObserver() {
+        mHomeViewModel = ViewModelProviders.of(activity).get(HomeViewModel.class);
+        mHomeViewModel.getmUpText().observe(this, str -> upText.setText(str));
+        mHomeViewModel.getmDownText().observe(this, str -> downText.setText(str));
+        mHomeViewModel.getmUptextState().observe(this, state -> setTextDrawable(upText, state));
+        mHomeViewModel.getmDowntextState().observe(this, state -> setTextDrawable(downText, state));
+        mHomeViewModel.getmUptextVisible().observe(this, visi -> upText.setVisibility(visi ? View.VISIBLE : View.GONE));
+        mHomeViewModel.getmDowntextVisible().observe(this, visi -> downText.setVisibility(visi ? View.VISIBLE : View.GONE));
+        mHomeViewModel.getmUpImg().observe(this, integer -> upImageEn.setImageResource(integer));
+        mHomeViewModel.getmDownImg().observe(this, integer -> downImageEn.setImageResource(integer));
+        mHomeViewModel.getmUpImgVisible().observe(this, visible -> upImageEn.setVisibility(visible ? View.VISIBLE : View.GONE));
+        mHomeViewModel.getmDownImgVisible().observe(this, visible -> downImageEn.setVisibility(visible ? View.VISIBLE : View.GONE));
+        mHomeViewModel.getmUpProgress().observe(this, integer -> {
+            if (sbTee.isEnabled()) {
+                sbTee.setProgress(integer);
+            } else {
+                ToastUtil.show("当前蓝牙设备不可用");
+            }
+        });
+        mHomeViewModel.getmDownProgress().observe(this, integer -> {
+            if (sbPans.isEnabled()) {
+                sbPans.setProgress(integer);
+            } else {
+                ToastUtil.show("当前蓝牙设备不可用");
+            }
+        });
+        mHomeViewModel.getmTimeProgress().observe(this, integer -> {
+            if (sbTime.isEnabled()) {
+                sbTime.setProgress(integer);
+            } else {
+                ToastUtil.show("当前蓝牙设备不可用");
+            }
+        });
+        mHomeViewModel.getmIsTeeEnable().observe(this,b->{
+            upText.setEnabled(b);
+            sbTee.setEnabled(b);
+            imageUp.setEnabled(b);
+            sbTime.setEnabled(b||mHomeViewModel.getmIsPainEnable().getValue()==null?false:mHomeViewModel.getmIsPainEnable().getValue());
+        });
+        mHomeViewModel.getmIsPainEnable().observe(this,b->{
+            downText.setEnabled(b);
+            sbPans.setEnabled(b);
+            imageDown.setEnabled(b);
+            sbTime.setEnabled(b||mHomeViewModel.getmIsTeeEnable().getValue()==null?false:mHomeViewModel.getmIsTeeEnable().getValue());
+        });
+
+
+    }
+
+    private void setTextDrawable(TextView tv, boolean opean) {
+        Drawable drawable = getResources().getDrawable(opean ? R.drawable.opear_ble : R.drawable.opear_ble_dis);
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        tv.setCompoundDrawables(drawable, null, null, null);
     }
 
     @Override
@@ -178,8 +244,8 @@ public class OperationFragment extends BaseFragment {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                activity.addOrder(Order.WRITE_CLOSE);
-                activity.addOrder2(Order.WRITE_CLOSE);
+                mHomeViewModel.sendOrderUp(Order.WRITE_CLOSE);
+                mHomeViewModel.sendOrderDown(Order.WRITE_CLOSE);
 
             }
         };
@@ -190,13 +256,6 @@ public class OperationFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        upText.setEnabled(App.ISTEEENABLE);
-        downText.setEnabled(App.ISPAINENABLE);
-        sbTee.setEnabled(App.ISTEEENABLE);
-        sbPans.setEnabled(App.ISPAINENABLE);
-        imageUp.setClickable(App.ISTEEENABLE);
-        imageDown.setClickable(App.ISPAINENABLE);
-        sbTime.setEnabled(App.ISPAINENABLE || App.ISTEEENABLE);
         Long value = SharedPreferenceUtil.getValue(SPKey.TIME, 0L);
         long l = System.currentTimeMillis();
         if (l < value) {
@@ -208,16 +267,16 @@ public class OperationFragment extends BaseFragment {
     public static boolean isDownOpened;
     public static boolean isUpOpened;
 
-    @OnClick({R.id.downCheck, R.id.upCheck, R.id.ivBleFind,R.id.upText,R.id.downText})
+    @OnClick({R.id.downCheck, R.id.upCheck, R.id.ivBleFind, R.id.upText, R.id.downText})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.downCheck:
-                activity.addOrder2(!isDownOpened ? Order.WRITE_OPEN : Order.WRITE_CLOSE);
+                mHomeViewModel.sendOrderDown(!isDownOpened ? Order.WRITE_OPEN : Order.WRITE_CLOSE);
                 if (!isDownOpened) {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            activity.addOrder2(Order.READ_ENERGY);
+                            mHomeViewModel.sendOrderDown(Order.READ_ENERGY);
                         }
                     }, 30000);
                 }
@@ -225,12 +284,12 @@ public class OperationFragment extends BaseFragment {
                 isDownOpened = !isDownOpened;
                 break;
             case R.id.upCheck:
-                activity.addOrder(!isUpOpened ? Order.WRITE_OPEN : Order.WRITE_CLOSE);
+                mHomeViewModel.sendOrderUp(!isUpOpened ? Order.WRITE_OPEN : Order.WRITE_CLOSE);
                 if (!isUpOpened) {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            activity.addOrder(Order.READ_ENERGY);
+                            mHomeViewModel.sendOrderUp(Order.READ_ENERGY);
                         }
                     }, 30000);
                 }
@@ -319,8 +378,8 @@ public class OperationFragment extends BaseFragment {
         return downCheck;
     }
 
-    private void initViewPager(){
-        List<Integer> draws=new ArrayList<>();
+    private void initViewPager() {
+        List<Integer> draws = new ArrayList<>();
         draws.add(R.drawable.banner);
         draws.add(R.drawable.banner2);
         ultraViewPager.setScrollMode(UltraViewPager.ScrollMode.HORIZONTAL);
@@ -337,13 +396,13 @@ public class OperationFragment extends BaseFragment {
                 .setRadius((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()));
 //设置indicator对齐方式
         ultraViewPager.getIndicator().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
-        ultraViewPager.getIndicator().setMargin(0,0,0,(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()));
+        ultraViewPager.getIndicator().setMargin(0, 0, 0, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()));
 //构造indicator,绑定到UltraViewPager
         ultraViewPager.getIndicator().build();
 
 //设定页面循环播放
         ultraViewPager.setInfiniteLoop(true);
-        ultraViewPager.setPageTransformer(false,new UltraScaleTransformer());
+        ultraViewPager.setPageTransformer(false, new UltraScaleTransformer());
 //设定页面自动切换  间隔2秒
         ultraViewPager.setAutoScroll(5000);
     }

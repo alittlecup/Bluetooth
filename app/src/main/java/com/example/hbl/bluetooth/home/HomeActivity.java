@@ -1,5 +1,6 @@
 package com.example.hbl.bluetooth.home;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
@@ -9,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -20,8 +20,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
@@ -58,62 +56,54 @@ public class HomeActivity extends BaseActivity {
 
 
     private String address1, address2;
-    private Button connect, connect2;
-    private TextView tv1, tv2;
-    private ImageView ivUp, ivDown;
-    private ImageView ckUp, ckDown;
-    public OperationFragment fragment;
     private Handler handler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 3) {
-                fragment = (OperationFragment) fragmentList.get(0);
-                tv1 = fragment.getTextView();
-                tv2 = fragment.getText2View();
-                ivUp = fragment.getUpImage();
-                ivDown = fragment.getDownImage();
-                ckDown = fragment.getDownCheck();
-                ckUp = fragment.getUpCheck();
                 if (!TextUtils.isEmpty(address1)) {
-                    tv1.setOnClickListener(new View.OnClickListener() {
+                    mHomeViewModel.getmUpTextClick().setValue(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (tv1.getText().toString().contains("断开")) {
-                                threadhandler.sendEmptyMessage(1);
+                            if (v instanceof TextView) {
+                                if (((TextView) v).getText().toString().contains("断开")) {
+                                    threadhandler.sendEmptyMessage(1);
+                                }
                             }
                         }
                     });
                 } else {
-                    tv1.setText("当前不可用");
-                    setTextDrawable(tv1, false);
+                    mHomeViewModel.getmUpText().setValue("当前不可用");
+                    mHomeViewModel.getmUptextState().setValue(false);
                 }
                 if (!TextUtils.isEmpty(address2)) {
-                    tv2.setOnClickListener(new View.OnClickListener() {
+                    mHomeViewModel.getmDownTextClick().setValue(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (tv2.getText().toString().contains("断开")) {
-                                threadhandler.sendEmptyMessage(2);
+                            if (v instanceof TextView) {
+                                if (((TextView) v).getText().toString().contains("断开")) {
+                                    threadhandler.sendEmptyMessage(2);
+                                }
                             }
-
                         }
                     });
                 } else {
-                    tv2.setText("当前不可用");
-                    setTextDrawable(tv2, false);
+                    mHomeViewModel.getmDownText().setValue("当前不可用");
+                    mHomeViewModel.getmDowntextState().setValue(false);
 
                 }
             } else if (msg.what == 1) {
-                addOrder(Order.READ_ENERGY);
+                mHomeViewModel.sendOrderUp(Order.READ_ENERGY);
                 handler.sendEmptyMessageDelayed(1, 60 * 1000);
             } else if (msg.what == 2) {
-                addOrder2(Order.READ_ENERGY);
+                mHomeViewModel.sendOrderDown(Order.READ_ENERGY);
                 handler.sendEmptyMessageDelayed(2, 60 * 1000);
             }
         }
     };
     private boolean DONE = true;
+    private HomeViewModel mHomeViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +111,15 @@ public class HomeActivity extends BaseActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         initHost();
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        mHomeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        mHomeViewModel.getmOrderUp().observe(this, str -> addOrder(str));
+        mHomeViewModel.getmOrderDown().observe(this, str -> addOrder2(str));
+
+
     }
 
     public BluetoothGattCharacteristic RWNCharacteristic;
@@ -190,18 +189,18 @@ public class HomeActivity extends BaseActivity {
             address2 = hotdw;
         }
         if (!TextUtils.isEmpty(address1)) {
-            App.ISTEEENABLE = true;
+            mHomeViewModel.getmIsTeeEnable().setValue(true);
             Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
             bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
         } else {
-            App.ISTEEENABLE = false;
+            mHomeViewModel.getmIsTeeEnable().setValue(false);
         }
         if (!TextUtils.isEmpty(address2)) {
-            App.ISPAINENABLE = true;
+            mHomeViewModel.getmIsPainEnable().setValue(true);
             Intent gattServiceIntent = new Intent(this, BluetoothLeSecondeService.class);
             bindService(gattServiceIntent, mServiceSecondConnection, BIND_AUTO_CREATE);
         } else {
-            App.ISPAINENABLE = false;
+            mHomeViewModel.getmIsPainEnable().setValue(false);
         }
     }
 
@@ -211,52 +210,45 @@ public class HomeActivity extends BaseActivity {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
-                tv1.setText(getResources().getString(R.string.connected));
-                setTextDrawable(tv1, true);
+                mHomeViewModel.getmUpText().setValue(getResources().getString(R.string.connected));
+                mHomeViewModel.getmUptextState().setValue(true);
                 mConnected = 2;
                 if (mBluetoothLeSecondService != null && mConnected2 == 0) {
                     mBluetoothLeSecondService.connect(address2);
                 }
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                tv1.setText(getResources().getString(R.string.disconnected));
-                setTextDrawable(tv1, false);
-                ivUp.setVisibility(View.GONE);
-                tv1.setVisibility(View.VISIBLE);
-//                ckUp.setImageResource(R.drawable.opear_ble_close);
-//                OperationFragment.isUpOpened = false;
+                mHomeViewModel.getmUpText().setValue(getResources().getString(R.string.disconnected));
+                mHomeViewModel.getmUptextState().setValue(false);
+                mHomeViewModel.getmUptextVisible().setValue(true);
+                mHomeViewModel.getmUpImgVisible().setValue(false);
                 DONE = true;
                 canDo = true;
                 mConnected = 0;
                 handler.removeMessages(1);
             } else if (BluetoothLeService.ACTION_GATT_CONNECTEING.equals(action)) {
-                tv1.setText("正在连接...");
-                setTextDrawable(tv1, false);
+                mHomeViewModel.getmUpText().setValue("正在连接...");
+                mHomeViewModel.getmUptextState().setValue(false);
                 mConnected = 1;
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                // Show all the supported services and characteristics on the
-                // user interface.
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTED.equals(action)) {
-//                connect2.setText(getResources().getString(R.string.connected));
-                tv2.setText(getResources().getString(R.string.connected));
-                setTextDrawable(tv2, true);
+                mHomeViewModel.getmDownText().setValue(getResources().getString(R.string.connected));
+                mHomeViewModel.getmDowntextState().setValue(true);
                 mConnected2 = 2;
             } else if (BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                tv2.setText(getResources().getString(R.string.disconnected));
-                setTextDrawable(tv2, false);
-//                ckDown.setImageResource(R.drawable.opear_ble_close);
-//                OperationFragment.isDownOpened = false;
-                ivDown.setVisibility(View.GONE);
-                tv2.setVisibility(View.VISIBLE);
+                mHomeViewModel.getmDownText().setValue(getResources().getString(R.string.disconnected));
+                mHomeViewModel.getmDowntextState().setValue(false);
+                mHomeViewModel.getmDownImgVisible().setValue(false);
+                mHomeViewModel.getmDowntextVisible().setValue(true);
                 canDo2 = true;
                 DONE2 = true;
                 mConnected2 = 0;
                 handler.removeMessages(2);
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTEING.equals(action)) {
-                tv2.setText("正在连接...");
-                setTextDrawable(tv2, false);
+                mHomeViewModel.getmDownText().setValue("正在连接...");
+                mHomeViewModel.getmDowntextState().setValue(false);
                 mConnected2 = 1;
             } else if (BluetoothLeSecondeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the
@@ -281,34 +273,22 @@ public class HomeActivity extends BaseActivity {
             if (resString.contains("AA")) {
                 char c = resString.charAt(resString.length() - 1);
                 Integer integer = Integer.valueOf(c + "");
-                ivUp.setVisibility(View.VISIBLE);
-                tv1.setVisibility(View.GONE);
+                mHomeViewModel.getmUptextVisible().setValue(false);
+                mHomeViewModel.getmUpImgVisible().setValue(true);
                 switch (integer) {
                     case 0:
                     case 1:
                     case 2:
                     case 3:
-                        ivUp.setImageResource(R.drawable.opear_energy_low);
+                        mHomeViewModel.getmUpImg().setValue(R.drawable.opear_energy_low);
                         break;
                     default:
-                        ivUp.setImageResource(R.drawable.opear_energy);
+                        mHomeViewModel.getmUpImg().setValue(R.drawable.opear_energy);
                 }
             }
             //关机的控制，首先发送关机指令，之后在回调中判断状态
             //如果有两个设备，则需要判断当前的关机状态
-            if (BackClose) {
-                if (App.ISTEEENABLE && App.ISPAINENABLE) {
-                    if (hasOtherClose) {
-                        dismissDialog();
-                        finish();
-                    }else {
-                        hasOtherClose=true;
-                    }
-                }else{
-                    dismissDialog();
-                    finish();
-                }
-            }
+            close();
             if (orderList.size() > 0) {
                 try {
                     Thread.sleep(200);
@@ -336,32 +316,21 @@ public class HomeActivity extends BaseActivity {
             if (resString.contains("AA")) {
                 char c = resString.charAt(resString.length() - 1);
                 Integer integer = Integer.valueOf(c + "");
-                ivDown.setVisibility(View.VISIBLE);
-                tv2.setVisibility(View.GONE);
+
+                mHomeViewModel.getmDowntextVisible().setValue(false);
+                mHomeViewModel.getmDownImgVisible().setValue(true);
                 switch (integer) {
                     case 0:
                     case 1:
                     case 2:
                     case 3:
-                        ivDown.setImageResource(R.drawable.opear_energy_low);
+                        mHomeViewModel.getmDownImg().setValue(R.drawable.opear_energy_low);
                         break;
                     default:
-                        ivDown.setImageResource(R.drawable.opear_energy);
+                        mHomeViewModel.getmDownImg().setValue(R.drawable.opear_energy);
                 }
             }
-            if (BackClose) {
-                if (App.ISTEEENABLE && App.ISPAINENABLE) {
-                    if (hasOtherClose) {
-                        dismissDialog();
-                        finish();
-                    }else {
-                        hasOtherClose=true;
-                    }
-                }else{
-                    dismissDialog();
-                    finish();
-                }
-            }
+            close();
             if (orderList2.size() > 0) {
                 try {
                     Thread.sleep(200);
@@ -371,6 +340,24 @@ public class HomeActivity extends BaseActivity {
                 write2();
             } else {
                 canDo2 = true;
+            }
+        }
+    }
+
+    private void close() {
+        if (BackClose) {
+            boolean mTee = mHomeViewModel.getmIsTeeEnable().getValue() == null ? false : mHomeViewModel.getmIsTeeEnable().getValue();
+            boolean mPan = mHomeViewModel.getmIsPainEnable().getValue() == null ? false : mHomeViewModel.getmIsPainEnable().getValue();
+            if (mTee && mPan) {
+                if (hasOtherClose) {
+                    dismissDialog();
+                    finish();
+                } else {
+                    hasOtherClose = true;
+                }
+            } else {
+                dismissDialog();
+                finish();
             }
         }
     }
@@ -419,7 +406,7 @@ public class HomeActivity extends BaseActivity {
         OperationFragment operationFragment = new OperationFragment();
         ModelFragment modelFragment = new ModelFragment();
 
-        MsgFragment msgFragment=new MsgFragment();
+        MsgFragment msgFragment = new MsgFragment();
 
         SettingFragment settingFragment = new SettingFragment();
         fragmentList.add(operationFragment);
@@ -464,10 +451,8 @@ public class HomeActivity extends BaseActivity {
         });
         getSupportFragmentManager().beginTransaction().replace(R.id.tabs, fragmentList.get(0)).commitAllowingStateLoss();
         getModeData();
-        if (tv1 == null || tv2 == null) {
-            handler.sendEmptyMessage(3);
-        }
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+        handler.sendEmptyMessage(3);
     }
 
     public static HandlerThread thread;
@@ -632,7 +617,7 @@ public class HomeActivity extends BaseActivity {
     private Queue<String> orderList2 = new LinkedList<>();
     private Queue<String> failOrderList2 = new LinkedList<>();
 
-    public void addOrder(String order) {
+    private void addOrder(String order) {
         if (TextUtils.isEmpty(address1)) return;
         if (!orderList.contains(order)) {
             orderList.offer(order);
@@ -643,7 +628,7 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
-    public void addOrder2(String order) {
+    private void addOrder2(String order) {
         if (TextUtils.isEmpty(address2)) return;
         if (!orderList2.contains(order)) {
             orderList2.offer(order);
@@ -663,7 +648,7 @@ public class HomeActivity extends BaseActivity {
                         BackClose = true;
                         showDialog("");
                         setBelClose();
-                        if(TextUtils.isEmpty(address1)&&TextUtils.isEmpty(address2)){
+                        if (TextUtils.isEmpty(address1) && TextUtils.isEmpty(address2)) {
                             dismissDialog();
                             finish();
                         }
@@ -679,19 +664,14 @@ public class HomeActivity extends BaseActivity {
 
     private boolean BackClose = false;
 
-    private void setTextDrawable(TextView tv, boolean opean) {
-        Drawable drawable = getResources().getDrawable(opean ? R.drawable.opear_ble : R.drawable.opear_ble_dis);
-        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        tv.setCompoundDrawables(drawable, null, null, null);
-    }
 
     public void connect(int i) {
         threadhandler.sendEmptyMessage(i);
     }
 
     private void setBelClose() {
-        addOrder(Order.WRITE_CLOSE);
-        addOrder2(Order.WRITE_CLOSE);
+        mHomeViewModel.sendOrderUp(Order.WRITE_CLOSE);
+        mHomeViewModel.sendOrderDown(Order.WRITE_CLOSE);
     }
 
 

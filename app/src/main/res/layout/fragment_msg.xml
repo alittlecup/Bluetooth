@@ -65,4 +65,13 @@
         style="@style/base_btn"
         android:text="发送"
         android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/button"
+        style="@style/base_btn"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="透传发送"
+        android:textSize="20sp" />
 </LinearLayout>

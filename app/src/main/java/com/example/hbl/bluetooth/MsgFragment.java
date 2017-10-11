@@ -1,9 +1,9 @@
 package com.example.hbl.bluetooth;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.example.hbl.bluetooth.home.HomeActivity;
+import com.example.hbl.bluetooth.home.HomeViewModel;
 import com.example.hbl.bluetooth.network.ToastUtil;
 import com.hyphenate.EMContactListener;
 import com.hyphenate.EMMessageListener;
@@ -24,7 +26,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * Created by hbl on 2017/9/25.
@@ -32,7 +33,7 @@ import butterknife.Unbinder;
 
 public class MsgFragment extends BaseFragment {
 
-    FragmentActivity activity;
+    HomeActivity activity;
     @BindView(R.id.btnSure)
     Button btnSure;
     @BindView(R.id.spinner)
@@ -43,13 +44,18 @@ public class MsgFragment extends BaseFragment {
     EditText editdown;
     @BindView(R.id.edittime)
     EditText edittime;
-    Unbinder unbinder;
     ArrayAdapter<String> adapter;
+    HomeViewModel mHomeViewModel;
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mHomeViewModel = ViewModelProviders.of(activity).get(HomeViewModel.class);
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        activity = getActivity();
+        activity = (HomeActivity) getActivity();
         new Thread() {
             @Override
             public void run() {
@@ -60,7 +66,7 @@ public class MsgFragment extends BaseFragment {
                 }
             }
         }.start();
-        adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, names);
+        adapter = new ArrayAdapter(activity, android.R.layout.simple_spinner_item, names);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -120,7 +126,7 @@ public class MsgFragment extends BaseFragment {
             public void run() {
                 try {
                     names = EMClient.getInstance().contactManager().getAllContactsFromServer();
-                    getActivity().runOnUiThread(new Runnable() {
+                    activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             adapter.clear();
@@ -157,43 +163,69 @@ public class MsgFragment extends BaseFragment {
         String timemsg = edittime.getText().toString();
         if (TextUtils.isEmpty(mCurrentName)) return;
 //        EMMessage cmdMsg = EMMessage.createSendMessage(EMMessage.Type.CMD);
-        String msg="衣加热强度： "+upmsg+"\n"+
-                "裤加热强度： "+downmsg+"\n"+
-                "加热时长： "+timemsg;
+        String msg = "衣加热强度： " + upmsg + "\n" +
+                "裤加热强度： " + downmsg + "\n" +
+                "加热时长： " + timemsg;
         EMMessage cmdMsg = EMMessage.createTxtSendMessage(msg, mCurrentName);
+        cmdMsg.setAttribute("up", upmsg);
+        cmdMsg.setAttribute("down", downmsg);
+        cmdMsg.setAttribute("time", timemsg);
+        EMClient.getInstance().chatManager().sendMessage(cmdMsg);
+        ToastUtil.show("发送成功");
+
+
+    }
+    @OnClick(R.id.button)
+    public void setTouInfo() {
+        String upmsg = editup.getText().toString().trim();
+        String downmsg = editdown.getText().toString().trim();
+        String timemsg = edittime.getText().toString();
+        if (TextUtils.isEmpty(mCurrentName)) return;
+        EMMessage cmdMsg = EMMessage.createSendMessage(EMMessage.Type.CMD);
+
         //支持单聊和群聊，默认单聊，如果是群聊添加下面这行
 //        cmdMsg.setChatType(EMMessage.ChatType.GroupChat);
-//        String toUsername = "test1";//发送给某个人
-//        cmdMsg.setAttribute("up", upmsg);
-//        cmdMsg.setAttribute("down", downmsg);
-//        cmdMsg.setAttribute("time", timemsg);
-//        String action="action1";//action可以自定义
+        cmdMsg.setAttribute("up", upmsg);
+        cmdMsg.setAttribute("down", downmsg);
+        cmdMsg.setAttribute("time", timemsg);
+        cmdMsg.setTo(mCurrentName);
 
         EMClient.getInstance().chatManager().sendMessage(cmdMsg);
         ToastUtil.show("发送成功");
 
 
     }
+
+
     EMMessageListener msgListener = new EMMessageListener() {
 
         @Override
         public void onMessageReceived(List<EMMessage> messages) {
             //收到消息
-            for(EMMessage mes:messages){
-//                System.out.println(mes.toString());
-              getActivity().runOnUiThread(new Runnable() {
-                  @Override
-                  public void run() {
+            for (EMMessage mes : messages) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
                       ToastUtil.show(mes.getBody().toString());
-                  }
-              });
+                        try {
+                            System.out.println(mes.getStringAttribute("up").toString());
+                            mHomeViewModel.getmUpProgress().setValue(Integer.valueOf(mes.getStringAttribute("up")));
+                            mHomeViewModel.getmDownProgress().setValue(Integer.valueOf(mes.getStringAttribute("down")));
+                            mHomeViewModel.getmTimeProgress().setValue(Integer.valueOf(mes.getStringAttribute("time")));
+                        } catch (HyphenateException e) {
+                            e.printStackTrace();
+                        }catch (NumberFormatException e){
+                            ToastUtil.show("请输入数字");
+                        }
+                    }
+                });
             }
         }
 
         @Override
         public void onCmdMessageReceived(List<EMMessage> messages) {
             //收到透传消息
-            for(EMMessage mes:messages){
+            for (EMMessage mes : messages) {
                 System.out.println(mes.toString());
             }
         }
@@ -201,7 +233,7 @@ public class MsgFragment extends BaseFragment {
         @Override
         public void onMessageRead(List<EMMessage> messages) {
             //收到已读回执
-            for(EMMessage mes:messages){
+            for (EMMessage mes : messages) {
                 System.out.println(mes.toString());
             }
         }
@@ -209,14 +241,15 @@ public class MsgFragment extends BaseFragment {
         @Override
         public void onMessageDelivered(List<EMMessage> message) {
             //收到已送达回执
-            for(EMMessage mes:message){
+            for (EMMessage mes : message) {
                 System.out.println(mes.toString());
             }
         }
+
         @Override
         public void onMessageRecalled(List<EMMessage> messages) {
             //消息被撤回
-            for(EMMessage mes:messages){
+            for (EMMessage mes : messages) {
                 System.out.println(mes.toString());
             }
 

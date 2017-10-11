@@ -1,5 +1,7 @@
 package com.example.hbl.bluetooth;
 
+import android.arch.lifecycle.LifecycleRegistry;
+import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,7 +16,7 @@ import butterknife.Unbinder;
  * Created by hbl on 2017/6/7.
  */
 
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment implements LifecycleRegistryOwner {
     public View RootView;
     Unbinder unbinder;
 
@@ -49,6 +51,9 @@ public abstract class BaseFragment extends Fragment {
         }
         super.onDestroyView();
     }
-
-
+    LifecycleRegistry registry=new LifecycleRegistry(this);
+    @Override
+    public LifecycleRegistry getLifecycle() {
+        return registry;
+    }
 }
