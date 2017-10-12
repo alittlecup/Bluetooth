@@ -39,6 +39,17 @@ public class HomeViewModel extends ViewModel implements HeatControl{
 
     private final MutableLiveData<Boolean> mAutoHeat=new MutableLiveData<>();
 
+    private final MutableLiveData<Boolean> mUpSwitch=new MutableLiveData<>();
+    private final MutableLiveData<Boolean> mDownSwitch=new MutableLiveData<>();
+
+    public MutableLiveData<Boolean> getmUpSwitch() {
+        return mUpSwitch;
+    }
+
+    public MutableLiveData<Boolean> getmDownSwitch() {
+        return mDownSwitch;
+    }
+
     public MutableLiveData<Boolean> getmAutoHeat() {
         return mAutoHeat;
     }
@@ -139,6 +150,8 @@ public class HomeViewModel extends ViewModel implements HeatControl{
     public void stop() {
         sendOrderUp(Order.WRITE_CLOSE);
         sendOrderDown(Order.WRITE_CLOSE);
+        mUpSwitch.setValue(false);
+        mDownSwitch.setValue(false);
     }
 
 }

@@ -30,6 +30,8 @@
     <string name="menu_stop">Stop</string>
     <string name="login">登录</string>
     <string name="smsCode">验证码</string>
+    <string name="password">密码</string>
+    <string name="inputPassword">请输入密码</string>
     <string name="inputPhone">请输入手机号</string>
     <string name="inputSmsCode">请输入验证码</string>
     <string name="getSmsCode">获取验证码</string>

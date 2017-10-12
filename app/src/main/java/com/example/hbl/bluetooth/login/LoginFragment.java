@@ -131,6 +131,18 @@ public class LoginFragment extends BaseFragment {
         }.start();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        boolean loggedInBefore = EMClient.getInstance().isLoggedInBefore();
+        if(loggedInBefore){
+            Intent intent = new Intent(getActivity(),
+                    HomeActivity.class);
+            startActivity(intent);
+            getActivity().finish();
+        }
+    }
+
     public void login(View view) {
 //        if (!EaseCommonUtils.isNetWorkConnected(this)) {
 //            Toast.makeText(this, R.string.network_isnot_available, Toast.LENGTH_SHORT).show();

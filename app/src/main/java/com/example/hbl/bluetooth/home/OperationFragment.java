@@ -208,6 +208,15 @@ public class OperationFragment extends BaseFragment {
             sbTime.setEnabled(b||(mHomeViewModel.getmIsTeeEnable().getValue()==null?false:mHomeViewModel.getmIsTeeEnable().getValue()));
         });
 
+        mHomeViewModel.getmUpSwitch().observe(this,b->{
+            upCheck.setImageResource(b ? R.drawable.opear_ble_open : R.drawable.opear_ble_close);
+        });
+        mHomeViewModel.getmDownSwitch().observe(this,b->{
+            downCheck.setImageResource(b ? R.drawable.opear_ble_open : R.drawable.opear_ble_close);
+        });
+        mHomeViewModel.getmUpSwitch().setValue(false);
+        mHomeViewModel.getmDownSwitch().setValue(false);
+
 
     }
 
@@ -269,15 +278,13 @@ public class OperationFragment extends BaseFragment {
     }
 
     private Handler handler = new Handler();
-    public static boolean isDownOpened;
-    public static boolean isUpOpened;
 
     @OnClick({R.id.downCheck, R.id.upCheck, R.id.ivBleFind, R.id.upText, R.id.downText})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.downCheck:
-                mHomeViewModel.sendOrderDown(!isDownOpened ? Order.WRITE_OPEN : Order.WRITE_CLOSE);
-                if (!isDownOpened) {
+                mHomeViewModel.getmDownSwitch().setValue(!mHomeViewModel.getmDownSwitch().getValue());
+                if (mHomeViewModel.getmDownSwitch().getValue()) {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -285,12 +292,11 @@ public class OperationFragment extends BaseFragment {
                         }
                     }, 30000);
                 }
-                downCheck.setImageResource(!isDownOpened ? R.drawable.opear_ble_open : R.drawable.opear_ble_close);
-                isDownOpened = !isDownOpened;
+                mHomeViewModel.sendOrderDown(mHomeViewModel.getmDownSwitch().getValue()? Order.WRITE_OPEN : Order.WRITE_CLOSE);
                 break;
             case R.id.upCheck:
-                mHomeViewModel.sendOrderUp(!isUpOpened ? Order.WRITE_OPEN : Order.WRITE_CLOSE);
-                if (!isUpOpened) {
+                mHomeViewModel.getmUpSwitch().setValue(!mHomeViewModel.getmUpSwitch().getValue());
+                if (mHomeViewModel.getmUpSwitch().getValue()) {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -298,8 +304,7 @@ public class OperationFragment extends BaseFragment {
                         }
                     }, 30000);
                 }
-                upCheck.setImageResource(!isUpOpened ? R.drawable.opear_ble_open : R.drawable.opear_ble_close);
-                isUpOpened = !isUpOpened;
+                mHomeViewModel.sendOrderUp(mHomeViewModel.getmUpSwitch().getValue() ? Order.WRITE_OPEN : Order.WRITE_CLOSE);
                 break;
             case R.id.ivBleFind:
                 startActivity(new Intent(getActivity(), SearchActivity.class));
@@ -358,30 +363,6 @@ public class OperationFragment extends BaseFragment {
         }
     }
 
-    public TextView getTextView() {
-        return upText;
-    }
-
-    public TextView getText2View() {
-        return downText;
-    }
-
-
-    public ImageView getUpImage() {
-        return upImageEn;
-    }
-
-    public ImageView getDownImage() {
-        return downImageEn;
-    }
-
-    public ImageView getUpCheck() {
-        return upCheck;
-    }
-
-    public ImageView getDownCheck() {
-        return downCheck;
-    }
 
     private void initViewPager() {
         List<Integer> draws = new ArrayList<>();
