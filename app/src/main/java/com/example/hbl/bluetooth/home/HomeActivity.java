@@ -117,10 +117,10 @@ public class HomeActivity extends BaseActivity {
         ButterKnife.bind(this);
         initHost();
         initViewModel();
-        LocationManager.getInstance(getApplication()).addObserver(location->{
+        LocationManager.getInstance(getApplication()).addObserver(location -> {
             System.out.println();
             RetrofitUtil.getService(RetrofitUtil.weatherClient)
-                    .getweather(location.getLatitude()+":"+location.getLongitude())
+                    .getweather(location.getLatitude() + ":" + location.getLongitude())
                     .enqueue(new WeatherCallback() {
                         @Override
                         public void onSucess(CityWeather cityWeather) {
@@ -139,16 +139,29 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        LocationManager.getInstance(getApplication()).startLocation();
+        if (getBooleanValue(mHomeViewModel.getmAutoHeat().getValue())) {
+            LocationManager.getInstance(getApplication()).startLocation();
+        }
     }
-    public void changeTemperture(String temperature){
+    private boolean getBooleanValue(Boolean value){
+        return value==null?false:value;
+    }
+    public void changeTemperture(String temperature) {
         control.changeHeat(Integer.valueOf(temperature));
     }
+
     private void initViewModel() {
         mHomeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         mHomeViewModel.getmOrderUp().observe(this, str -> addOrder(str));
         mHomeViewModel.getmOrderDown().observe(this, str -> addOrder2(str));
-        control=WeatherControl.getInstance(mHomeViewModel);
+        control = WeatherControl.getInstance(mHomeViewModel);
+        mHomeViewModel.getmAutoHeat().observe(this,b->{
+            if(b){
+                LocationManager.getInstance(getApplication()).startLocation();
+            }
+        });
+        mHomeViewModel.getmIsPainEnable().setValue(false);
+        mHomeViewModel.getmIsTeeEnable().setValue(false);
     }
 
     public BluetoothGattCharacteristic RWNCharacteristic;
@@ -375,8 +388,8 @@ public class HomeActivity extends BaseActivity {
 
     private void close() {
         if (BackClose) {
-            boolean mTee = mHomeViewModel.getmIsTeeEnable().getValue() == null ? false : mHomeViewModel.getmIsTeeEnable().getValue();
-            boolean mPan = mHomeViewModel.getmIsPainEnable().getValue() == null ? false : mHomeViewModel.getmIsPainEnable().getValue();
+            boolean mTee = getBooleanValue(mHomeViewModel.getmIsTeeEnable().getValue()) ;
+            boolean mPan =getBooleanValue(mHomeViewModel.getmIsPainEnable().getValue());
             if (mTee && mPan) {
                 if (hasOtherClose) {
                     dismissDialog();

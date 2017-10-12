@@ -34,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/line" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
@@ -46,38 +47,42 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="24dp"
                 android:gravity="center_vertical"
-                android:text="性别"/>
+                android:text="性别" />
 
             <Space
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1" />
+
             <RadioGroup
                 android:id="@+id/radioGroup"
                 android:layout_width="wrap_content"
-                android:orientation="horizontal"
+                android:layout_height="match_parent"
                 android:layout_marginRight="20dp"
-                android:layout_height="match_parent">
+                android:orientation="horizontal">
+
                 <RadioButton
                     android:id="@+id/radioMan"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:button="@null"
+                    android:checked="false"
                     android:drawableLeft="@drawable/check_box"
                     android:drawablePadding="20dp"
-                    android:checked="false"
-                    android:text="男"/>
+                    android:text="男" />
+
                 <RadioButton
                     android:id="@+id/radioWomen"
                     android:layout_width="wrap_content"
-                    android:layout_marginLeft="30dp"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="30dp"
                     android:button="@null"
                     android:drawableLeft="@drawable/check_box"
                     android:drawablePadding="20dp"
-                    android:text="女"/>
+                    android:text="女" />
             </RadioGroup>
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -88,6 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             item:lefttext="出生日期" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -98,6 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             item:lefttext="身高" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -127,6 +134,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             item:lefttext="爱好" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -136,8 +144,34 @@
             android:id="@+id/llOptions"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginBottom="60dp"
             item:lefttext="备注" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginBottom="60dp"
+            android:background="@color/white">
+
+            <TextView
+                style="@style/base_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="24dp"
+                android:gravity="center_vertical"
+                android:text="自动控温" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <CheckBox
+                android:id="@+id/checkboxHeatEnable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="关闭"/>
+        </LinearLayout>
 
 
     </LinearLayout>

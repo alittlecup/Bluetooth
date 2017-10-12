@@ -37,6 +37,11 @@ public class HomeViewModel extends ViewModel implements HeatControl{
     private final MutableLiveData<Boolean> mIsTeeEnable=new MutableLiveData<>();
     private final MutableLiveData<Boolean> mIsPainEnable=new MutableLiveData<>();
 
+    private final MutableLiveData<Boolean> mAutoHeat=new MutableLiveData<>();
+
+    public MutableLiveData<Boolean> getmAutoHeat() {
+        return mAutoHeat;
+    }
 
     public MutableLiveData<Boolean> getmIsTeeEnable() {
         return mIsTeeEnable;

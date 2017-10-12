@@ -1,6 +1,7 @@
 package com.example.hbl.bluetooth;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -43,8 +44,11 @@ public class MsgFragment extends BaseFragment {
     EditText editdown;
     @BindView(R.id.edittime)
     EditText edittime;
+    @BindView(R.id.editWeather)
+    EditText editWeather;
     ArrayAdapter<String> adapter;
     HomeViewModel mHomeViewModel;
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -152,10 +156,14 @@ public class MsgFragment extends BaseFragment {
 
     @OnClick(R.id.btnSure)
     public void onClick() {
-//        startActivity(new Intent(activity, AddUserActivity.class));
-        activity.changeTemperture(edittime.getText().toString());
+        startActivity(new Intent(activity, AddUserActivity.class));
     }
 
+    @OnClick(R.id.btn_weather)
+    public void onTemChange() {
+        activity.changeTemperture(editWeather.getText().toString());
+
+    }
 
     @OnClick(R.id.btn_send)
     public void setInfo() {
@@ -185,7 +193,7 @@ public class MsgFragment extends BaseFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                      ToastUtil.show(mes.getBody().toString());
+                        ToastUtil.show(mes.getBody().toString());
                         try {
                             System.out.println(mes.getStringAttribute("up").toString());
                             mHomeViewModel.getmUpProgress().setValue(Integer.valueOf(mes.getStringAttribute("up")));
@@ -193,7 +201,7 @@ public class MsgFragment extends BaseFragment {
                             mHomeViewModel.getmTimeProgress().setValue(Integer.valueOf(mes.getStringAttribute("time")));
                         } catch (HyphenateException e) {
                             e.printStackTrace();
-                        }catch (NumberFormatException e){
+                        } catch (NumberFormatException e) {
                             ToastUtil.show("请输入数字");
                         }
                     }
