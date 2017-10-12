@@ -2,9 +2,12 @@ package com.example.hbl.bluetooth.home;
 
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
@@ -12,9 +15,12 @@ import android.widget.RadioGroup;
 
 import com.example.hbl.bluetooth.BaseFragment;
 import com.example.hbl.bluetooth.R;
+import com.example.hbl.bluetooth.login.LoginActivity;
 import com.example.hbl.bluetooth.util.SPKey;
 import com.example.hbl.bluetooth.util.SharedPreferenceUtil;
 import com.example.hbl.bluetooth.view.MineItemView;
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
 
 import butterknife.BindView;
 
@@ -47,6 +53,8 @@ public class SettingFragment extends BaseFragment {
     CheckBox checkboxHeatEnable;
     @BindView(R.id.radioGroup)
     RadioGroup radioGroup;
+    @BindView(R.id.loginout)
+    Button loginout;
     public SettingFragment() {
     }
     HomeViewModel mHomeViewModel;
@@ -70,6 +78,32 @@ public class SettingFragment extends BaseFragment {
                     checkboxHeatEnable.setText("关闭");
                     mHomeViewModel.getmAutoHeat().setValue(false);
                 }
+            }
+        });
+        loginout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EMClient.getInstance().logout(true, new EMCallBack() {
+
+                    @Override
+                    public void onSuccess() {
+                        // TODO Auto-generated method stub
+                        startActivity(new Intent(getActivity(), LoginActivity.class));
+                        getActivity().finish();
+                    }
+
+                    @Override
+                    public void onProgress(int progress, String status) {
+                        // TODO Auto-generated method stub
+
+                    }
+
+                    @Override
+                    public void onError(int code, String message) {
+                        // TODO Auto-generated method stub
+
+                    }
+                });
             }
         });
     }
