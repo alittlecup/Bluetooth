@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -18,6 +19,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -451,10 +453,12 @@ public class HomeActivity extends BaseActivity {
         MsgFragment msgFragment = new MsgFragment();
 
         SettingFragment settingFragment = new SettingFragment();
+        WebViewFragment webViewFragment=new WebViewFragment();
         fragmentList.add(operationFragment);
+
 //        fragmentList.add(modelFragment);
         fragmentList.add(msgFragment);
-
+        fragmentList.add(webViewFragment);
         fragmentList.add(settingFragment);
 
     }
@@ -465,6 +469,7 @@ public class HomeActivity extends BaseActivity {
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.opeartor_on, "操作").setInactiveIconResource(R.drawable.operator_un))
                 .addItem(new BottomNavigationItem(R.drawable.module_on, "模式").setInactiveIconResource(R.drawable.module_un))
+                .addItem(new BottomNavigationItem(R.drawable.shop, "商城").setInactiveIconResource(R.drawable.shop_un))
                 .addItem(new BottomNavigationItem(R.drawable.mine_on, "我的").setInactiveIconResource(R.drawable.mine_un))
                 .setFirstSelectedPosition(0)
                 .initialise();
@@ -502,6 +507,7 @@ public class HomeActivity extends BaseActivity {
     static {
         thread = new HandlerThread("Pool");
         thread.start();
+
     }
 
     private Handler threadhandler = new Handler(thread.getLooper()) {

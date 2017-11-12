@@ -1,5 +1,6 @@
 package com.example.hbl.bluetooth;
 
+import android.app.ProgressDialog;
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.os.Bundle;
@@ -49,11 +50,34 @@ public abstract class BaseFragment extends Fragment implements LifecycleRegistry
             unbinder.unbind();
             unbinder = null;
         }
+        if(progressDialog!=null&&progressDialog.isShowing()){
+            progressDialog.dismiss();
+            progressDialog=null;
+        }
         super.onDestroyView();
     }
-    LifecycleRegistry registry=new LifecycleRegistry(this);
+
+    LifecycleRegistry registry = new LifecycleRegistry(this);
+
     @Override
     public LifecycleRegistry getLifecycle() {
         return registry;
+    }
+
+    ProgressDialog progressDialog;
+
+    public void showDialog(String message) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+        }
+        progressDialog.setMessage(message);
+        progressDialog.show();
+    }
+
+    public void dismissDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+
     }
 }

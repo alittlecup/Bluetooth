@@ -3,8 +3,8 @@ apply plugin: 'com.android.library'
 def VERSION_NAME = "3.6"
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.0"
 
     defaultConfig {
         minSdkVersion 14
