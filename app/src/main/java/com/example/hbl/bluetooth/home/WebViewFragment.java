@@ -61,7 +61,7 @@ public class WebViewFragment extends BaseFragment{
         });
 
 
-        webView.loadUrl("http://shop_un.xml.xwzce.com/");
+        webView.loadUrl("http://shop.xwzce.com/");
         showDialog("");
 
     }
