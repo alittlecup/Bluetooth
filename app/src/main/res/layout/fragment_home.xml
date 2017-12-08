@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@drawable/home_top_title"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/edit_home_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/search_background"
+            android:enabled="false" />
+
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignRight="@id/edit_home_search"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="6dp"
+            android:padding="10dp"
+            android:src="@drawable/search" />
+    </RelativeLayout>
+
+    <com.tmall.ultraviewpager.UltraViewPager
+        android:id="@+id/ultra_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="180dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="horizontal">
+
+        <com.example.hbl.bluetooth.view.ItemView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:girdDrawble="@drawable/home_chongfenyi"
+            app:text="冲锋衣" />
+
+        <com.example.hbl.bluetooth.view.ItemView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:girdDrawble="@drawable/home_neiyi"
+            app:text="内衣" />
+
+        <com.example.hbl.bluetooth.view.ItemView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:girdDrawble="@drawable/home_majia"
+            app:text="马甲" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:visibility="gone"
+        android:orientation="horizontal">
+
+
+        <com.example.hbl.bluetooth.view.ItemView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:girdDrawble="@drawable/home_huyao"
+            app:text="护腰" />
+
+        <com.example.hbl.bluetooth.view.ItemView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:girdDrawble="@drawable/home_hujing"
+            app:text="护颈" />
+
+        <com.example.hbl.bluetooth.view.ItemView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:girdDrawble="@drawable/home_chat"
+            app:text="聊天" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:visibility="visible" />
+
+
+</LinearLayout>

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@drawable/background"
     android:orientation="vertical">
 
     <FrameLayout
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_margin="10dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp" />
 
     <EditText
         android:id="@+id/editup"
@@ -73,10 +73,11 @@
         style="@style/base_btn"
         android:text="发送"
         android:textSize="20sp" />
+
     <Button
         android:id="@+id/btn_weather"
         style="@style/base_btn"
-        android:text="气温调节蓝牙"
         android:layout_marginTop="20dp"
+        android:text="气温调节蓝牙"
         android:textSize="20sp" />
 </LinearLayout>

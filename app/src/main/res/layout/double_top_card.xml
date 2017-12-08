@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginTop="10dp"
+    android:background="@drawable/card_back">
+
+    <ImageView
+        android:id="@+id/top_cloth"
+        android:layout_width="200dp"
+        android:layout_height="180dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/top_cloth" />
+
+    <ImageView
+        android:id="@+id/upText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/top_cloth"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/bluetoon_off" />
+
+    <ImageView
+        android:id="@+id/upImageEn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/top_cloth"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/power_max" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="关"
+            android:textColor="@color/textColotOp"
+            android:textSize="20dp" />
+
+        <ImageView
+            android:id="@+id/upCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/duble_bluetoooth_on" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开"
+            android:textColor="@color/textColotOp"
+            android:textSize="20dp" />
+
+
+    </LinearLayout>
+
+
+    <!--<LinearLayout-->
+
+    <!--android:id="@+id/llenergy"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:layout_marginLeft="20dp"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:visibility="gone">-->
+
+    <!--<TextView-->
+    <!--style="@style/base_text"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:drawableLeft="@drawable/opear_ble_dis"-->
+    <!--android:drawablePadding="5dp"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:visibility="visible"-->
+    <!--tools:text="蓝牙已连接" />-->
+
+    <!--<ImageView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:src="@drawable/opear_energy"-->
+    <!--android:visibility="gone" />-->
+
+    <!--<Space-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:layout_weight="1" />-->
+
+    <!--<ImageView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_marginBottom="6dp"-->
+    <!--android:layout_marginRight="30dp"-->
+    <!--android:layout_marginTop="6dp"-->
+    <!--android:src="@drawable/selector_opear_ble_oc" />-->
+    <!--</LinearLayout>-->
+
+    <SeekBar
+        android:id="@+id/sbTee"
+        android:layout_below="@+id/top_cloth"
+        style="@style/seekbar_red" />
+
+</RelativeLayout>

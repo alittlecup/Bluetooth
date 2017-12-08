@@ -83,7 +83,6 @@
         android:layout_marginRight="20dp"
         android:layout_toRightOf="@id/llleft"
         android:layout_below="@+id/llenergy"
-        app:bsb_progress_drawable="true"
         app:bsb_progress_hight="7dp"
         app:bsb_max="100"
         app:bsb_min="0"

@@ -13,7 +13,6 @@
         app:bsb_hide_bubble="true"
         app:bsb_max="100"
         app:bsb_min="0"
-        app:bsb_progress_drawable="true"
         app:bsb_progress_hight="8dp"
         app:bsb_thumb_color="@android:color/transparent"
         app:bsb_thumb_radius="10dp" />

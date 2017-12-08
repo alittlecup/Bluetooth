@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.hbl.bluetooth.view.ObservableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:background="@drawable/page_top_title">
+
+            <ImageView
+                android:id="@+id/imBack"
+                android:layout_width="21dp"
+                android:layout_height="36dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="18dp"
+                android:src="@drawable/back_double_op" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="智能控温"
+                android:textColor="@color/textColotOp"
+                android:textSize="30dp" />
+        </RelativeLayout>
+
+        <include layout="@layout/double_top_card" />
+
+        <include layout="@layout/double_down_card" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
+                android:layout_marginTop="15dp"
+                android:text="定时加热"
+                android:textColor="@color/textColorRed"
+                android:textSize="30dp" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/clock"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toRightOf="@+id/clock"
+                android:text="00"
+                android:textColor="@color/textColotOp"
+                android:textSize="36dp" />
+
+            <ImageView
+                android:id="@+id/image_min"
+                android:layout_width="48dp"
+                android:layout_height="17dp"
+                android:layout_above="@+id/sbTime"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/time"
+                android:src="@drawable/min" />
+
+
+            <SeekBar
+                android:id="@+id/sbTime"
+                style="@style/seekbar_blue"
+                android:layout_below="@+id/time" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</com.example.hbl.bluetooth.view.ObservableScrollView>

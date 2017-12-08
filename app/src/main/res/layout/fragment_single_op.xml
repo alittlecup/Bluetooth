@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.hbl.bluetooth.view.ObservableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:background="@drawable/page_top_title">
+
+            <ImageView
+                android:id="@+id/imBack"
+                android:layout_width="21dp"
+                android:layout_height="36dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="18dp"
+                android:src="@drawable/back_double_op" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="智能控温"
+                android:textColor="@color/textColotOp"
+                android:textSize="30dp" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="设定温度"
+            android:textColor="@color/textColotOp"
+            android:textSize="24dp" />
+
+        <include layout="@layout/view_single_op" />
+
+        <include layout="@layout/view_time_item" />
+
+
+    </LinearLayout>
+
+</com.example.hbl.bluetooth.view.ObservableScrollView>

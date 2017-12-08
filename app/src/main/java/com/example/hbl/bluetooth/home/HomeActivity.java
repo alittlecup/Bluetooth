@@ -145,9 +145,11 @@ public class HomeActivity extends BaseActivity {
             LocationManager.getInstance(getApplication()).startLocation();
         }
     }
-    private boolean getBooleanValue(Boolean value){
-        return value==null?false:value;
+
+    private boolean getBooleanValue(Boolean value) {
+        return value == null ? false : value;
     }
+
     public void changeTemperture(String temperature) {
         control.changeHeat(Integer.valueOf(temperature));
     }
@@ -157,8 +159,8 @@ public class HomeActivity extends BaseActivity {
         mHomeViewModel.getmOrderUp().observe(this, str -> addOrder(str));
         mHomeViewModel.getmOrderDown().observe(this, str -> addOrder2(str));
         control = WeatherControl.getInstance(mHomeViewModel);
-        mHomeViewModel.getmAutoHeat().observe(this,b->{
-            if(b){
+        mHomeViewModel.getmAutoHeat().observe(this, b -> {
+            if (b) {
                 LocationManager.getInstance(getApplication()).startLocation();
             }
         });
@@ -324,10 +326,20 @@ public class HomeActivity extends BaseActivity {
                     case 1:
                     case 2:
                     case 3:
-                        mHomeViewModel.getmUpImg().setValue(R.drawable.opear_energy_low);
+                    case 4:
+                        mHomeViewModel.getmUpImg().setValue(R.drawable.power_low);
+                        break;
+                    case 7:
+                    case 8:
+                        mHomeViewModel.getmUpImg().setValue(R.drawable.power_three);
+                        break;
+
+                    case 5:
+                    case 6:
+                        mHomeViewModel.getmUpImg().setValue(R.drawable.power_half);
                         break;
                     default:
-                        mHomeViewModel.getmUpImg().setValue(R.drawable.opear_energy);
+                        mHomeViewModel.getmUpImg().setValue(R.drawable.power_max);
                 }
             }
             //关机的控制，首先发送关机指令，之后在回调中判断状态
@@ -390,8 +402,8 @@ public class HomeActivity extends BaseActivity {
 
     private void close() {
         if (BackClose) {
-            boolean mTee = getBooleanValue(mHomeViewModel.getmIsTeeEnable().getValue()) ;
-            boolean mPan =getBooleanValue(mHomeViewModel.getmIsPainEnable().getValue());
+            boolean mTee = getBooleanValue(mHomeViewModel.getmIsTeeEnable().getValue());
+            boolean mPan = getBooleanValue(mHomeViewModel.getmIsPainEnable().getValue());
             if (mTee && mPan) {
                 if (hasOtherClose) {
                     dismissDialog();
@@ -453,12 +465,14 @@ public class HomeActivity extends BaseActivity {
         MsgFragment msgFragment = new MsgFragment();
 
         SettingFragment settingFragment = new SettingFragment();
-        WebViewFragment webViewFragment=new WebViewFragment();
-        fragmentList.add(operationFragment);
+        WebViewFragment webViewFragment = new WebViewFragment();
+
+        HomeFragment homeFragment = new HomeFragment();
+        fragmentList.add(webViewFragment);
 
 //        fragmentList.add(modelFragment);
-        fragmentList.add(msgFragment);
-        fragmentList.add(webViewFragment);
+        fragmentList.add(homeFragment);
+//        fragmentList.add(webViewFragment);
         fragmentList.add(settingFragment);
 
     }
@@ -467,10 +481,10 @@ public class HomeActivity extends BaseActivity {
         getFragments();
         bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
         bottomNavigationBar
-                .addItem(new BottomNavigationItem(R.drawable.opeartor_on, "操作").setInactiveIconResource(R.drawable.operator_un))
-                .addItem(new BottomNavigationItem(R.drawable.module_on, "模式").setInactiveIconResource(R.drawable.module_un))
-                .addItem(new BottomNavigationItem(R.drawable.shop, "商城").setInactiveIconResource(R.drawable.shop_un))
-                .addItem(new BottomNavigationItem(R.drawable.mine_on, "我的").setInactiveIconResource(R.drawable.mine_un))
+                .addItem(new BottomNavigationItem(R.drawable.shop_active, "商城").setInactiveIconResource(R.drawable.shop_inactive))
+                .addItem(new BottomNavigationItem(R.drawable.home_active, "首页").setInactiveIconResource(R.drawable.home_inactive))
+                .addItem(new BottomNavigationItem(R.drawable.mine_active, "我的").setInactiveIconResource(R.drawable.mine_inactive))
+//                .addItem(new BottomNavigationItem(R.drawable.mine_on, "我的").setInactiveIconResource(R.drawable.mine_un))
                 .setFirstSelectedPosition(0)
                 .initialise();
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
@@ -689,6 +703,10 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        if(getSupportFragmentManager().getBackStackEntryCount()>0){
+            super.onBackPressed();
+            return;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setMessage("确认退出吗？").setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
@@ -720,6 +738,13 @@ public class HomeActivity extends BaseActivity {
     private void setBelClose() {
         mHomeViewModel.sendOrderUp(Order.WRITE_CLOSE);
         mHomeViewModel.sendOrderDown(Order.WRITE_CLOSE);
+    }
+
+    public void routeTo(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
 

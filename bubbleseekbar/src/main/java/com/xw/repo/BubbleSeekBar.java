@@ -106,7 +106,7 @@ public class BubbleSeekBar extends View {
     private int mTextSpace; // space between text and track
     private boolean triggerBubbleShowing;
     private boolean triggerSeekBySection;
-    private boolean progressDrawable;
+    private BitmapDrawable progressDrawable;
     private BitmapDrawable thumDrawable;
 
     private OnProgressChangedListener mProgressListener; // progress changing listener
@@ -187,8 +187,8 @@ public class BubbleSeekBar extends View {
         duration = a.getInteger(R.styleable.BubbleSeekBar_bsb_always_show_bubble_delay, 0);
         mAlwaysShowBubbleDelay = duration <= 0 ? 200 : duration;
         isHideBubble = a.getBoolean(R.styleable.BubbleSeekBar_bsb_hide_bubble, false);
-        progressDrawable = a.getBoolean(R.styleable.BubbleSeekBar_bsb_progress_drawable, false);
         thumDrawable = (BitmapDrawable) a.getDrawable(R.styleable.BubbleSeekBar_bsb_thum_drawable);
+        progressDrawable = (BitmapDrawable) a.getDrawable(R.styleable.BubbleSeekBar_bsb_progress_drawable);
 
         progressHight = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_progress_hight, dp2px(2));
         a.recycle();
@@ -525,7 +525,7 @@ public class BubbleSeekBar extends View {
                 canvas.drawText(String.valueOf(getProgress()), mThumbCenterX, y_, mPaint);
             }
         }
-        if (progressDrawable) {
+        if (progressDrawable!=null) {
             if (linearGradient == null) {
                 linearGradient = new LinearGradient(xLeft, yTop, xRight, yTop, new int[]{Color.parseColor("#5abff0"), Color.parseColor("#2750ae")}, null, LinearGradient.TileMode.CLAMP);
                 mProgressPaint = new Paint();
@@ -533,7 +533,11 @@ public class BubbleSeekBar extends View {
                 mProgressPaint.setShader(linearGradient);
                 mProgressPaint.setStrokeWidth(progressHight);
             }
-            canvas.drawLine(xLeft, yTop, xRight, yTop, mProgressPaint);
+//            canvas.drawLine(xLeft, yTop, xRight, yTop, mProgressPaint);
+            Bitmap bitmap = progressDrawable.getBitmap();
+            Rect dst = new Rect(((int) mThumbCenterX - mThumbRadius), ((int) yTop - mThumbRadius), ((int) mThumbCenterX + mThumbRadius), ((int) yTop + mThumbRadius));
+            Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+            canvas.drawBitmap(bitmap, src, dst, new Paint(Paint.ANTI_ALIAS_FLAG));
         } else {
             //draw track
             mPaint.setColor(mSecondTrackColor);

@@ -12,4 +12,7 @@
     <color name="graybackground">#f3f4f7</color>
     <color name="textcolor">#b1b1b1</color>
     <color name="bluedark">#2750ae</color>
+    <color name="textColotOp">#181818</color>
+    <color name="textColorRed">#E53E2D</color>
+    <color name="tr">#0000</color>
 </resources>

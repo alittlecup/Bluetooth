@@ -6,4 +6,21 @@
     <declare-styleable name="AbdView">
         <attr name="drawable" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="GirdItem">
+        <attr name="girdDrawble" format="reference" />
+        <attr name="text" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="RoundProgressBar">
+        <attr name="roundColor" format="color"/>
+        <attr name="roundProgressColor" format="color"/>
+        <attr name="roundWidth" format="dimension"></attr>
+        <attr name="textColor" format="color" />
+        <attr name="textSize" format="dimension" />
+        <attr name="imageMax" format="integer"></attr>
+        <attr name="isProgressImage" format="boolean"></attr>
+        <attr name="pointRadius" format="dimension"></attr>
+        <attr name="pointWidth" format="dimension"></attr>
+    </declare-styleable>
 </resources>
