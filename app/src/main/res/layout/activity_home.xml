@@ -10,6 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_back"
+            android:layout_width="wrap_content"
+            android:layout_margin="30dp"
+            app:backgroundTint="@color/white"
+            android:visibility="gone"
+            app:srcCompat="@drawable/home_shop_back"
+            android:layout_height="wrap_content" />
+
         <LinearLayout
 
             android:layout_width="match_parent"

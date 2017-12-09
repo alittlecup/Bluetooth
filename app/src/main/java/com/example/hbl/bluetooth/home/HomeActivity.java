@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -51,6 +52,7 @@ import java.util.Queue;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -59,6 +61,8 @@ public class HomeActivity extends BaseActivity {
 
     @BindView(R.id.bottom_navigation_bar)
     BottomNavigationBar bottomNavigationBar;
+    @BindView(R.id.fab_back)
+    FloatingActionButton floatingActionButton;
 
 
     private String address1, address2;
@@ -485,7 +489,7 @@ public class HomeActivity extends BaseActivity {
                 .addItem(new BottomNavigationItem(R.drawable.home_active, "首页").setInactiveIconResource(R.drawable.home_inactive))
                 .addItem(new BottomNavigationItem(R.drawable.mine_active, "我的").setInactiveIconResource(R.drawable.mine_inactive))
 //                .addItem(new BottomNavigationItem(R.drawable.mine_on, "我的").setInactiveIconResource(R.drawable.mine_un))
-                .setFirstSelectedPosition(0)
+                .setFirstSelectedPosition(1)
                 .initialise();
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
             @Override
@@ -497,6 +501,10 @@ public class HomeActivity extends BaseActivity {
                     fragmentTransaction.add(R.id.tabs, fragmentList.get(i));
                 }
                 fragmentTransaction.commitAllowingStateLoss();
+                if (i == 0) {
+                    bottomNavigationBar.setVisibility(View.GONE);
+                    floatingActionButton.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -510,7 +518,7 @@ public class HomeActivity extends BaseActivity {
             public void onTabReselected(int i) {
             }
         });
-        getSupportFragmentManager().beginTransaction().replace(R.id.tabs, fragmentList.get(0)).commitAllowingStateLoss();
+        getSupportFragmentManager().beginTransaction().replace(R.id.tabs, fragmentList.get(1)).commitAllowingStateLoss();
         getModeData();
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         handler.sendEmptyMessage(3);
@@ -649,6 +657,23 @@ public class HomeActivity extends BaseActivity {
                 }
             }, 3000);
 
+        }
+
+    }
+
+    @OnClick ({R.id.fab_back})
+
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fab_back:
+                bottomNavigationBar.selectTab(1);
+                bottomNavigationBar.setVisibility(View.VISIBLE);
+                floatingActionButton.setVisibility(View.GONE);
+
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.hide(fragmentList.get(0));
+                fragmentTransaction.commitAllowingStateLoss();
+                break;
         }
 
     }
