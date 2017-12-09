@@ -57,6 +57,11 @@ public class LoginFragment extends BaseFragment {
     }
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.login_fragment;
     }

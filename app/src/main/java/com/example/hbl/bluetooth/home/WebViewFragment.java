@@ -27,6 +27,11 @@ public class WebViewFragment extends BaseFragment{
     }
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         webView=view.findViewById(R.id.webview);

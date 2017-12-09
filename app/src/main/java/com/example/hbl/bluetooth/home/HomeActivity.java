@@ -703,7 +703,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if(getSupportFragmentManager().getBackStackEntryCount()>0){
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             super.onBackPressed();
             return;
         }
@@ -741,6 +741,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void routeTo(Fragment fragment) {
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, fragment)
                 .addToBackStack(null)

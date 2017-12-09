@@ -20,13 +20,19 @@ import butterknife.Unbinder;
 public abstract class BaseFragment extends Fragment implements LifecycleRegistryOwner {
     public View RootView;
     Unbinder unbinder;
+    public boolean hasInit;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         if (RootView == null) {
             RootView = inflater.inflate(getLayoutId(), container, false);
+            if (unbinder == null) {
+                unbinder = ButterKnife.bind(this, RootView);
+            }
+            initView();
         }
+
         ViewGroup parent = (ViewGroup) RootView.getParent();
         if (parent != null) {
             parent.removeView(RootView);
@@ -34,11 +40,11 @@ public abstract class BaseFragment extends Fragment implements LifecycleRegistry
         return RootView;
     }
 
+    protected abstract void initView();
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        if (unbinder == null) {
-            unbinder = ButterKnife.bind(this, view);
-        }
+
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -46,10 +52,10 @@ public abstract class BaseFragment extends Fragment implements LifecycleRegistry
 
     @Override
     public void onDestroyView() {
-        if (unbinder != null && unbinder != Unbinder.EMPTY) {
-            unbinder.unbind();
-            unbinder = null;
-        }
+//        if (unbinder != null && unbinder != Unbinder.EMPTY) {
+//            unbinder.unbind();
+//            unbinder = null;
+//        }
         if(progressDialog!=null&&progressDialog.isShowing()){
             progressDialog.dismiss();
             progressDialog=null;

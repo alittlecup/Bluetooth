@@ -2,15 +2,11 @@ package com.example.hbl.bluetooth.home;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -25,7 +21,6 @@ import com.example.hbl.bluetooth.util.SharedPreferenceUtil;
 import com.example.hbl.bluetooth.view.CircleSeekBar;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
@@ -33,7 +28,7 @@ import butterknife.Unbinder;
  * Created by huangbaole on 2017/12/7.
  */
 
-public class SingleOpFragment extends BaseFragment {
+public class SingleDowmFragment extends BaseFragment {
     @BindView(R.id.imBack)
     ImageView imBack;
     @BindView(R.id.cricle_seek_bar)
@@ -76,11 +71,11 @@ public class SingleOpFragment extends BaseFragment {
 
             @Override
             public void onProgressChangeEnd(int duration, int progress) {
-                mHomeViewModel.sendOrderUp(Order.WRITE_HEAT + toHex(progress));
+                mHomeViewModel.sendOrderDown(Order.WRITE_HEAT + toHex(progress));
 
             }
         });
-        sbTime.setOnSeekBarChangeListener(new SingleOpFragment.OnSeekChangeListenr() {
+        sbTime.setOnSeekBarChangeListener(new SingleDowmFragment.OnSeekChangeListenr() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
@@ -171,7 +166,7 @@ public class SingleOpFragment extends BaseFragment {
 //        mHomeViewModel.getmUptextState().observe(this, state -> setTextDrawable(upText, state));
 //        mHomeViewModel.getmDowntextState().observe(this, state -> setTextDrawable(downText, state));
 //        mHomeViewModel.getmUptextVisible().observe(this, visi -> upText.setVisibility(visi ? View.VISIBLE : View.GONE));
-        mHomeViewModel.getmUpImg().observe(this, integer -> {
+        mHomeViewModel.getmDownImg().observe(this, integer -> {
             if(integer==null)return;
 
             switch (integer){
@@ -190,12 +185,12 @@ public class SingleOpFragment extends BaseFragment {
             }
         });
 //        mHomeViewModel.getmUpImgVisible().observe(this, visible -> upImageEn.setVisibility(visible ? View.VISIBLE : View.GONE));
-        mHomeViewModel.getmUpProgress().observe(this, integer -> {
+        mHomeViewModel.getmDownProgress().observe(this, integer -> {
             if(integer==null)return;
 
             if (cricleSeekBar.isEnabled()) {
                 cricleSeekBar.setProgress(integer);
-                mHomeViewModel.sendOrderUp(Order.WRITE_HEAT + toHex(integer));
+                mHomeViewModel.sendOrderDown(Order.WRITE_HEAT + toHex(integer));
             } else {
                 ToastUtil.show("当前蓝牙设备不可用");
             }
@@ -203,7 +198,6 @@ public class SingleOpFragment extends BaseFragment {
 
         mHomeViewModel.getmTimeProgress().observe(this, integer -> {
             if(integer==null)return;
-
             if (sbTime.isEnabled()) {
                 sbTime.setProgress(integer);
                 mHomeViewModel.sendOrderUp(Order.WRITE_TIME + timeToHex(integer * 60));
@@ -212,21 +206,20 @@ public class SingleOpFragment extends BaseFragment {
                 ToastUtil.show("当前蓝牙设备不可用");
             }
         });
-        mHomeViewModel.getmIsTeeEnable().observe(this, b -> {
+        mHomeViewModel.getmIsPainEnable().observe(this, b -> {
             if(b==null)return;
-
             upText.setImageResource(b?R.drawable.bletooth_on:R.drawable.bluetoon_off);
             cricleSeekBar.setEnabled(b);
         });
 
 
-        mHomeViewModel.getmUpSwitch().observe(this, b -> {
+        mHomeViewModel.getmDownSwitch().observe(this, b -> {
             if(b==null)return;
 
             upCheck.setImageResource(b ? R.drawable.duble_bluetoooth_on : R.drawable.double_bluetootn_off);
         });
 
-        mHomeViewModel.getmUpSwitch().setValue(false);
+        mHomeViewModel.getmDownSwitch().setValue(false);
         mHomeViewModel.getmDownSwitch().setValue(false);
 
 
@@ -243,16 +236,16 @@ public class SingleOpFragment extends BaseFragment {
                 startActivity(new Intent(getActivity(), SearchActivity.class));
                 break;
             case R.id.upCheck:
-                mHomeViewModel.getmUpSwitch().setValue(!mHomeViewModel.getmUpSwitch().getValue());
-                if (mHomeViewModel.getmUpSwitch().getValue()) {
+                mHomeViewModel.getmDownSwitch().setValue(!mHomeViewModel.getmDownSwitch().getValue());
+                if (mHomeViewModel.getmDownSwitch().getValue()) {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mHomeViewModel.sendOrderUp(Order.READ_ENERGY);
+                            mHomeViewModel.sendOrderDown(Order.READ_ENERGY);
                         }
                     }, 30000);
                 }
-                mHomeViewModel.sendOrderUp(mHomeViewModel.getmUpSwitch().getValue() ? Order.WRITE_OPEN : Order.WRITE_CLOSE);
+                mHomeViewModel.sendOrderDown(mHomeViewModel.getmDownSwitch().getValue() ? Order.WRITE_OPEN : Order.WRITE_CLOSE);
                 break;
         }
     }

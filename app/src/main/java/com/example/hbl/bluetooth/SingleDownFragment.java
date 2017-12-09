@@ -1,33 +1,28 @@
-package com.example.hbl.bluetooth.home;
+package com.example.hbl.bluetooth;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-import com.example.hbl.bluetooth.BaseFragment;
-import com.example.hbl.bluetooth.MsgFragment;
-import com.example.hbl.bluetooth.R;
+import com.example.hbl.bluetooth.home.SingleDowmFragment;
+import com.example.hbl.bluetooth.home.SingleOpFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * Created by huangbaole on 2017/12/5.
+ * Created by huangbaole on 2017/12/7.
  */
 
-public class DoubleFragment extends BaseFragment {
+public class SingleDownFragment extends BaseFragment{
     @BindView(R.id.tabs)
     FrameLayout tabs;
     @BindView(R.id.bottom_navigation_bar)
@@ -81,14 +76,13 @@ public class DoubleFragment extends BaseFragment {
     }
 
     private void initBottom() {
-
         getChildFragmentManager().beginTransaction().replace(R.id.tabs, fragmentList.get(0)).commitAllowingStateLoss();
     }
 
     private List<Fragment> fragmentList = new ArrayList<>();
 
     private void getFragments() {
-        DoubleOpFragment fragment=new DoubleOpFragment();
+        SingleDowmFragment fragment=new SingleDowmFragment();
         MsgFragment fragment1=new MsgFragment();
 
         fragmentList.add(fragment);

@@ -38,12 +38,7 @@ public class SingleFragment extends BaseFragment{
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initBottom();
-    }
-
-    private void initBottom() {
+    protected void initView() {
         getFragments();
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.opeartor_on, "连接模块").setInactiveIconResource(R.drawable.operator_un))
@@ -73,6 +68,15 @@ public class SingleFragment extends BaseFragment{
             public void onTabReselected(int i) {
             }
         });
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initBottom();
+    }
+
+    private void initBottom() {
         getChildFragmentManager().beginTransaction().replace(R.id.tabs, fragmentList.get(0)).commitAllowingStateLoss();
     }
 

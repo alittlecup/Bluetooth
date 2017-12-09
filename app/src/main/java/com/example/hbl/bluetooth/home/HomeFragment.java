@@ -3,6 +3,7 @@ package com.example.hbl.bluetooth.home;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 
 import com.example.hbl.bluetooth.BaseFragment;
 import com.example.hbl.bluetooth.R;
+import com.example.hbl.bluetooth.SingleDownFragment;
 import com.example.hbl.bluetooth.SingleFragment;
 import com.example.hbl.bluetooth.util.CommonFlexAdapter;
 import com.example.hbl.bluetooth.util.GridItem;
@@ -52,12 +54,19 @@ public class HomeFragment extends BaseFragment implements FlexibleAdapter.OnItem
     }
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
         initRecyclerView();
         initViewPager();
     }
+
+    private List<Fragment> fragments = new ArrayList<>();
 
     private void initData() {
         List<ItemData> data = new ArrayList<>();
@@ -70,6 +79,11 @@ public class HomeFragment extends BaseFragment implements FlexibleAdapter.OnItem
         for (ItemData item : data) {
             items.add(new GridItem(item.getText(), item.getRes()));
         }
+        fragments.add(new DoubleFragment());
+        fragments.add(new DoubleFragment());
+        fragments.add(new SingleFragment());
+        fragments.add(new SingleDownFragment());
+        fragments.add(new SingleFragment());
     }
 
     private void initRecyclerView() {
@@ -113,14 +127,8 @@ public class HomeFragment extends BaseFragment implements FlexibleAdapter.OnItem
     @Override
     public boolean onItemClick(int position) {
         Log.d("TAG", "onItemClick: " + position);
-        switch (position) {
-            case 0:
-                ((HomeActivity) getActivity()).routeTo(new DoubleFragment());
-                break;
-            case 4:
-                ((HomeActivity) getActivity()).routeTo(new SingleFragment());
-                break;
-        }
+
+        ((HomeActivity) getActivity()).routeTo(fragments.get(position));
         return false;
     }
 }

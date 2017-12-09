@@ -56,6 +56,11 @@ public class MsgFragment extends BaseFragment {
     }
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         activity = (HomeActivity) getActivity();

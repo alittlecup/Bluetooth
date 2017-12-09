@@ -75,8 +75,7 @@ public class DoubleOpFragment extends BaseFragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void initView() {
         sbTee.setOnSeekBarChangeListener(new OnSeekChangeListenr() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -98,9 +97,8 @@ public class DoubleOpFragment extends BaseFragment {
                 resetTimer(progress * 60);
             }
         });
-
-
     }
+
 
     private CountDownTimer timer;
 
@@ -221,11 +219,20 @@ public class DoubleOpFragment extends BaseFragment {
 //        mHomeViewModel.getmDowntextState().observe(this, state -> setTextDrawable(downText, state));
 //        mHomeViewModel.getmUptextVisible().observe(this, visi -> upText.setVisibility(visi ? View.VISIBLE : View.GONE));
 //        mHomeViewModel.getmDowntextVisible().observe(this, visi -> downText.setVisibility(visi ? View.VISIBLE : View.GONE));
-        mHomeViewModel.getmUpImg().observe(this, integer -> upImageEn.setImageResource(integer));
-        mHomeViewModel.getmDownImg().observe(this, integer -> downImageEn.setImageResource(integer));
-        mHomeViewModel.getmUpImgVisible().observe(this, visible -> upImageEn.setVisibility(visible ? View.VISIBLE : View.GONE));
-        mHomeViewModel.getmDownImgVisible().observe(this, visible -> downImageEn.setVisibility(visible ? View.VISIBLE : View.GONE));
+        mHomeViewModel.getmUpImg().observe(this, integer -> {
+            if (integer == null) return;
+
+            upImageEn.setImageResource(integer);
+        });
+        mHomeViewModel.getmDownImg().observe(this, integer -> {
+            if(integer==null)return;
+
+            downImageEn.setImageResource(integer);
+        });
+//        mHomeViewModel.getmUpImgVisible().observe(this, visible -> upImageEn.setVisibility(visible ? View.VISIBLE : View.GONE));
+//        mHomeViewModel.getmDownImgVisible().observe(this, visible -> downImageEn.setVisibility(visible ? View.VISIBLE : View.GONE));
         mHomeViewModel.getmUpProgress().observe(this, integer -> {
+            if (integer == null) return;
             if (sbTee.isEnabled()) {
                 sbTee.setProgress(integer);
                 mHomeViewModel.sendOrderUp(Order.WRITE_HEAT + toHex(integer));
@@ -234,6 +241,7 @@ public class DoubleOpFragment extends BaseFragment {
             }
         });
         mHomeViewModel.getmDownProgress().observe(this, integer -> {
+            if (integer == null) return;
             if (sbPans.isEnabled()) {
                 sbPans.setProgress(integer);
                 mHomeViewModel.sendOrderDown(Order.WRITE_HEAT + toHex(integer));
@@ -242,6 +250,8 @@ public class DoubleOpFragment extends BaseFragment {
             }
         });
         mHomeViewModel.getmTimeProgress().observe(this, integer -> {
+            if (integer == null) return;
+
             if (sbTime.isEnabled()) {
                 sbTime.setProgress(integer);
                 mHomeViewModel.sendOrderUp(Order.WRITE_TIME + timeToHex(integer * 60));
@@ -251,20 +261,24 @@ public class DoubleOpFragment extends BaseFragment {
             }
         });
         mHomeViewModel.getmIsTeeEnable().observe(this, b -> {
+            if (b == null) return;
             upText.setImageResource(b ? R.drawable.bletooth_on : R.drawable.bluetoon_off);
             sbTee.setEnabled(b);
             sbTime.setEnabled(b || (mHomeViewModel.getmIsPainEnable().getValue() == null ? false : mHomeViewModel.getmIsPainEnable().getValue()));
         });
         mHomeViewModel.getmIsPainEnable().observe(this, b -> {
+            if (b == null) return;
             downText.setImageResource(b ? R.drawable.bletooth_on : R.drawable.bluetoon_off);
             sbPans.setEnabled(b);
             sbTime.setEnabled(b || (mHomeViewModel.getmIsTeeEnable().getValue() == null ? false : mHomeViewModel.getmIsTeeEnable().getValue()));
         });
 
         mHomeViewModel.getmUpSwitch().observe(this, b -> {
+            if (b == null) return;
             upCheck.setImageResource(b ? R.drawable.duble_bluetoooth_on : R.drawable.double_bluetootn_off);
         });
         mHomeViewModel.getmDownSwitch().observe(this, b -> {
+            if (b == null) return;
             downCheck.setImageResource(b ? R.drawable.duble_bluetoooth_on : R.drawable.double_bluetootn_off);
         });
         mHomeViewModel.getmUpSwitch().setValue(false);

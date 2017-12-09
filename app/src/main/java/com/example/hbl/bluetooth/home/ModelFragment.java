@@ -36,6 +36,11 @@ public class ModelFragment extends BaseFragment {
     MyAdapter adapter;
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initOnce();

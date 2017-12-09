@@ -109,6 +109,11 @@ public class SettingFragment extends BaseFragment {
     }
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     protected  int getLayoutId() {
         return R.layout.fragment_setting;
     }
