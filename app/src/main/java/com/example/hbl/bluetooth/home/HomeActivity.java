@@ -384,10 +384,20 @@ public class HomeActivity extends BaseActivity {
                     case 1:
                     case 2:
                     case 3:
-                        mHomeViewModel.getmDownImg().setValue(R.drawable.opear_energy_low);
+                    case 4:
+                        mHomeViewModel.getmDownImg().setValue(R.drawable.power_low);
+                        break;
+                    case 7:
+                    case 8:
+                        mHomeViewModel.getmDownImg().setValue(R.drawable.power_three);
+                        break;
+
+                    case 5:
+                    case 6:
+                        mHomeViewModel.getmDownImg().setValue(R.drawable.power_half);
                         break;
                     default:
-                        mHomeViewModel.getmDownImg().setValue(R.drawable.opear_energy);
+                        mHomeViewModel.getmDownImg().setValue(R.drawable.power_max);
                 }
             }
             close();

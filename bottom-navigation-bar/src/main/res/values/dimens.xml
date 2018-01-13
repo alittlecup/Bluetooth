@@ -54,7 +54,7 @@
     <dimen name="shifting_icon_badge_grid_width">48dp</dimen>
 
     <dimen name="bottom_navigation_elevation">8dp</dimen>
-    <dimen name="bottom_navigation_height">58dp</dimen>
+    <dimen name="bottom_navigation_height">60dp</dimen>
     <dimen name="bottom_navigation_padded_height">64dp</dimen>
     <dimen name="bottom_navigation_top_margin_correction">-8dp</dimen><!-- 64 - 56 = 8 -->
 

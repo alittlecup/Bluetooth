@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -19,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.hbl.bluetooth.App;
 import com.example.hbl.bluetooth.BaseFragment;
 import com.example.hbl.bluetooth.R;
 import com.example.hbl.bluetooth.home.HomeActivity;
@@ -58,11 +60,16 @@ public class SearchFragment extends BaseFragment {
     private static final long SCAN_PERIOD = 10000;
     public static final String TAG = SearchFragment.class.getSimpleName();
     private RotateAnimation animation;
+    private BluetoothAdapter.LeScanCallback curCallback;
 
 
     @Override
     protected void initView() {
-
+        if(TextUtils.isEmpty(App.singleMatch)){
+            curCallback=mLeScanCallback;
+        }else{
+            curCallback=mSingleCallback;
+        }
     }
 
     @Override
@@ -121,7 +128,7 @@ public class SearchFragment extends BaseFragment {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            mBluetoothAdapter.stopLeScan(curCallback);
             btnSearch.setEnabled(true);
             imBlu.clearAnimation();
         }
@@ -130,12 +137,12 @@ public class SearchFragment extends BaseFragment {
         mHandler.removeCallbacks(runnable);
         if (enable) {
             mHandler.postDelayed(runnable, SCAN_PERIOD);
-            mBluetoothAdapter.startLeScan(mLeScanCallback);
+            mBluetoothAdapter.startLeScan(curCallback);
             btnSearch.setEnabled(false);
             imBlu.startAnimation(animation);
             return;
         }
-        mBluetoothAdapter.stopLeScan(mLeScanCallback);
+        mBluetoothAdapter.stopLeScan(curCallback);
         imBlu.clearAnimation();
         btnSearch.setEnabled(true);
     }
@@ -188,6 +195,31 @@ public class SearchFragment extends BaseFragment {
                     if (map.get("hotdw") != null) {
                         tvDown.setVisibility(View.VISIBLE);
                         machView.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+        }
+    };
+    private BluetoothAdapter.LeScanCallback mSingleCallback=new BluetoothAdapter.LeScanCallback() {
+        @Override public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "run: " + device.getName() + "-> " + device.getAddress());
+                    String name = device.getName();
+
+                    if (App.singleMatch.equals(name)) {
+                        if (map.get(App.singleMatch) == null) {
+                            map.put(App.singleMatch, device.getAddress());
+                        }
+                    }
+
+                    if (map.get(App.singleMatch) != null) {
+                        tvUp.setVisibility(View.VISIBLE);
+                        tvUp.setCompoundDrawablesWithIntrinsicBounds(null,getActivity().getResources().getDrawable(App.singleDrawbleRes),null,null);
+                        tvUp.setText(App.singleName);
+                        machView.setVisibility(View.VISIBLE);
+
                     }
                 }
             });

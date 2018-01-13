@@ -30,7 +30,7 @@
                 android:layout_centerInParent="true"
                 android:text="智能控温"
                 android:textColor="@color/textColotOp"
-                android:textSize="25dp" />
+                android:textSize="20dp" />
         </RelativeLayout>
 
         <TextView
@@ -40,11 +40,19 @@
             android:gravity="center"
             android:text="设定温度"
             android:textColor="@color/textColotOp"
-            android:textSize="24dp" />
+            android:textSize="20dp" />
 
-        <include layout="@layout/view_single_op" />
+        <include
+            android:layout_marginTop="-20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/view_single_op" />
 
-        <include layout="@layout/view_time_item" />
+        <include
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/view_time_item" />
 
 
     </LinearLayout>

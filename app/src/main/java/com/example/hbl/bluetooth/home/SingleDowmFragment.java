@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.hbl.bluetooth.App;
 import com.example.hbl.bluetooth.BaseFragment;
 import com.example.hbl.bluetooth.Order;
 import com.example.hbl.bluetooth.R;
@@ -270,4 +271,5 @@ public class SingleDowmFragment extends BaseFragment {
             return Integer.toHexString(secondes);
         }
     }
+
 }

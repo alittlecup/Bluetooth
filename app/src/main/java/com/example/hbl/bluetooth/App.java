@@ -1,6 +1,7 @@
 package com.example.hbl.bluetooth;
 
 import android.app.Application;
+import android.support.annotation.IntegerRes;
 import android.support.multidex.MultiDex;
 
 import com.example.hbl.bluetooth.util.SharedPreferenceUtil;
@@ -25,7 +26,9 @@ public class App extends Application {
 
     private static ArrayList<ModelData> datas = new ArrayList<>();
 
-
+    public static String singleMatch;
+    public static int singleDrawbleRes;
+    public static String singleName;
     @Override
     public void onCreate() {
         app = this;

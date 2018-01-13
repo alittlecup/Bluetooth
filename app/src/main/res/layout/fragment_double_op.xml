@@ -32,7 +32,7 @@
                 android:layout_centerInParent="true"
                 android:text="智能控温"
                 android:textColor="@color/textColotOp"
-                android:textSize="25dp" />
+                android:textSize="20dp" />
         </RelativeLayout>
 
         <include layout="@layout/double_top_card" />
@@ -79,6 +79,7 @@
             <SeekBar
                 android:id="@+id/sbTime"
                 style="@style/seekbar_blue"
+
                 android:layout_below="@+id/time" />
 
         </RelativeLayout>
