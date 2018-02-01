@@ -260,9 +260,7 @@ public class HomeActivity extends BaseActivity {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
-                mHomeViewModel.getmUpText().setValue(getResources().getString(R.string.connected));
-                mHomeViewModel.getmUptextState().setValue(true);
-                mConnected = 2;
+
                 if (mBluetoothLeSecondService != null && mConnected2 == 0) {
                     mBluetoothLeSecondService.connect(address2);
                 }
@@ -284,9 +282,7 @@ public class HomeActivity extends BaseActivity {
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
             } else if (BluetoothLeSecondeService.ACTION_GATT_CONNECTED.equals(action)) {
-                mHomeViewModel.getmDownText().setValue(getResources().getString(R.string.connected));
-                mHomeViewModel.getmDowntextState().setValue(true);
-                mConnected2 = 2;
+
             } else if (BluetoothLeSecondeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mHomeViewModel.getmDownText().setValue(getResources().getString(R.string.disconnected));
                 mHomeViewModel.getmDowntextState().setValue(false);
@@ -446,6 +442,9 @@ public class HomeActivity extends BaseActivity {
             ToastUtil.show("error");
         } else {
             mBluetoothLeSecondService.setCharacteristicNotification(RWNSECharacteristic, true);
+            mHomeViewModel.getmDownText().setValue(getResources().getString(R.string.connected));
+            mHomeViewModel.getmDowntextState().setValue(true);
+            mConnected = 2;
 
 
         }
@@ -465,6 +464,9 @@ public class HomeActivity extends BaseActivity {
             ToastUtil.show("error");
         } else {
             mBluetoothLeService.setCharacteristicNotification(RWNCharacteristic, true);
+            mHomeViewModel.getmUpText().setValue(getResources().getString(R.string.connected));
+            mHomeViewModel.getmUptextState().setValue(true);
+            mConnected2 = 2;
 
         }
     }
