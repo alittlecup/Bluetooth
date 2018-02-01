@@ -139,8 +139,14 @@ public class SingleOpFragment extends BaseFragment {
   HomeViewModel mHomeViewModel;
 
   private void initViewModelObserver() {
-    mHomeViewModel =
-        ViewModelProviders.of(getParentFragment().getActivity()).get(HomeViewModel.class);
+    if(getParentFragment()==null){
+      mHomeViewModel =
+          ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
+    }else {
+      mHomeViewModel =
+          ViewModelProviders.of(getParentFragment().getActivity()).get(HomeViewModel.class);
+    }
+
     //        mHomeViewModel.getmUpText().observe(this, str -> upText.setText(str));
     //        mHomeViewModel.getmDownText().observe(this, str -> downText.setText(str));
     //蓝牙连接状态
